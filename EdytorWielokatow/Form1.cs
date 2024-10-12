@@ -17,7 +17,8 @@ namespace EdytorWielokatow
         private List<Edge> edges;
 
         private Vertex? startingPt;
-        private Vertex? draggedPoint;
+        private Vertex? selectedPoint;
+        private Edge? selectedEdge;
 
         public Form1()
         {
@@ -86,7 +87,7 @@ namespace EdytorWielokatow
                     (var ptR, var edgeR) = GetClickedObject(ptClicked);
                     if (ptR is not null)
                     {
-                        draggedPoint = ptR;
+                        selectedPoint = ptR;
                         appState = AppStates.DraggingPoint;
                     }
                     else if (edgeR is not null)
@@ -102,6 +103,21 @@ namespace EdytorWielokatow
                     }
                 }
             }
+            else if (e.Button == MouseButtons.Right &&
+                appState == AppStates.AdmiringPoly)
+            {
+                (var ptR, var edgeR) = GetClickedObject(ptClicked);
+                if (ptR is not null)
+                {
+                    vertexContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                    selectedPoint = ptR;
+                }
+                else if (edgeR is not null)
+                {
+                    edgeContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                    selectedEdge = edgeR;
+                }
+            }
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
@@ -109,16 +125,13 @@ namespace EdytorWielokatow
             if (e.Button == MouseButtons.Left)
             {
                 if (appState == AppStates.DraggingPoint &&
-                    draggedPoint is not null)
+                    selectedPoint is not null)
                 {
                     if (e.X < 0 || e.X > Canvas.Width ||
                         e.Y < 0 || e.Y > Canvas.Height) return;
 
-                    draggedPoint.X = e.X;
-                    draggedPoint.Y = e.Y;
-
-                    //(Edge? e1, Edge? e2) = GetAdjecentEdges(draggedPoint);
-                    //if (e1 is null || e2 is null) return;
+                    selectedPoint.X = e.X;
+                    selectedPoint.Y = e.Y;
 
                     Draw();
                 }
@@ -133,7 +146,7 @@ namespace EdytorWielokatow
                 if (appState == AppStates.DraggingPoint)
                 {
                     appState = AppStates.AdmiringPoly;
-                    draggedPoint = null;
+                    selectedPoint = null;
                     Draw();
                 }
             }
@@ -175,27 +188,6 @@ namespace EdytorWielokatow
             return (ptOut, edgeOut);
         }
 
-        private (Edge? e1, Edge? e2) GetAdjecentEdges(Point pt)
-        {
-            Edge? e1 = null, e2 = null;
-
-            foreach (var e in edges)
-            {
-                if (e.Start.Equals(pt) || e.End.Equals(pt))
-                {
-                    if (e1 is null)
-                        e1 = e;
-                    else
-                    {
-                        e2 = e;
-                        break;
-                    }
-                }
-            }
-
-            return (e1, e2);
-        }
-
         private void Draw()
         {
             using (Graphics g = Graphics.FromImage(drawArea))
@@ -220,5 +212,16 @@ namespace EdytorWielokatow
             Canvas.Refresh();
         }
 
+        private void usunToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint is not null)
+            {
+                selectedPoint.X = selectedPoint.X + 100;
+                selectedPoint.Y = selectedPoint.Y + 100;
+                selectedPoint = null;
+                Draw();
+            }
+            
+        }
     }
 }

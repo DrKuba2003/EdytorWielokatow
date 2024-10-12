@@ -28,8 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             Canvas = new PictureBox();
+            vertexContextMenu = new ContextMenuStrip(components);
+            usunToolStripMenuItem = new ToolStripMenuItem();
+            edgeContextMenu = new ContextMenuStrip(components);
+            podpodzielToolStripMenuItem = new ToolStripMenuItem();
+            pionowaToolStripMenuItem = new ToolStripMenuItem();
+            poziomaToolStripMenuItem = new ToolStripMenuItem();
+            stalaDlugoscToolStripMenuItem = new ToolStripMenuItem();
+            bezToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
+            vertexContextMenu.SuspendLayout();
+            edgeContextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // Canvas
@@ -45,6 +56,57 @@
             Canvas.MouseMove += Canvas_MouseMove;
             Canvas.MouseUp += Canvas_MouseUp;
             // 
+            // vertexContextMenu
+            // 
+            vertexContextMenu.ImageScalingSize = new Size(20, 20);
+            vertexContextMenu.Items.AddRange(new ToolStripItem[] { usunToolStripMenuItem });
+            vertexContextMenu.Name = "contextMenuStrip1";
+            vertexContextMenu.Size = new Size(111, 28);
+            // 
+            // usunToolStripMenuItem
+            // 
+            usunToolStripMenuItem.Name = "usunToolStripMenuItem";
+            usunToolStripMenuItem.Size = new Size(110, 24);
+            usunToolStripMenuItem.Text = "Usuń";
+            usunToolStripMenuItem.Click += usunToolStripMenuItem_Click;
+            // 
+            // edgeContextMenu
+            // 
+            edgeContextMenu.ImageScalingSize = new Size(20, 20);
+            edgeContextMenu.Items.AddRange(new ToolStripItem[] { podpodzielToolStripMenuItem, pionowaToolStripMenuItem, poziomaToolStripMenuItem, stalaDlugoscToolStripMenuItem, bezToolStripMenuItem });
+            edgeContextMenu.Name = "edgeContextMenu";
+            edgeContextMenu.Size = new Size(211, 152);
+            // 
+            // podpodzielToolStripMenuItem
+            // 
+            podpodzielToolStripMenuItem.Name = "podpodzielToolStripMenuItem";
+            podpodzielToolStripMenuItem.Size = new Size(210, 24);
+            podpodzielToolStripMenuItem.Text = "Podpodziel";
+            // 
+            // pionowaToolStripMenuItem
+            // 
+            pionowaToolStripMenuItem.Name = "pionowaToolStripMenuItem";
+            pionowaToolStripMenuItem.Size = new Size(210, 24);
+            pionowaToolStripMenuItem.Text = "Pionowa";
+            // 
+            // poziomaToolStripMenuItem
+            // 
+            poziomaToolStripMenuItem.Name = "poziomaToolStripMenuItem";
+            poziomaToolStripMenuItem.Size = new Size(210, 24);
+            poziomaToolStripMenuItem.Text = "Pozioma";
+            // 
+            // stalaDlugoscToolStripMenuItem
+            // 
+            stalaDlugoscToolStripMenuItem.Name = "stalaDlugoscToolStripMenuItem";
+            stalaDlugoscToolStripMenuItem.Size = new Size(210, 24);
+            stalaDlugoscToolStripMenuItem.Text = "Stała długość";
+            // 
+            // bezToolStripMenuItem
+            // 
+            bezToolStripMenuItem.Name = "bezToolStripMenuItem";
+            bezToolStripMenuItem.Size = new Size(210, 24);
+            bezToolStripMenuItem.Text = "Bezier";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -56,11 +118,21 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Edytor wielokątów";
             ((System.ComponentModel.ISupportInitialize)Canvas).EndInit();
+            vertexContextMenu.ResumeLayout(false);
+            edgeContextMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private PictureBox Canvas;
+        private ContextMenuStrip vertexContextMenu;
+        private ToolStripMenuItem usunToolStripMenuItem;
+        private ContextMenuStrip edgeContextMenu;
+        private ToolStripMenuItem podpodzielToolStripMenuItem;
+        private ToolStripMenuItem pionowaToolStripMenuItem;
+        private ToolStripMenuItem poziomaToolStripMenuItem;
+        private ToolStripMenuItem stalaDlugoscToolStripMenuItem;
+        private ToolStripMenuItem bezToolStripMenuItem;
     }
 }
