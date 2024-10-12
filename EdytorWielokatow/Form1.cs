@@ -12,11 +12,14 @@ namespace EdytorWielokatow
         private const int RADIUS = 8;
         private const int BUFFER = RADIUS + 5;
 
+        public static int EDGE_COUNT = 0;
+
         private AppStates appState;
         private Bitmap drawArea;
-        private List<Edge> edges;
 
         private Vertex? startingPt;
+        private Edge? edgesHead;
+        private Edge? edgesTail;
         private Vertex? selectedPoint;
         private Edge? selectedEdge;
 
@@ -25,7 +28,6 @@ namespace EdytorWielokatow
             InitializeComponent();
 
             appState = AppStates.CreatingPoly;
-            edges = new List<Edge>();
 
             drawArea = new Bitmap(Canvas.Size.Width, Canvas.Size.Height);
             Canvas.Image = drawArea;
@@ -49,22 +51,33 @@ namespace EdytorWielokatow
                     else
                     {
                         // checking if newVert is startingVert and triangle minimum
-                        if (GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, BUFFER))
-                        {
-                            // tutaj to sprawdzenie, zeby nie kliknac trzech punktow
-                            // bardzo blisko siebie
-                            if (edges.Count < 2) return;
+                        bool isClosingPoly = EDGE_COUNT >= 2 &&
+                            GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, BUFFER);
 
+                        if (isClosingPoly)
                             ptClicked = startingPt!;
+
+                        // Creating edge
+                        var lastVert = EDGE_COUNT == 0 ?
+                            startingPt! :
+                            edgesTail!.NextVertex;
+
+                        newEdge = new Edge(lastVert, ptClicked, edgesTail);
+
+                        if (edgesTail is not null)
+                            edgesTail.Next = newEdge;
+                        else
+                            edgesHead = newEdge;
+
+                        if (isClosingPoly)
+                        {
+                            newEdge.Next = edgesHead;
+                            edgesHead.Prev = newEdge;
                             appState = AppStates.AdmiringPoly;
                         }
 
-                        // Creating edge
-                        var lastVert = edges.Count == 0 ?
-                            startingPt! :
-                            edges.Last().End;
-                        newEdge = new Edge(lastVert, ptClicked);
-                        edges.Add(newEdge);
+                        edgesTail = newEdge;
+                        EDGE_COUNT++;
                     }
 
                     // Drawing
@@ -76,8 +89,8 @@ namespace EdytorWielokatow
 
                         if (newEdge is not null)
                             g.DrawLine(new Pen(Brushes.Blue, 3),
-                                newEdge.Start.X, newEdge.Start.Y,
-                                newEdge.End.X, newEdge.End.Y);
+                                newEdge.PrevVertex.X, newEdge.PrevVertex.Y,
+                                newEdge.NextVertex.X, newEdge.NextVertex.Y);
                     }
 
                     Canvas.Refresh();
@@ -96,8 +109,8 @@ namespace EdytorWielokatow
                         using (Graphics g = Graphics.FromImage(drawArea))
                         {
                             g.DrawLine(new Pen(Brushes.GreenYellow, 3),
-                                edge.Start.X, edge.Start.Y,
-                                edge.End.X, edge.End.Y);
+                                edge.PrevVertex.X, edge.PrevVertex.Y,
+                                edge.NextVertex.X, edge.NextVertex.Y);
                         }
                         Canvas.Refresh();
                     }
@@ -154,6 +167,8 @@ namespace EdytorWielokatow
 
         private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
         {
+            if (edgesHead is null) return (null, null);
+
             Vertex? ptOut = null;
             double minPtDist = double.MaxValue;
             Edge? edgeOut = null;
@@ -161,13 +176,14 @@ namespace EdytorWielokatow
 
             if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut);
 
-            foreach (var e in edges)
+            Edge? e = edgesHead;
+            do
             {
-                double ptDist = GeometryUtils.SquaredDistB2P(ptClicked, e.End);
+                double ptDist = GeometryUtils.SquaredDistB2P(ptClicked, e.NextVertex);
                 if (ptDist < Math.Pow(BUFFER, 2) && ptDist < minPtDist)
                 {
                     minPtDist = ptDist;
-                    ptOut = e.End;
+                    ptOut = e.NextVertex;
                 }
 
                 if (ptOut is null)
@@ -179,7 +195,8 @@ namespace EdytorWielokatow
                         edgeOut = e;
                     }
                 }
-            }
+                e = e.Next;
+            } while (e is not null && e != edgesHead);
 
             // If point found, return it not edge
             if (ptOut is not null)
@@ -198,16 +215,22 @@ namespace EdytorWielokatow
                     Canvas.Size.Height / 2 - 2 * RADIUS,
                     4 * RADIUS, 4 * RADIUS);
 
-                foreach (var e in edges)
+                if (edgesHead is not null)
                 {
-                    g.DrawLine(new Pen(Brushes.Blue, 3),
-                        e.Start.X, e.Start.Y,
-                        e.End.X, e.End.Y);
+                    Edge? e = edgesHead;
+                    do
+                    {
+                        g.DrawLine(new Pen(Brushes.Blue, 3),
+                            e.PrevVertex.X, e.PrevVertex.Y,
+                            e.NextVertex.X, e.NextVertex.Y);
 
-                    g.FillEllipse(Brushes.Blue,
-                                e.End.X - RADIUS, e.End.Y - RADIUS,
-                                2 * RADIUS, 2 * RADIUS);
+                        g.FillEllipse(Brushes.Blue,
+                                    e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
+                                    2 * RADIUS, 2 * RADIUS);
+                        e = e.Next;
+                    } while (e is not null && e != edgesHead);
                 }
+                
             }
             Canvas.Refresh();
         }
@@ -221,7 +244,7 @@ namespace EdytorWielokatow
                 selectedPoint = null;
                 Draw();
             }
-            
+
         }
     }
 }

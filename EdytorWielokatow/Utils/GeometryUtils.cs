@@ -15,9 +15,9 @@ namespace EdytorWielokatow.Utils
 
         public static double DistBPE(Vertex pt, Edge edge)
         {
-            double a = DistB2P(edge.Start, edge.End);
-            double b = DistB2P(edge.Start, pt);
-            double c = DistB2P(edge.End, pt);
+            double a = DistB2P(edge.PrevVertex, edge.NextVertex);
+            double b = DistB2P(edge.PrevVertex, pt);
+            double c = DistB2P(edge.NextVertex, pt);
 
             double s = (a + b + c) / 2;
 

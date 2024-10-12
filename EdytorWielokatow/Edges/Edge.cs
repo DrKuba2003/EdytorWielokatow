@@ -8,13 +8,19 @@ namespace EdytorWielokatow.Edges
 {
     public class Edge
     {
-        public Vertex Start { get; set; }
-        public Vertex End { get; set; }
+        public Edge? Prev { get; set; }
+        public Edge? Next { get; set; }
 
-        public Edge(Vertex start, Vertex end)
+        public Vertex PrevVertex { get; set; }
+        public Vertex NextVertex { get; set; }
+
+
+        public Edge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
         {
-            Start = start;
-            End = end;
+            PrevVertex = prevVert;
+            NextVertex = nextVert;
+            Prev = prev;
+            Next = next;
         }
     }
 }

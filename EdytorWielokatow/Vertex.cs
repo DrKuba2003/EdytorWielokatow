@@ -11,16 +11,18 @@ namespace EdytorWielokatow
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public bool IsLocked { get; set; }
 
         //public Point pt
         //{
         //    get => new Point(X, Y);
         //}
 
-        public Vertex(int x, int y)
+        public Vertex(int x, int y, bool isLocked = false)
         {
             X = x;
             Y = y;
+            IsLocked = isLocked;
         }
     }
 
