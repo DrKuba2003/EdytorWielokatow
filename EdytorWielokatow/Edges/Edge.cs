@@ -22,5 +22,13 @@ namespace EdytorWielokatow.Edges
             Prev = prev;
             Next = next;
         }
+
+        public Edge(Edge e)
+        {
+            PrevVertex = e.PrevVertex;
+            NextVertex = e.NextVertex;
+            Prev = e.Prev;
+            Next = e.Next;
+        }
     }
 }
