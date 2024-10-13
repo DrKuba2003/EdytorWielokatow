@@ -204,6 +204,17 @@ namespace EdytorWielokatow
             selectedPoint = null;
             Draw();
         }
+
+        private void podpodzielToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            edgesList.EdgeSubdivison(selectedEdge);
+
+            selectedEdge = null;
+            Draw();
+        }
+
         private void Draw()
         {
             using (Graphics g = Graphics.FromImage(drawArea))
@@ -236,5 +247,6 @@ namespace EdytorWielokatow
             startingPt = null;
             appState = AppStates.CreatingPoly;
         }
+
     }
 }

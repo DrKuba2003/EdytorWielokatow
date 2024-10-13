@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EdytorWielokatow.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,13 +54,12 @@ namespace EdytorWielokatow.Edges
             eNext.Prev!.Next = newEdge;
             ePrev.Next!.Prev = newEdge;
 
-
             // Change of head and tail if needed
             bool deletingHead = eNext == Head || ePrev == Head;
             bool deletingTail = eNext == Tail || ePrev == Tail;
             if (deletingHead)
                 Head = newEdge;
-            
+
             if (deletingTail)
             {
                 if (!deletingHead)
@@ -67,11 +67,23 @@ namespace EdytorWielokatow.Edges
                 else
                     Tail = eNext.Prev;
             }
-            
 
             Count--;
-
             return false;
+        }
+
+        public void EdgeSubdivison(Edge e)
+        {
+            Vertex midpoint = GeometryUtils.midpoint(e.PrevVertex, e.NextVertex);
+
+            e.NextVertex = midpoint;
+            Edge ePrev = new Edge(midpoint, e.Next!.PrevVertex, e, e.Next);
+            e.Next = ePrev;
+
+            if (e == Tail)
+                Tail = ePrev;
+
+            Count++;
         }
 
         public void TraverseAllList(Func<Edge, bool> action)

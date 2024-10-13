@@ -82,6 +82,7 @@
             podpodzielToolStripMenuItem.Name = "podpodzielToolStripMenuItem";
             podpodzielToolStripMenuItem.Size = new Size(210, 24);
             podpodzielToolStripMenuItem.Text = "Podpodziel";
+            podpodzielToolStripMenuItem.Click += podpodzielToolStripMenuItem_Click;
             // 
             // pionowaToolStripMenuItem
             // 
