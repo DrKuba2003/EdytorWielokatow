@@ -183,6 +183,7 @@ namespace EdytorWielokatow
                         edgeOut = e;
                     }
                 }
+                return false;
             });
 
             // If point found, return it not edge
@@ -191,7 +192,18 @@ namespace EdytorWielokatow
 
             return (ptOut, edgeOut);
         }
+        private void usunToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint is null) return;
 
+            if (edgesList.Count == 3)
+                ResetPoly();
+            else if (edgesList.DeleteVertex(selectedPoint))
+                return;
+
+            selectedPoint = null;
+            Draw();
+        }
         private void Draw()
         {
             using (Graphics g = Graphics.FromImage(drawArea))
@@ -212,21 +224,17 @@ namespace EdytorWielokatow
                     g.FillEllipse(Brushes.Blue,
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
                                 2 * RADIUS, 2 * RADIUS);
+                    return false;
                 });
             }
             Canvas.Refresh();
         }
 
-        private void usunToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ResetPoly()
         {
-            if (selectedPoint is not null)
-            {
-                selectedPoint.X = selectedPoint.X + 100;
-                selectedPoint.Y = selectedPoint.Y + 100;
-                selectedPoint = null;
-                Draw();
-            }
-
+            edgesList.DeleteAll();
+            startingPt = null;
+            appState = AppStates.CreatingPoly;
         }
     }
 }

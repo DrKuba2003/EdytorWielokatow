@@ -24,7 +24,7 @@ namespace EdytorWielokatow.Edges
             {
                 Head = e;
             }
-            else if (Tail is not null) // if nie jest konieczny
+            else if (Tail is not null) // if not necessary
             {
                 Tail.Next = e;
                 e.Prev = Tail;
@@ -34,16 +34,65 @@ namespace EdytorWielokatow.Edges
             Count++;
         }
 
-        public void TraverseAllList(Action<Edge> action)
+        public bool DeleteVertex(Vertex v)
+        {
+            Edge? ePrev = null, eNext = null;
+            TraverseAllList((Edge e) =>
+            {
+                if (e.PrevVertex == v)
+                    ePrev = e;
+                else if (e.NextVertex == v)
+                    eNext = e;
+
+                return ePrev is not null && eNext is not null;
+            });
+            if (ePrev is null || eNext is null) return true;
+
+            Edge newEdge = new Edge(eNext.PrevVertex, ePrev.NextVertex,
+                eNext.Prev, ePrev.Next);
+            eNext.Prev!.Next = newEdge;
+            ePrev.Next!.Prev = newEdge;
+
+
+            // Change of head and tail if needed
+            bool deletingHead = eNext == Head || ePrev == Head;
+            bool deletingTail = eNext == Tail || ePrev == Tail;
+            if (deletingHead)
+                Head = newEdge;
+            
+            if (deletingTail)
+            {
+                if (!deletingHead)
+                    Tail = newEdge;
+                else
+                    Tail = eNext.Prev;
+            }
+            
+
+            Count--;
+
+            return false;
+        }
+
+        public void TraverseAllList(Func<Edge, bool> action)
         {
             if (Head is null) return;
 
             Edge? e = Head;
+            bool flag = false;
             do
             {
-                action(e);
+                flag = action(e);
                 e = e.Next;
-            } while (e is not null && e != Head);
+            } while (!flag && e is not null && e != Head);
+        }
+
+        public void DeleteAll()
+        {
+            // TODO nie jestem pewny czy garbage collector usunie sam
+            Head = null;
+            Tail = null;
+            Count = 0;
         }
     }
 }
