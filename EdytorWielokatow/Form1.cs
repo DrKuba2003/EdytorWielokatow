@@ -224,7 +224,9 @@ namespace EdytorWielokatow
 
         private void pionowaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (selectedEdge is null) return;
+            if (selectedEdge is null ||
+                selectedEdge.Prev!.GetType() == typeof(VerticalEdge) ||
+                selectedEdge.Next!.GetType() == typeof(VerticalEdge)) return;
 
             edgesList.ReplaceEdge(selectedEdge, new VerticalEdge(selectedEdge));
 
@@ -234,7 +236,9 @@ namespace EdytorWielokatow
 
         private void poziomaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (selectedEdge is null) return;
+            if (selectedEdge is null ||
+                selectedEdge.Prev!.GetType() == typeof(HorizontalEdge) ||
+                selectedEdge.Next!.GetType() == typeof(HorizontalEdge)) return;
 
             edgesList.ReplaceEdge(selectedEdge, new HorizontalEdge(selectedEdge));
 
