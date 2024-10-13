@@ -20,10 +20,24 @@ namespace EdytorWielokatow
             IsLocked = isLocked;
         }
 
+        public Vertex(Vertex v)
+        {
+            X = v.X;
+            Y = v.Y;
+            IsLocked = v.IsLocked;
+        }
+
         public static Vertex operator +(Vertex v1, Vertex v2) =>
             new Vertex(v1.X + v2.X, v1.Y + v2.Y);
-            
 
-    }
+        public void CopyData(Vertex v)
+        {
+            X = v.X;
+            Y = v.Y;
+            IsLocked = v.IsLocked;
+        }
+
+
+        }
 
 }

@@ -119,8 +119,8 @@ namespace EdytorWielokatow
                     selectedPoint.Y = e.Y;
 
                     (Edge? ePrev, Edge? eNext) = edgesList.GetAdjecentEdges(selectedPoint);
-                    ePrev!.ChangeVertexPos(ePrev.PrevVertex, ePrev.NextVertex);
-                    eNext!.ChangeVertexPos(eNext.NextVertex, eNext.PrevVertex);
+                    ePrev.NextVertex.CopyData(ePrev!.ChangeVertexPos(ePrev.PrevVertex, ePrev.NextVertex));
+                    eNext.PrevVertex.CopyData(eNext!.ChangeVertexPos(eNext.NextVertex, eNext.PrevVertex));
 
                     Draw();
                 }

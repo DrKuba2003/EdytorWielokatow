@@ -18,9 +18,9 @@ namespace EdytorWielokatow.Edges
             : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next)
         { }
 
-        public override void ChangeVertexPos(Vertex changed, Vertex changing)
+        public override Vertex ChangeVertexPos(Vertex changed, Vertex changing)
         {
-            changing.Y = changed.Y;
+            return new Vertex(changing.X, changed.Y, changing.IsLocked);
         }
     }
 }

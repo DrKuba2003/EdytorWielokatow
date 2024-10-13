@@ -31,9 +31,9 @@ namespace EdytorWielokatow.Edges
             Next = e.Next;
         }
 
-        public virtual void ChangeVertexPos(Vertex changed, Vertex changing)
+        public virtual Vertex ChangeVertexPos(Vertex changed, Vertex changing)
         {
-
+            return new Vertex(changing);
         }
     }
 }
