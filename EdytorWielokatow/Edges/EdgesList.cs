@@ -65,7 +65,7 @@ namespace EdytorWielokatow.Edges
                 if (!deletingHead)
                     Tail = newEdge;
                 else
-                    Tail = eNext.Prev;
+                    Tail = newEdge.Prev;
             }
 
             Count--;
@@ -76,14 +76,33 @@ namespace EdytorWielokatow.Edges
         {
             Vertex midpoint = GeometryUtils.midpoint(e.PrevVertex, e.NextVertex);
 
-            Edge ePrev = new Edge(midpoint, e.Next!.PrevVertex, e, e.Next);
+            Edge newEdge = new Edge(midpoint, e.NextVertex, e, e.Next);
             e.NextVertex = midpoint;
-            e.Next = ePrev;
+            e.Next = newEdge;
+            newEdge.Next!.Prev = newEdge;
 
             if (e == Tail)
-                Tail = ePrev;
+                Tail = newEdge;
 
             Count++;
+        }
+
+        public void ReplaceEdge(Edge oldEdge, Edge newEdge)
+        {
+            if (oldEdge.Prev is not null)
+                oldEdge.Prev.Next = newEdge;
+
+            if (oldEdge.Next is not null)
+                oldEdge.Next.Prev = newEdge;
+
+            if (oldEdge == Head)
+                Head = newEdge;
+
+            if (oldEdge == Tail)
+                Tail = newEdge;
+
+            oldEdge.Next = null;
+            oldEdge.Prev = null;
         }
 
         public void TraverseAllList(Func<Edge, bool> action)

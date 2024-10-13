@@ -89,18 +89,21 @@
             pionowaToolStripMenuItem.Name = "pionowaToolStripMenuItem";
             pionowaToolStripMenuItem.Size = new Size(210, 24);
             pionowaToolStripMenuItem.Text = "Pionowa";
+            pionowaToolStripMenuItem.Click += pionowaToolStripMenuItem_Click;
             // 
             // poziomaToolStripMenuItem
             // 
             poziomaToolStripMenuItem.Name = "poziomaToolStripMenuItem";
             poziomaToolStripMenuItem.Size = new Size(210, 24);
             poziomaToolStripMenuItem.Text = "Pozioma";
+            poziomaToolStripMenuItem.Click += poziomaToolStripMenuItem_Click;
             // 
             // stalaDlugoscToolStripMenuItem
             // 
             stalaDlugoscToolStripMenuItem.Name = "stalaDlugoscToolStripMenuItem";
             stalaDlugoscToolStripMenuItem.Size = new Size(210, 24);
             stalaDlugoscToolStripMenuItem.Text = "Stała długość";
+            stalaDlugoscToolStripMenuItem.Click += stalaDlugoscToolStripMenuItem_Click;
             // 
             // bezToolStripMenuItem
             // 

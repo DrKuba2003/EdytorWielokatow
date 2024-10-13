@@ -222,6 +222,36 @@ namespace EdytorWielokatow
             Draw();
         }
 
+        private void pionowaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            edgesList.ReplaceEdge(selectedEdge, new VerticalEdge(selectedEdge));
+
+            selectedEdge = null;
+            Draw();
+        }
+
+        private void poziomaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            edgesList.ReplaceEdge(selectedEdge, new HorizontalEdge(selectedEdge));
+
+            selectedEdge = null;
+            Draw();
+        }
+
+        private void stalaDlugoscToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            edgesList.ReplaceEdge(selectedEdge, new FixedLengthEdge(selectedEdge));
+
+            selectedEdge = null;
+            Draw();
+        }
+
         private void Draw()
         {
             using (Graphics g = Graphics.FromImage(drawArea))
