@@ -67,13 +67,18 @@ namespace EdytorWielokatow.Edges
         {
             Vertex midpoint = GeometryUtils.midpoint(e.PrevVertex, e.NextVertex);
 
-            Edge newEdge = new Edge(midpoint, e.NextVertex, e, e.Next);
-            e.NextVertex = midpoint;
-            e.Next = newEdge;
-            newEdge.Next!.Prev = newEdge;
+            Edge prevEdge = new Edge(e.PrevVertex, midpoint, e.Prev, null);
+            Edge nextEdge = new Edge(midpoint, e.NextVertex, prevEdge, e.Next);
+            prevEdge.Next = nextEdge;
+
+            prevEdge.Prev!.Next = prevEdge;
+            nextEdge.Next!.Prev = nextEdge;
+
+            if (e == Head)
+                Head = prevEdge;
 
             if (e == Tail)
-                Tail = newEdge;
+                Tail = nextEdge;
 
             Count++;
         }
