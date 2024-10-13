@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Numerics;
 using System.Windows.Forms.VisualStyles;
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Utils;
@@ -19,6 +20,7 @@ namespace EdytorWielokatow
         private Vertex? startingPt;
         private Vertex? selectedPoint;
         private Edge? selectedEdge;
+        private Vertex? cursorOldPos;
 
         public Form1()
         {
@@ -71,39 +73,19 @@ namespace EdytorWielokatow
                         }
                     }
 
-                    // Drawing
-                    using (Graphics g = Graphics.FromImage(drawArea))
-                    {
-                        g.FillEllipse(Brushes.Blue,
-                            ptClicked.X - RADIUS, ptClicked.Y - RADIUS,
-                            2 * RADIUS, 2 * RADIUS);
-
-                        if (newEdge is not null)
-                            g.DrawLine(new Pen(Brushes.Blue, 3),
-                                newEdge.PrevVertex.X, newEdge.PrevVertex.Y,
-                                newEdge.NextVertex.X, newEdge.NextVertex.Y);
-                    }
-
-                    Canvas.Refresh();
+                    Draw();
                 }
                 else if (appState == AppStates.AdmiringPoly)
                 {
-                    (var ptR, var edgeR) = GetClickedObject(ptClicked);
-                    if (ptR is not null)
+                    (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
+                    if (selectedPoint is not null)
                     {
-                        selectedPoint = ptR;
                         appState = AppStates.DraggingPoint;
                     }
-                    else if (edgeR is not null)
+                    else if (selectedEdge is not null)
                     {
-                        Edge edge = (Edge)edgeR;
-                        using (Graphics g = Graphics.FromImage(drawArea))
-                        {
-                            g.DrawLine(new Pen(Brushes.GreenYellow, 3),
-                                edge.PrevVertex.X, edge.PrevVertex.Y,
-                                edge.NextVertex.X, edge.NextVertex.Y);
-                        }
-                        Canvas.Refresh();
+                        appState = AppStates.DraggingEdge;
+                        cursorOldPos = new Vertex(e.X, e.Y);
                     }
                 }
             }
@@ -131,12 +113,29 @@ namespace EdytorWielokatow
                 if (appState == AppStates.DraggingPoint &&
                     selectedPoint is not null)
                 {
-                    if (e.X < 0 || e.X > Canvas.Width ||
-                        e.Y < 0 || e.Y > Canvas.Height) return;
+                    if (IsVertexOutsideCanvas(new Vertex(e.X, e.Y))) return;
 
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
 
+                    Draw();
+                }
+                else if (appState == AppStates.DraggingEdge &&
+                    selectedEdge is not null &&
+                    cursorOldPos is not null)
+                {
+                    Vertex vec = new Vertex(e.X - cursorOldPos.X,
+                        e.Y - cursorOldPos.Y);
+
+                    if (IsVertexOutsideCanvas(selectedEdge.PrevVertex + vec) ||
+                        IsVertexOutsideCanvas(selectedEdge.NextVertex + vec)) return;
+
+                    selectedEdge.PrevVertex.X += vec.X;
+                    selectedEdge.PrevVertex.Y += vec.Y;
+                    selectedEdge.NextVertex.X += vec.X;
+                    selectedEdge.NextVertex.Y += vec.Y;
+
+                    cursorOldPos = new Vertex(e.X, e.Y);
                     Draw();
                 }
             }
@@ -149,8 +148,16 @@ namespace EdytorWielokatow
             {
                 if (appState == AppStates.DraggingPoint)
                 {
-                    appState = AppStates.AdmiringPoly;
+
                     selectedPoint = null;
+                    appState = AppStates.AdmiringPoly;
+                    Draw();
+                }
+                else if (appState == AppStates.DraggingEdge)
+                {
+
+                    selectedEdge = null;
+                    appState = AppStates.AdmiringPoly;
                     Draw();
                 }
             }
@@ -225,21 +232,46 @@ namespace EdytorWielokatow
                     Canvas.Size.Height / 2 - 2 * RADIUS,
                     4 * RADIUS, 4 * RADIUS);
 
+                if (appState == AppStates.CreatingPoly && startingPt is not null)
+                {
+                    g.FillEllipse(Brushes.Blue,
+                        startingPt.X - RADIUS, startingPt.Y - RADIUS,
+                        2 * RADIUS, 2 * RADIUS);
+                }
 
                 edgesList.TraverseAllList((Edge e) =>
                 {
-                    g.DrawLine(new Pen(Brushes.Blue, 3),
+#if DEBUG
+                    Brush b = e == edgesList.Head ?
+                        Brushes.Green :
+                        e == edgesList.Tail ?
+                        Brushes.Red :
+                        Brushes.Blue;
+#else
+                        Brush b = Brushes.Blue; 
+#endif
+                    g.DrawLine(new Pen(b, 3),
                             e.PrevVertex.X, e.PrevVertex.Y,
                             e.NextVertex.X, e.NextVertex.Y);
 
                     g.FillEllipse(Brushes.Blue,
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
                                 2 * RADIUS, 2 * RADIUS);
+
                     return false;
                 });
+
+#if DEBUG
+                g.DrawString($"Edge cout: {edgesList.Count.ToString()}",
+                    SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 10));
+#endif
             }
             Canvas.Refresh();
         }
+
+        private bool IsVertexOutsideCanvas(Vertex v) =>
+             (v.X < 0 || v.X > Canvas.Width ||
+              v.Y < 0 || v.Y > Canvas.Height);
 
         private void ResetPoly()
         {

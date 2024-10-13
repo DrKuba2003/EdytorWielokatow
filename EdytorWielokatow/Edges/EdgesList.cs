@@ -76,8 +76,8 @@ namespace EdytorWielokatow.Edges
         {
             Vertex midpoint = GeometryUtils.midpoint(e.PrevVertex, e.NextVertex);
 
-            e.NextVertex = midpoint;
             Edge ePrev = new Edge(midpoint, e.Next!.PrevVertex, e, e.Next);
+            e.NextVertex = midpoint;
             e.Next = ePrev;
 
             if (e == Tail)
