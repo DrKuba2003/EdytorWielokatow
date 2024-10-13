@@ -16,6 +16,7 @@ namespace EdytorWielokatow.Utils
         public static Vertex Midpoint(Vertex a, Vertex b) =>
             new Vertex((a.X + b.X) / 2, (a.Y + b.Y) / 2);
 
+        //TODO cos tu jest nie tak
         public static double DistBPE(Vertex pt, Edge edge)
         {
             double a = DistB2P(edge.PrevVertex, edge.NextVertex);

@@ -12,7 +12,7 @@ namespace EdytorWielokatow
         private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, AdmiringPoly };
 
         private const int RADIUS = 8;
-        private const int BUFFER = RADIUS + 5;
+        private const int EDGE_BUFFER = 5;
 
         private AppStates appState;
         private Bitmap drawArea;
@@ -67,7 +67,7 @@ namespace EdytorWielokatow
                     {
                         // checking if newVert is startingVert and triangle minimum
                         bool isClosingPoly = edgesList.Count >= 2 &&
-                            GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, BUFFER);
+                            GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, RADIUS);
 
                         if (isClosingPoly)
                             ptClicked = startingPt!;
@@ -193,8 +193,8 @@ namespace EdytorWielokatow
 
             edgesList.TraverseAllList((Edge e) =>
             {
-                double ptDist = GeometryUtils.SquaredDistB2P(ptClicked, e.NextVertex);
-                if (ptDist < Math.Pow(BUFFER, 2) && ptDist < minPtDist)
+                double ptDist = GeometryUtils.DistB2P(ptClicked, e.NextVertex);
+                if (ptDist < RADIUS && ptDist < minPtDist)
                 {
                     minPtDist = ptDist;
                     ptOut = e.NextVertex;
@@ -203,7 +203,7 @@ namespace EdytorWielokatow
                 if (ptOut is null)
                 {
                     double edgeDist = GeometryUtils.DistBPE(ptClicked, e);
-                    if (edgeDist < BUFFER && edgeDist < minEdgeDist)
+                    if (edgeDist < EDGE_BUFFER && edgeDist < minEdgeDist)
                     {
                         minEdgeDist = edgeDist;
                         edgeOut = e;
