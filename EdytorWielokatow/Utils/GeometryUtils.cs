@@ -13,7 +13,7 @@ namespace EdytorWielokatow.Utils
 
         public enum TypeCode { Point, Edge };
 
-        public static Vertex midpoint(Vertex a, Vertex b) =>
+        public static Vertex Midpoint(Vertex a, Vertex b) =>
             new Vertex((a.X + b.X) / 2, (a.Y + b.Y) / 2);
 
         public static double DistBPE(Vertex pt, Edge edge)

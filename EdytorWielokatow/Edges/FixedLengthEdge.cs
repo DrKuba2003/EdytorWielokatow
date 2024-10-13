@@ -10,7 +10,7 @@ namespace EdytorWielokatow.Edges
     public class FixedLengthEdge : Edge
     {
         double LENGTH { get; init; }
-        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null) 
+        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
             LENGTH = GeometryUtils.DistB2P(prevVert, nextVert);

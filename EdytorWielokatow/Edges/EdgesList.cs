@@ -65,7 +65,7 @@ namespace EdytorWielokatow.Edges
 
         public void EdgeSubdivison(Edge e)
         {
-            Vertex midpoint = GeometryUtils.midpoint(e.PrevVertex, e.NextVertex);
+            Vertex midpoint = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
 
             Edge prevEdge = new Edge(e.PrevVertex, midpoint, e.Prev, null);
             Edge nextEdge = new Edge(midpoint, e.NextVertex, prevEdge, e.Next);
