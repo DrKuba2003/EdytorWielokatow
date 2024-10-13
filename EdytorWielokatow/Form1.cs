@@ -12,14 +12,11 @@ namespace EdytorWielokatow
         private const int RADIUS = 8;
         private const int BUFFER = RADIUS + 5;
 
-        public static int EDGE_COUNT = 0;
-
         private AppStates appState;
         private Bitmap drawArea;
 
+        private EdgesList edgesList;
         private Vertex? startingPt;
-        private Edge? edgesHead;
-        private Edge? edgesTail;
         private Vertex? selectedPoint;
         private Edge? selectedEdge;
 
@@ -28,6 +25,7 @@ namespace EdytorWielokatow
             InitializeComponent();
 
             appState = AppStates.CreatingPoly;
+            edgesList = new EdgesList();
 
             drawArea = new Bitmap(Canvas.Size.Width, Canvas.Size.Height);
             Canvas.Image = drawArea;
@@ -51,33 +49,26 @@ namespace EdytorWielokatow
                     else
                     {
                         // checking if newVert is startingVert and triangle minimum
-                        bool isClosingPoly = EDGE_COUNT >= 2 &&
+                        bool isClosingPoly = edgesList.Count >= 2 &&
                             GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, BUFFER);
 
                         if (isClosingPoly)
                             ptClicked = startingPt!;
 
-                        // Creating edge
-                        var lastVert = EDGE_COUNT == 0 ?
+                        var lastVert = edgesList.Count == 0 ?
                             startingPt! :
-                            edgesTail!.NextVertex;
+                            edgesList.Tail!.NextVertex;
 
-                        newEdge = new Edge(lastVert, ptClicked, edgesTail);
+                        newEdge = new Edge(lastVert, ptClicked);
+                        edgesList.AddEdgeAtEnd(newEdge);
 
-                        if (edgesTail is not null)
-                            edgesTail.Next = newEdge;
-                        else
-                            edgesHead = newEdge;
-
+                        // Powiazanie poczatka z koncem
                         if (isClosingPoly)
                         {
-                            newEdge.Next = edgesHead;
-                            edgesHead.Prev = newEdge;
+                            newEdge.Next = edgesList.Head;
+                            edgesList.Head!.Prev = newEdge;
                             appState = AppStates.AdmiringPoly;
                         }
-
-                        edgesTail = newEdge;
-                        EDGE_COUNT++;
                     }
 
                     // Drawing
@@ -167,8 +158,6 @@ namespace EdytorWielokatow
 
         private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
         {
-            if (edgesHead is null) return (null, null);
-
             Vertex? ptOut = null;
             double minPtDist = double.MaxValue;
             Edge? edgeOut = null;
@@ -176,8 +165,7 @@ namespace EdytorWielokatow
 
             if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut);
 
-            Edge? e = edgesHead;
-            do
+            edgesList.TraverseAllList((Edge e) =>
             {
                 double ptDist = GeometryUtils.SquaredDistB2P(ptClicked, e.NextVertex);
                 if (ptDist < Math.Pow(BUFFER, 2) && ptDist < minPtDist)
@@ -195,8 +183,7 @@ namespace EdytorWielokatow
                         edgeOut = e;
                     }
                 }
-                e = e.Next;
-            } while (e is not null && e != edgesHead);
+            });
 
             // If point found, return it not edge
             if (ptOut is not null)
@@ -215,22 +202,17 @@ namespace EdytorWielokatow
                     Canvas.Size.Height / 2 - 2 * RADIUS,
                     4 * RADIUS, 4 * RADIUS);
 
-                if (edgesHead is not null)
+
+                edgesList.TraverseAllList((Edge e) =>
                 {
-                    Edge? e = edgesHead;
-                    do
-                    {
-                        g.DrawLine(new Pen(Brushes.Blue, 3),
+                    g.DrawLine(new Pen(Brushes.Blue, 3),
                             e.PrevVertex.X, e.PrevVertex.Y,
                             e.NextVertex.X, e.NextVertex.Y);
 
-                        g.FillEllipse(Brushes.Blue,
-                                    e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
-                                    2 * RADIUS, 2 * RADIUS);
-                        e = e.Next;
-                    } while (e is not null && e != edgesHead);
-                }
-                
+                    g.FillEllipse(Brushes.Blue,
+                                e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
+                                2 * RADIUS, 2 * RADIUS);
+                });
             }
             Canvas.Refresh();
         }
