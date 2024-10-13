@@ -30,5 +30,10 @@ namespace EdytorWielokatow.Edges
             Prev = e.Prev;
             Next = e.Next;
         }
+
+        public virtual void ChangeVertexPos(Vertex changed, Vertex changing)
+        {
+
+        }
     }
 }

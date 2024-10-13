@@ -17,5 +17,10 @@ namespace EdytorWielokatow.Edges
         public VerticalEdge(Edge e)
             : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next)
         { }
+
+        public override void ChangeVertexPos(Vertex changed, Vertex changing)
+        {
+            changing.X = changed.X;
+        }
     }
 }

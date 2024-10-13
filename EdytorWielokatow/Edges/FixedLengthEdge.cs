@@ -20,6 +20,17 @@ namespace EdytorWielokatow.Edges
             : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next)
         { }
 
+        public override void ChangeVertexPos(Vertex changed, Vertex changing)
+        {
+            var vec = new Vertex(changed.X - changing.X,
+                        changed.Y - changing.Y);
+            var vecL = GeometryUtils.DistB2P(changing, changed);
+            double scalar = 1 - LENGTH / vecL;
+
+            changing.X += (int)(vec.X * scalar);
+            changing.Y += (int)(vec.Y * scalar);
+        }
+
 
     }
 }

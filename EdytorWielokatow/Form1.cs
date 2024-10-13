@@ -118,6 +118,10 @@ namespace EdytorWielokatow
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
 
+                    (Edge? ePrev, Edge? eNext) = edgesList.GetAdjecentEdges(selectedPoint);
+                    ePrev!.ChangeVertexPos(ePrev.PrevVertex, ePrev.NextVertex);
+                    eNext!.ChangeVertexPos(eNext.NextVertex, eNext.PrevVertex);
+
                     Draw();
                 }
                 else if (appState == AppStates.DraggingEdge &&

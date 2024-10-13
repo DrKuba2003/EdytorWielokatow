@@ -37,16 +37,7 @@ namespace EdytorWielokatow.Edges
 
         public bool DeleteVertex(Vertex v)
         {
-            Edge? ePrev = null, eNext = null;
-            TraverseAllList((Edge e) =>
-            {
-                if (e.PrevVertex == v)
-                    ePrev = e;
-                else if (e.NextVertex == v)
-                    eNext = e;
-
-                return ePrev is not null && eNext is not null;
-            });
+            (Edge? ePrev, Edge? eNext) = GetAdjecentEdges(v);
             if (ePrev is null || eNext is null) return true;
 
             Edge newEdge = new Edge(eNext.PrevVertex, ePrev.NextVertex,
@@ -103,6 +94,21 @@ namespace EdytorWielokatow.Edges
 
             oldEdge.Next = null;
             oldEdge.Prev = null;
+        }
+
+        public (Edge? e1, Edge? e2) GetAdjecentEdges(Vertex v)
+        {
+            Edge? ePrev = null, eNext = null;
+            TraverseAllList((Edge e) =>
+            {
+                if (e.PrevVertex == v)
+                    ePrev = e;
+                else if (e.NextVertex == v)
+                    eNext = e;
+
+                return ePrev is not null && eNext is not null;
+            });
+            return (ePrev, eNext);
         }
 
         public void TraverseAllList(Func<Edge, bool> action)
