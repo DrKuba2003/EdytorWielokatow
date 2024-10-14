@@ -13,7 +13,7 @@ namespace EdytorWielokatow
         private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, AdmiringPoly };
 
         private const int RADIUS = 8;
-        private const int EDGE_BUFFER = 5;
+        private const int EDGE_BUFFER = 2;
 
         private AppStates appState;
         private Bitmap drawArea;
@@ -180,7 +180,6 @@ namespace EdytorWielokatow
                     Draw();
                 }
             }
-
         }
 
         private void Canvas_MouseUp(object sender, MouseEventArgs e)

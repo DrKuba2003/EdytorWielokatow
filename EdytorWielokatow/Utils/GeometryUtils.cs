@@ -17,19 +17,25 @@ namespace EdytorWielokatow.Utils
         public static Vertex Midpoint(Vertex a, Vertex b) =>
             new Vertex((a.X + b.X) / 2, (a.Y + b.Y) / 2);
 
-        //TODO cos tu jest nie tak
+
         public static double DistBPE(Vertex pt, Edge edge)
         {
-            double a = DistB2P(edge.PrevVertex, edge.NextVertex);
-            double b = DistB2P(edge.PrevVertex, pt);
-            double c = DistB2P(edge.NextVertex, pt);
-
-            double s = (a + b + c) / 2;
-
-            if (a == 0) return double.MaxValue;
-
-            return 2 * Math.Sqrt(s * (s - a) * (s - b) * (s - c)) / a;
+            return Math.Abs(DistB2P(pt, edge.PrevVertex) + DistB2P(pt, edge.NextVertex) 
+                - DistB2P(edge.PrevVertex, edge.NextVertex));
         }
+
+        //public static double DistBPE(Vertex pt, Edge edge)
+        //{
+        //    double a = DistB2P(edge.PrevVertex, edge.NextVertex);
+        //    double b = DistB2P(edge.PrevVertex, pt);
+        //    double c = DistB2P(edge.NextVertex, pt);
+
+        //    double s = (a + b + c) / 2;
+
+        //    if (a == 0) return double.MaxValue;
+
+        //    return 2 * Math.Sqrt(s * (s - a) * (s - b) * (s - c)) / a;
+        //}
 
         public static double DistB2P(Vertex p1, Vertex p2) =>
             Math.Sqrt(SquaredDistB2P(p1, p2));
