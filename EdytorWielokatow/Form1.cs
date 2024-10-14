@@ -150,7 +150,7 @@ namespace EdytorWielokatow
 
                         if (item.isPrev)
                         {
-                            if (!(item.e.Prev!.PrevVertex.IsLocked) 
+                            if (!(item.e.Prev!.PrevVertex.IsLocked)
                                 && item.e.Prev!.GetType() != typeof(Edge))
                             {
                                 queue.Enqueue((true, item.e.Prev, item.e.Prev.NextVertex, item.e.Prev.PrevVertex));
@@ -205,14 +205,14 @@ namespace EdytorWielokatow
 
                     selectedPoint = null;
                     appState = AppStates.AdmiringPoly;
-                    Draw();
+                    Draw(true);
                 }
                 else if (appState == AppStates.DraggingEdge)
                 {
 
                     selectedEdge = null;
                     appState = AppStates.AdmiringPoly;
-                    Draw();
+                    Draw(true);
                 }
             }
         }
@@ -310,7 +310,7 @@ namespace EdytorWielokatow
             Draw();
         }
 
-        private void Draw()
+        private void Draw(bool useBresenham = false)
         {
             using (Graphics g = Graphics.FromImage(drawArea))
             {
@@ -338,9 +338,13 @@ namespace EdytorWielokatow
 #else
                         Brush b = Brushes.Blue; 
 #endif
-                    g.DrawLine(new Pen(b, 3),
-                            e.PrevVertex.X, e.PrevVertex.Y,
-                            e.NextVertex.X, e.NextVertex.Y);
+                    if (useBresenham)
+                        GeometryUtils.Bresenhams(g, e.PrevVertex.X, e.PrevVertex.Y,
+                            e.NextVertex.X, e.NextVertex.Y, b);
+                    else
+                        g.DrawLine(new Pen(b, 3),
+                                e.PrevVertex.X, e.PrevVertex.Y,
+                                e.NextVertex.X, e.NextVertex.Y);
 
                     g.FillEllipse(Brushes.Blue,
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
@@ -354,7 +358,7 @@ namespace EdytorWielokatow
                         var icon = edgeBitmaps[e.GetType()];
                         g.DrawIcon(icon, rect);
                     }
-                    
+
                     return false;
                 });
 
