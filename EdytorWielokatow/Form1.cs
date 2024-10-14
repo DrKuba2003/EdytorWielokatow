@@ -142,35 +142,9 @@ namespace EdytorWielokatow
                     queue.Enqueue((false, ePrev, ePrev.PrevVertex, ePrev.NextVertex));
                     queue.Enqueue((true, eNext, eNext.NextVertex, eNext.PrevVertex));
 
-                    while (queue.Count > 0)
-                    {
-                        var item = queue.Dequeue();
-                        item.changing.CopyData(item.e.ChangeVertexPos(item.changed, item.changing));
-                        item.changing.IsLocked = true;
+                    ValidateEdges(queue);
 
-                        if (item.isPrev)
-                        {
-                            if (!(item.e.Prev!.PrevVertex.IsLocked)
-                                && item.e.Prev!.GetType() != typeof(Edge))
-                            {
-                                queue.Enqueue((true, item.e.Prev, item.e.Prev.NextVertex, item.e.Prev.PrevVertex));
-                            }
-                        }
-                        else
-                        {
-                            if (!(item.e.Next!.NextVertex.IsLocked)
-                                && item.e.Next!.GetType() != typeof(Edge))
-                            {
-                                queue.Enqueue((false, item.e.Next, item.e.Next.PrevVertex, item.e.Next.NextVertex));
-                            }
-                        }
-                    }
-
-                    edgesList.TraverseAllList((Edge edge) =>
-                    {
-                        edge.NextVertex.IsLocked = false;
-                        return false;
-                    });
+                    edgesList.UnlockAllVertexes();
 
                     Draw();
                 }
@@ -178,19 +152,32 @@ namespace EdytorWielokatow
                     selectedEdge is not null &&
                     cursorOldPos is not null)
                 {
-                    //Vertex vec = new Vertex(e.X - cursorOldPos.X,
-                    //    e.Y - cursorOldPos.Y);
+                    Vertex vec = new Vertex(e.X - cursorOldPos.X,
+                        e.Y - cursorOldPos.Y);
 
-                    //if (IsVertexOutsideCanvas(selectedEdge.PrevVertex + vec) ||
-                    //    IsVertexOutsideCanvas(selectedEdge.NextVertex + vec)) return;
+                    if (IsVertexOutsideCanvas(selectedEdge.PrevVertex + vec) ||
+                        IsVertexOutsideCanvas(selectedEdge.NextVertex + vec)) return;
 
-                    //selectedEdge.PrevVertex.X += vec.X;
-                    //selectedEdge.PrevVertex.Y += vec.Y;
-                    //selectedEdge.NextVertex.X += vec.X;
-                    //selectedEdge.NextVertex.Y += vec.Y;
+                    selectedEdge.PrevVertex.X += vec.X;
+                    selectedEdge.PrevVertex.Y += vec.Y;
+                    selectedEdge.PrevVertex.IsLocked = true;
 
-                    //cursorOldPos = new Vertex(e.X, e.Y);
-                    //Draw();
+                    selectedEdge.NextVertex.X += vec.X;
+                    selectedEdge.NextVertex.Y += vec.Y;
+                    selectedEdge.NextVertex.IsLocked = true;
+
+                    var queue = new Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)>();
+                    if (selectedEdge.Next is not null)
+                        queue.Enqueue((false, selectedEdge.Next, selectedEdge.Next.PrevVertex, selectedEdge.Next.NextVertex));
+                    if (selectedEdge.Prev is not null)
+                        queue.Enqueue((true, selectedEdge.Prev, selectedEdge.Prev.NextVertex, selectedEdge.Prev.PrevVertex));
+
+                    ValidateEdges(queue);
+
+                    edgesList.UnlockAllVertexes();
+
+                    cursorOldPos = new Vertex(e.X, e.Y);
+                    Draw();
                 }
             }
 
@@ -213,6 +200,33 @@ namespace EdytorWielokatow
                     selectedEdge = null;
                     appState = AppStates.AdmiringPoly;
                     Draw(true);
+                }
+            }
+        }
+
+        private void ValidateEdges(Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)> queue)
+        {
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+                item.changing.CopyData(item.e.ChangeVertexPos(item.changed, item.changing));
+                item.changing.IsLocked = true;
+
+                if (item.isPrev)
+                {
+                    if (!(item.e.Prev!.PrevVertex.IsLocked)
+                        && item.e.Prev!.GetType() != typeof(Edge))
+                    {
+                        queue.Enqueue((true, item.e.Prev, item.e.Prev.NextVertex, item.e.Prev.PrevVertex));
+                    }
+                }
+                else
+                {
+                    if (!(item.e.Next!.NextVertex.IsLocked)
+                        && item.e.Next!.GetType() != typeof(Edge))
+                    {
+                        queue.Enqueue((false, item.e.Next, item.e.Next.PrevVertex, item.e.Next.NextVertex));
+                    }
                 }
             }
         }
@@ -253,6 +267,7 @@ namespace EdytorWielokatow
 
             return (ptOut, edgeOut);
         }
+
         private void usunToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (selectedPoint is null) return;

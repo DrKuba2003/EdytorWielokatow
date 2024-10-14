@@ -116,6 +116,15 @@ namespace EdytorWielokatow.Edges
             return (ePrev, eNext);
         }
 
+        public void UnlockAllVertexes()
+        {
+            TraverseAllList((Edge edge) =>
+            {
+                edge.NextVertex.IsLocked = false;
+                return false;
+            });
+        }
+
         public void TraverseAllList(Func<Edge, bool> action)
         {
             if (Head is null) return;
