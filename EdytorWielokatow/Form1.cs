@@ -12,7 +12,7 @@ namespace EdytorWielokatow
 {
     public partial class Form1 : Form
     {
-        private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, AdmiringPoly };
+        private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, AdmiringPoly };
 
         private const int RADIUS = 8;
         private const int EDGE_BUFFER = 2;
@@ -26,7 +26,6 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO bounding box przesuwanie calego 
         // TODO set fixed length dialog box
 
         public Form1()
@@ -93,6 +92,15 @@ namespace EdytorWielokatow
                     {
                         appState = AppStates.DraggingEdge;
                     }
+                    else
+                    {
+                        var bb = edgesList.CalculateBoundingBox();
+                        if (ptClicked.X >= bb.minX &&
+                            ptClicked.X <= bb.maxX &&
+                            ptClicked.Y >= bb.minY &&
+                            ptClicked.Y <= bb.maxY)
+                            appState = AppStates.DraggingPoly;
+                    }
                     cursorOldPos = new Vertex(e.X, e.Y);
                 }
             }
@@ -115,7 +123,13 @@ namespace EdytorWielokatow
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left &&
+            if (appState == AppStates.CreatingPoly &&
+                startingPt is not null)
+            {
+                cursorOldPos = new Vertex(e.X, e.Y);
+                Draw();
+            }
+            else if (e.Button == MouseButtons.Left &&
                 cursorOldPos is not null)
             {
                 if (appState == AppStates.DraggingPoint &&
@@ -169,35 +183,31 @@ namespace EdytorWielokatow
 
                     Draw();
                 }
-                cursorOldPos = new Vertex(e.X, e.Y);
+                else if (appState == AppStates.DraggingPoly)
+                {
+                    Vertex vec = new Vertex(e.X - cursorOldPos.X,
+                        e.Y - cursorOldPos.Y);
+
+                    edgesList.MoveWholePolygon(vec);
+                    Draw();
+                }
             }
-            else if (appState == AppStates.CreatingPoly &&
-                startingPt is not null)
-            {
-                cursorOldPos = new Vertex(e.X, e.Y);
-                Draw();
-            }
+            cursorOldPos = new Vertex(e.X, e.Y);
         }
 
         private void Canvas_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                if (appState == AppStates.DraggingPoint)
+                if (appState == AppStates.DraggingPoint ||
+                    appState == AppStates.DraggingEdge ||
+                    appState == AppStates.DraggingPoly)
                 {
-
                     selectedPoint = null;
-                    appState = AppStates.AdmiringPoly;
-                    Draw(true);
-                }
-                else if (appState == AppStates.DraggingEdge)
-                {
-
                     selectedEdge = null;
                     appState = AppStates.AdmiringPoly;
                     Draw(true);
                 }
-                cursorOldPos = null;
             }
         }
 
@@ -382,6 +392,8 @@ namespace EdytorWielokatow
 #if DEBUG
                 g.DrawString($"Edge cout: {edgesList.Count.ToString()}",
                     SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 10));
+                g.DrawString($"App stat: {appState.ToString()}",
+                    SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 25));
 #endif
             }
             Canvas.Refresh();

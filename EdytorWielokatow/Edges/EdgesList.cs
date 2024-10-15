@@ -117,6 +117,37 @@ namespace EdytorWielokatow.Edges
             return (ePrev, eNext);
         }
 
+        public void MoveWholePolygon(Vertex vec)
+        {
+            TraverseAllList((Edge e) =>
+            {
+                e.NextVertex.X = e.NextVertex.X + vec.X;
+                e.NextVertex.Y = e.NextVertex.Y + vec.Y;
+                return false;
+            });
+        }
+
+        public (int minX, int maxX, int minY, int maxY) CalculateBoundingBox()
+        {
+            (int minX, int maxX, int minY, int maxY) boundingBox =
+                (int.MaxValue, int.MinValue, int.MaxValue, int.MinValue);
+
+            if (Head is not null)
+                TraverseAllList((Edge e) =>
+                {
+                    var v = e.NextVertex;
+
+                    if (v.X < boundingBox.minX) boundingBox.minX = v.X;
+                    if (v.X > boundingBox.maxX) boundingBox.maxX = v.X;
+                    if (v.Y < boundingBox.minY) boundingBox.minY = v.Y;
+                    if (v.Y > boundingBox.maxY) boundingBox.maxY = v.Y;
+
+                    return false;
+                });
+
+            return boundingBox;
+        }
+
         public void UnlockAllVertexes()
         {
             TraverseAllList((Edge edge) =>
@@ -141,7 +172,6 @@ namespace EdytorWielokatow.Edges
 
         public void DeleteAll()
         {
-            // TODO nie jestem pewny czy garbage collector usunie sam
             Head = null;
             Tail = null;
             Count = 0;
