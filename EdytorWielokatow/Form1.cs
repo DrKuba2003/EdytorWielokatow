@@ -15,7 +15,7 @@ namespace EdytorWielokatow
         private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, AdmiringPoly };
 
         private const int RADIUS = 8;
-        private const int EDGE_BUFFER = 2;
+        private const int EDGE_BUFFER = 1;
 
         private AppStates appState;
         private Bitmap drawArea;
@@ -27,6 +27,7 @@ namespace EdytorWielokatow
         private Vertex? cursorOldPos;
 
         // TODO set fixed length dialog box
+        // TODO zamiana na normalna krawedz
 
         public Form1()
         {
@@ -326,7 +327,23 @@ namespace EdytorWielokatow
         {
             if (selectedEdge is null) return;
 
-            edgesList.ReplaceEdge(selectedEdge, new FixedLengthEdge(selectedEdge));
+            double L = GeometryUtils.DistB2P(selectedEdge.PrevVertex, selectedEdge.NextVertex);
+
+            L = new FixedLengthDialog().Show(L);
+
+            var newEdge = new FixedLengthEdge(selectedEdge, L);
+            edgesList.ReplaceEdge(selectedEdge, newEdge);
+
+            // TODO poprawic to
+            var queue = new Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)>();
+            if (newEdge.Next is not null)
+                queue.Enqueue((false, newEdge.Next, newEdge.Next.PrevVertex, newEdge.Next.NextVertex));
+            if (newEdge.Prev is not null)
+                queue.Enqueue((true, newEdge.Prev, newEdge.Prev.NextVertex, newEdge.Prev.PrevVertex));
+
+            ValidateEdges(queue);
+
+            edgesList.UnlockAllVertexes();
 
             selectedEdge = null;
             Draw();

@@ -14,16 +14,17 @@ namespace EdytorWielokatow.Edges
             Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
 
-        double LENGTH { get; init; }
+        double Length { get; }
 
-        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
+        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, double length, Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
-            LENGTH = GeometryUtils.DistB2P(prevVert, nextVert);
+            Length = length;
+            NextVertex.CopyData(ChangeVertexPos(PrevVertex, NextVertex));
         }
 
-        public FixedLengthEdge(Edge e)
-            : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next)
+        public FixedLengthEdge(Edge e, double length)
+            : this(e.PrevVertex, e.NextVertex, length, e.Prev, e.Next)
         { }
 
         public override Vertex ChangeVertexPos(Vertex changed, Vertex changing)
@@ -31,7 +32,7 @@ namespace EdytorWielokatow.Edges
             var vec = new Vertex(changed.X - changing.X,
                         changed.Y - changing.Y);
             var vecL = GeometryUtils.DistB2P(changing, changed);
-            double scalar = 1 - LENGTH / vecL;
+            double scalar = 1 - Length / vecL;
 
             return new Vertex(changing.X + (int)(vec.X * scalar),
                  changing.Y + (int)(vec.Y * scalar),
