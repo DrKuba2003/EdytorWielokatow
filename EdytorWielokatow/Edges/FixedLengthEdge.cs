@@ -40,6 +40,6 @@ namespace EdytorWielokatow.Edges
         }
 
         public override Icon? GetIcon() => icon;
-        public override Rectangle GetRectangle() => rect;
+        public override Rectangle GetIconRectangle() => rect;
     }
 }

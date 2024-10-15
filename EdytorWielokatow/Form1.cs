@@ -407,7 +407,7 @@ namespace EdytorWielokatow
                     if (icon is not null)
                     {
                         var midpt = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
-                        var rect = e.GetRectangle();
+                        var rect = e.GetIconRectangle();
                         rect.Offset(new Point(midpt.X, midpt.Y));
                         g.DrawIcon(icon, rect);
                     }

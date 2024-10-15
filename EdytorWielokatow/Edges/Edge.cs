@@ -40,6 +40,6 @@ namespace EdytorWielokatow.Edges
         }
 
         public virtual Icon? GetIcon() => icon;
-        public virtual Rectangle GetRectangle() => rect;
+        public virtual Rectangle GetIconRectangle() => rect;
     }
 }

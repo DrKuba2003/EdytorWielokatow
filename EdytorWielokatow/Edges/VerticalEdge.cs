@@ -29,6 +29,6 @@ namespace EdytorWielokatow.Edges
             return new Vertex(changed.X, changing.Y, changing.IsLocked);
         }
         public override Icon? GetIcon() => icon;
-        public override Rectangle GetRectangle() => rect;
+        public override Rectangle GetIconRectangle() => rect;
     }
 }
