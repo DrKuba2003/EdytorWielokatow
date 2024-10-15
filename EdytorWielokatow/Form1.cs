@@ -26,8 +26,8 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO set fixed length dialog box
-        // TODO zamiana na normalna krawedz
+        // TODO walidacja koncowa krawedz
+        // TODO walidacja przy zamianie typu
 
         public Form1()
         {
@@ -346,6 +346,15 @@ namespace EdytorWielokatow
             edgesList.UnlockAllVertexes();
 
             selectedEdge = null;
+            Draw();
+        }
+
+        private void usunOgraniczeniaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            edgesList.ReplaceEdge(selectedEdge, new Edge(selectedEdge));
+
             Draw();
         }
 

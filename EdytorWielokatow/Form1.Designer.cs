@@ -38,6 +38,7 @@
             poziomaToolStripMenuItem = new ToolStripMenuItem();
             stalaDlugoscToolStripMenuItem = new ToolStripMenuItem();
             bezToolStripMenuItem = new ToolStripMenuItem();
+            usunOgraniczeniaToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
             vertexContextMenu.SuspendLayout();
             edgeContextMenu.SuspendLayout();
@@ -73,43 +74,50 @@
             // edgeContextMenu
             // 
             edgeContextMenu.ImageScalingSize = new Size(20, 20);
-            edgeContextMenu.Items.AddRange(new ToolStripItem[] { podpodzielToolStripMenuItem, pionowaToolStripMenuItem, poziomaToolStripMenuItem, stalaDlugoscToolStripMenuItem, bezToolStripMenuItem });
+            edgeContextMenu.Items.AddRange(new ToolStripItem[] { podpodzielToolStripMenuItem, pionowaToolStripMenuItem, poziomaToolStripMenuItem, stalaDlugoscToolStripMenuItem, bezToolStripMenuItem, usunOgraniczeniaToolStripMenuItem });
             edgeContextMenu.Name = "edgeContextMenu";
-            edgeContextMenu.Size = new Size(168, 124);
+            edgeContextMenu.Size = new Size(211, 176);
             // 
             // podpodzielToolStripMenuItem
             // 
             podpodzielToolStripMenuItem.Name = "podpodzielToolStripMenuItem";
-            podpodzielToolStripMenuItem.Size = new Size(167, 24);
+            podpodzielToolStripMenuItem.Size = new Size(210, 24);
             podpodzielToolStripMenuItem.Text = "Podpodziel";
             podpodzielToolStripMenuItem.Click += podpodzielToolStripMenuItem_Click;
             // 
             // pionowaToolStripMenuItem
             // 
             pionowaToolStripMenuItem.Name = "pionowaToolStripMenuItem";
-            pionowaToolStripMenuItem.Size = new Size(167, 24);
+            pionowaToolStripMenuItem.Size = new Size(210, 24);
             pionowaToolStripMenuItem.Text = "Pionowa";
             pionowaToolStripMenuItem.Click += pionowaToolStripMenuItem_Click;
             // 
             // poziomaToolStripMenuItem
             // 
             poziomaToolStripMenuItem.Name = "poziomaToolStripMenuItem";
-            poziomaToolStripMenuItem.Size = new Size(167, 24);
+            poziomaToolStripMenuItem.Size = new Size(210, 24);
             poziomaToolStripMenuItem.Text = "Pozioma";
             poziomaToolStripMenuItem.Click += poziomaToolStripMenuItem_Click;
             // 
             // stalaDlugoscToolStripMenuItem
             // 
             stalaDlugoscToolStripMenuItem.Name = "stalaDlugoscToolStripMenuItem";
-            stalaDlugoscToolStripMenuItem.Size = new Size(167, 24);
+            stalaDlugoscToolStripMenuItem.Size = new Size(210, 24);
             stalaDlugoscToolStripMenuItem.Text = "Stała długość";
             stalaDlugoscToolStripMenuItem.Click += stalaDlugoscToolStripMenuItem_Click;
             // 
             // bezToolStripMenuItem
             // 
             bezToolStripMenuItem.Name = "bezToolStripMenuItem";
-            bezToolStripMenuItem.Size = new Size(167, 24);
+            bezToolStripMenuItem.Size = new Size(210, 24);
             bezToolStripMenuItem.Text = "Bezier";
+            // 
+            // usunOgraniczeniaToolStripMenuItem
+            // 
+            usunOgraniczeniaToolStripMenuItem.Name = "usunOgraniczeniaToolStripMenuItem";
+            usunOgraniczeniaToolStripMenuItem.Size = new Size(210, 24);
+            usunOgraniczeniaToolStripMenuItem.Text = "Usuń ograniczenia";
+            usunOgraniczeniaToolStripMenuItem.Click += usunOgraniczeniaToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -138,5 +146,6 @@
         private ToolStripMenuItem poziomaToolStripMenuItem;
         private ToolStripMenuItem stalaDlugoscToolStripMenuItem;
         private ToolStripMenuItem bezToolStripMenuItem;
+        private ToolStripMenuItem usunOgraniczeniaToolStripMenuItem;
     }
 }
