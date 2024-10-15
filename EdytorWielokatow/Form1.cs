@@ -1,10 +1,12 @@
 using System.CodeDom;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms.VisualStyles;
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Utils;
+using EdytorWielokatow.Vertexes;
 
 namespace EdytorWielokatow
 {
@@ -24,19 +26,8 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        private Dictionary<Type, Icon> edgeBitmaps = new()
-        {
-            {typeof(FixedLengthEdge), Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon()) },
-            {typeof(HorizontalEdge), Icon.FromHandle(new Bitmap("Resources\\Horizontal.png").GetHicon()) },
-            {typeof(VerticalEdge), Icon.FromHandle(new Bitmap("Resources\\Vertical.png").GetHicon()) }
-        };
-
-        private Dictionary<Type, Rectangle> edgeBitmapRects = new()
-        {
-            {typeof(FixedLengthEdge), new Rectangle(-10, -10, 20, 20) },
-            {typeof(HorizontalEdge), new Rectangle(-10, -5, 20, 20) },
-            {typeof(VerticalEdge), new Rectangle(-5, -10, 20, 20) }
-        };
+        // TODO bounding box przesuwanie calego 
+        // TODO set fixed length dialog box
 
         public Form1()
         {
@@ -178,6 +169,10 @@ namespace EdytorWielokatow
 
                     cursorOldPos = new Vertex(e.X, e.Y);
                     Draw();
+                }
+                else if (appState == AppStates.CreatingPoly)
+                {
+                    // TODO zaimplementowac
                 }
             }
         }
@@ -364,12 +359,12 @@ namespace EdytorWielokatow
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
                                 2 * RADIUS, 2 * RADIUS);
 
-                    if (e.GetType() != typeof(Edge))
+                    var icon = e.GetIcon();
+                    if (icon is not null)
                     {
                         var midpt = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
-                        var rect = edgeBitmapRects[e.GetType()];
+                        var rect = e.GetRectangle();
                         rect.Offset(new Point(midpt.X, midpt.Y));
-                        var icon = edgeBitmaps[e.GetType()];
                         g.DrawIcon(icon, rect);
                     }
 

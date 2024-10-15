@@ -1,4 +1,5 @@
 ﻿using EdytorWielokatow.Edges;
+using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

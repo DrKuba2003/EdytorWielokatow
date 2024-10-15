@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdytorWielokatow.Vertexes;
 
 namespace EdytorWielokatow.Edges
 {
     public class Edge
     {
+        public static Icon? icon { get => null; }
+        public static Rectangle rect { get => new Rectangle(0, 0, 0, 0); }
+
         public Edge? Prev { get; set; }
         public Edge? Next { get; set; }
 
         public Vertex PrevVertex { get; set; }
         public Vertex NextVertex { get; set; }
-
 
         public Edge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
         {
@@ -35,5 +38,8 @@ namespace EdytorWielokatow.Edges
         {
             return new Vertex(changing);
         }
+
+        public virtual Icon? GetIcon() => icon;
+        public virtual Rectangle GetRectangle() => rect;
     }
 }

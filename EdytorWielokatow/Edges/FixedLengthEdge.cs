@@ -1,4 +1,5 @@
 ﻿using EdytorWielokatow.Utils;
+using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,12 @@ namespace EdytorWielokatow.Edges
 {
     public class FixedLengthEdge : Edge
     {
+        public static new Icon? icon = 
+            Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon());
+        public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
+
         double LENGTH { get; init; }
+
         public FixedLengthEdge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
@@ -32,6 +38,7 @@ namespace EdytorWielokatow.Edges
                  changing.IsLocked);
         }
 
-
+        public override Icon? GetIcon() => icon;
+        public override Rectangle GetRectangle() => rect;
     }
 }

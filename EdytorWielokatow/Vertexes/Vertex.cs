@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EdytorWielokatow
+namespace EdytorWielokatow.Vertexes
 {
     public class Vertex
     {
@@ -38,6 +38,6 @@ namespace EdytorWielokatow
         }
 
 
-        }
+    }
 
 }
