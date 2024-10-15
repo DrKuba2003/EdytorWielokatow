@@ -92,8 +92,8 @@ namespace EdytorWielokatow
                     else if (selectedEdge is not null)
                     {
                         appState = AppStates.DraggingEdge;
-                        cursorOldPos = new Vertex(e.X, e.Y);
                     }
+                    cursorOldPos = new Vertex(e.X, e.Y);
                 }
             }
             else if (e.Button == MouseButtons.Right &&
@@ -115,7 +115,8 @@ namespace EdytorWielokatow
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left &&
+                cursorOldPos is not null)
             {
                 if (appState == AppStates.DraggingPoint &&
                     selectedPoint is not null)
@@ -140,8 +141,7 @@ namespace EdytorWielokatow
                     Draw();
                 }
                 else if (appState == AppStates.DraggingEdge &&
-                    selectedEdge is not null &&
-                    cursorOldPos is not null)
+                    selectedEdge is not null)
                 {
                     Vertex vec = new Vertex(e.X - cursorOldPos.X,
                         e.Y - cursorOldPos.Y);
@@ -167,13 +167,15 @@ namespace EdytorWielokatow
 
                     edgesList.UnlockAllVertexes();
 
-                    cursorOldPos = new Vertex(e.X, e.Y);
                     Draw();
                 }
-                else if (appState == AppStates.CreatingPoly)
-                {
-                    // TODO zaimplementowac
-                }
+                cursorOldPos = new Vertex(e.X, e.Y);
+            }
+            else if (appState == AppStates.CreatingPoly &&
+                startingPt is not null)
+            {
+                cursorOldPos = new Vertex(e.X, e.Y);
+                Draw();
             }
         }
 
@@ -195,6 +197,7 @@ namespace EdytorWielokatow
                     appState = AppStates.AdmiringPoly;
                     Draw(true);
                 }
+                cursorOldPos = null;
             }
         }
 
@@ -324,16 +327,21 @@ namespace EdytorWielokatow
             using (Graphics g = Graphics.FromImage(drawArea))
             {
                 g.Clear(Color.White);
-                g.DrawEllipse(new Pen(Color.Red, 2),
-                    Canvas.Size.Width / 2 - 2 * RADIUS,
-                    Canvas.Size.Height / 2 - 2 * RADIUS,
-                    4 * RADIUS, 4 * RADIUS);
 
                 if (appState == AppStates.CreatingPoly && startingPt is not null)
                 {
                     g.FillEllipse(Brushes.Blue,
                         startingPt.X - RADIUS, startingPt.Y - RADIUS,
                         2 * RADIUS, 2 * RADIUS);
+
+                    if (cursorOldPos is not null)
+                    {
+                        var vStart = edgesList.Tail is null ? startingPt : edgesList.Tail.NextVertex;
+                        g.DrawLine(new Pen(Brushes.Blue, 2),
+                                vStart.X, vStart.Y,
+                                cursorOldPos.X, cursorOldPos.Y);
+                        cursorOldPos = null;
+                    }
                 }
 
                 edgesList.TraverseAllList((Edge e) =>
