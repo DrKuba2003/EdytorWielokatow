@@ -482,7 +482,7 @@ namespace EdytorWielokatow
 #else
                         Brush b = Brushes.Blue; 
 #endif
-                    e.Draw(g, useBresenham, new Pen(b));
+                    e.Draw(g, useBresenham, new Pen(b, 3));
 
                     g.FillEllipse(Brushes.Blue,
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
