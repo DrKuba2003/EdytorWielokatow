@@ -274,7 +274,7 @@ namespace EdytorWielokatow
                 // Rolling back changes
                 foreach (var key in roolback.Keys)
                     key.CopyData(roolback[key]);
-                
+
                 return true;
             }
 
@@ -401,6 +401,26 @@ namespace EdytorWielokatow
             L = new FixedLengthDialog().Show(L);
 
             var newEdge = new FixedLengthEdge(selectedEdge, L);
+
+            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+                ShowEdgeTypeError();
+            else
+            {
+                edgesList.ReplaceEdge(selectedEdge, newEdge);
+                Draw();
+            }
+
+            selectedEdge = null;
+        }
+
+        private void bezToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedEdge is null) return;
+
+            var midpoint = GeometryUtils.Midpoint(selectedEdge.PrevVertex, selectedEdge.NextVertex);
+            var newEdge = new BezierEdge(selectedEdge,
+                 new Vertex(midpoint.X, midpoint.Y + 30),
+                 new Vertex(midpoint.X, midpoint.Y - 30));
 
             if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
                 ShowEdgeTypeError();
