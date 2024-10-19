@@ -10,7 +10,7 @@ namespace EdytorWielokatow.Edges
 {
     public class VerticalEdge : Edge
     {
-        public const double EPS = 1;
+        public const int EPS = 0;
 
         public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\Vertical.png").GetHicon());

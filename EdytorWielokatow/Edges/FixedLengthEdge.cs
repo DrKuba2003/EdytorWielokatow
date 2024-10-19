@@ -10,7 +10,7 @@ namespace EdytorWielokatow.Edges
 {
     public class FixedLengthEdge : Edge
     {
-        public const double EPS = 2;
+        public const double EPS = 1;
 
         public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon());
