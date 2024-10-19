@@ -10,6 +10,8 @@ namespace EdytorWielokatow.Edges
 {
     public class BezierEdge : Edge
     {
+        public const int CONTROL_RADIUS = 5;
+
         public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\Bezier.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
@@ -38,11 +40,29 @@ namespace EdytorWielokatow.Edges
         public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
             float[] dashValues = { 2, 2 };
-            Pen dashPen = new Pen(p.Brush, 3);
+            Pen dashPen = new Pen(p is null ? Brushes.Blue : p.Brush, 3);
             dashPen.DashPattern = dashValues;
             base.Draw(g, false, dashPen);
 
+            g.DrawLine(dashPen,
+                    PrevVertex.X, PrevVertex.Y,
+                    PrevControlVertex.X, PrevControlVertex.Y);
 
+            g.FillEllipse(Brushes.Magenta,
+                        PrevControlVertex.X - CONTROL_RADIUS, PrevControlVertex.Y - CONTROL_RADIUS,
+                        2 * CONTROL_RADIUS, 2 * CONTROL_RADIUS);
+
+            g.DrawLine(dashPen,
+                    PrevControlVertex.X, PrevControlVertex.Y,
+                    NextControlVertex.X, NextControlVertex.Y);
+
+            g.FillEllipse(Brushes.Magenta,
+                        NextControlVertex.X - CONTROL_RADIUS, NextControlVertex.Y - CONTROL_RADIUS,
+                        2 * CONTROL_RADIUS, 2 * CONTROL_RADIUS);
+
+            g.DrawLine(dashPen,
+                    NextControlVertex.X, NextControlVertex.Y,
+                    NextVertex.X, NextVertex.Y);
         }
 
         public override Icon? GetIcon() => icon;

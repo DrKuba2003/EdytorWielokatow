@@ -419,8 +419,8 @@ namespace EdytorWielokatow
 
             var midpoint = GeometryUtils.Midpoint(selectedEdge.PrevVertex, selectedEdge.NextVertex);
             var newEdge = new BezierEdge(selectedEdge,
-                 new Vertex(midpoint.X, midpoint.Y + 30),
-                 new Vertex(midpoint.X, midpoint.Y - 30));
+                 new Vertex(midpoint.X, midpoint.Y + 50),
+                 new Vertex(midpoint.X, midpoint.Y - 50));
 
             if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
                 ShowEdgeTypeError();
