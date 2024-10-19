@@ -42,13 +42,13 @@ namespace EdytorWielokatow.Edges
         public bool IsValid()
             => IsValid(PrevVertex, NextVertex);
 
-        public virtual void Draw(Graphics g, bool useBresenham = false, Brush? b = null)
+        public virtual void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
             if (useBresenham)
                 GeometryUtils.Bresenhams(g, PrevVertex.X, PrevVertex.Y,
-                            NextVertex.X, NextVertex.Y, b);
+                            NextVertex.X, NextVertex.Y, p.Brush);
             else
-                g.DrawLine(new Pen(b is null ? Brushes.Blue : b, 3),
+                g.DrawLine(p is null ? new Pen(Brushes.Blue, 3) : p,
                         PrevVertex.X, PrevVertex.Y,
                         NextVertex.X, NextVertex.Y);
 

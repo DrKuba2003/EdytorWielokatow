@@ -35,6 +35,13 @@ namespace EdytorWielokatow.Edges
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;
 
+        public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
+        {
+            base.Draw(g, useBresenham, p);
+
+
+        }
+
         public override Icon? GetIcon() => icon;
         public override Rectangle GetIconRectangle() => rect;
     }

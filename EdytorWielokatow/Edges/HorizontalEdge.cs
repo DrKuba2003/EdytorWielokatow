@@ -34,9 +34,9 @@ namespace EdytorWielokatow.Edges
         public override bool IsValid(Vertex v1, Vertex v2) =>
             Math.Abs(v1.Y - v2.Y) <= EPS;
 
-        public override void Draw(Graphics g, bool useBresenham = false, Brush? b = null)
+        public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
-            base.Draw(g, useBresenham, b);
+            base.Draw(g, useBresenham, p);
 #if DEBUG
             var midpt = GeometryUtils.Midpoint(PrevVertex, NextVertex);
             g.DrawString(
