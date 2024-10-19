@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
 
 namespace EdytorWielokatow.Edges
@@ -10,7 +11,7 @@ namespace EdytorWielokatow.Edges
     public class Edge
     {
         public static Icon? icon { get => null; }
-        public static Rectangle rect { get => new Rectangle(0, 0, 0, 0); }
+        public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
 
         public Edge? Prev { get; set; }
         public Edge? Next { get; set; }
@@ -40,6 +41,28 @@ namespace EdytorWielokatow.Edges
 
         public bool IsValid()
             => IsValid(PrevVertex, NextVertex);
+
+        public virtual void Draw(Graphics g, bool useBresenham = false, Brush? b = null)
+        {
+            if (useBresenham)
+                GeometryUtils.Bresenhams(g, PrevVertex.X, PrevVertex.Y,
+                            NextVertex.X, NextVertex.Y, b);
+            else
+                g.DrawLine(new Pen(b is null ? Brushes.Blue : b, 3),
+                        PrevVertex.X, PrevVertex.Y,
+                        NextVertex.X, NextVertex.Y);
+
+            var icon = GetIcon();
+            if (icon is not null)
+            {
+                var midpt = GeometryUtils.Midpoint(PrevVertex, NextVertex);
+                var rect = GetIconRectangle();
+                rect.Offset(new Point(midpt.X, midpt.Y));
+                g.DrawIcon(icon, rect);
+                icon.Dispose();
+            }
+
+        }
 
         public virtual Icon? GetIcon() => icon;
         public virtual Rectangle GetIconRectangle() => rect;

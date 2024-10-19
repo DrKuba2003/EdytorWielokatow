@@ -482,51 +482,11 @@ namespace EdytorWielokatow
 #else
                         Brush b = Brushes.Blue; 
 #endif
-                    if (useBresenham)
-                        GeometryUtils.Bresenhams(g, e.PrevVertex.X, e.PrevVertex.Y,
-                            e.NextVertex.X, e.NextVertex.Y, b);
-                    else
-                        g.DrawLine(new Pen(b, 3),
-                                e.PrevVertex.X, e.PrevVertex.Y,
-                                e.NextVertex.X, e.NextVertex.Y);
+                    e.Draw(g, useBresenham, b);
 
                     g.FillEllipse(Brushes.Blue,
                                 e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
                                 2 * RADIUS, 2 * RADIUS);
-
-                    var icon = e.GetIcon();
-                    if (icon is not null)
-                    {
-                        var midpt = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
-                        var rect = e.GetIconRectangle();
-                        rect.Offset(new Point(midpt.X, midpt.Y));
-                        g.DrawIcon(icon, rect);
-
-#if DEBUG
-                        if (e.GetType() == typeof(FixedLengthEdge))
-                        {
-                            int d = ((FixedLengthEdge)e).Length - (int)GeometryUtils.DistB2P(e.PrevVertex, e.NextVertex);
-                            g.DrawString($"{d}", SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20));
-
-                        }
-
-                        if (e.GetType() == typeof(VerticalEdge))
-                        {
-                            g.DrawString(
-                                $"{e.PrevVertex.X - e.NextVertex.X}",
-                                SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20)
-                                );
-                        }
-
-                        if (e.GetType() == typeof(HorizontalEdge))
-                        {
-                            g.DrawString(
-                                $"{e.PrevVertex.Y - e.NextVertex.Y}",
-                                SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20)
-                                );
-                        }
-#endif
-                    }
 
                     return false;
                 });

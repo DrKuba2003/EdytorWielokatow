@@ -14,7 +14,7 @@ namespace EdytorWielokatow.Edges
 
         public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\Vertical.png").GetHicon());
-        public static new Rectangle rect = new Rectangle(-5, -10, 20, 20);
+        public static new readonly Rectangle rect = new Rectangle(-5, -10, 20, 20);
 
         public VerticalEdge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
@@ -32,6 +32,19 @@ namespace EdytorWielokatow.Edges
         }
         public override bool IsValid(Vertex v1, Vertex v2) =>
             Math.Abs(v1.X - v2.X) <= EPS;
+
+        public override void Draw(Graphics g, bool useBresenham = false, Brush? b = null)
+        {
+            base.Draw(g, useBresenham, b);
+#if DEBUG
+            var midpt = GeometryUtils.Midpoint(PrevVertex, NextVertex);
+            g.DrawString(
+                $"{PrevVertex.X - NextVertex.X}",
+                SystemFonts.DefaultFont, Brushes.Black,
+                new PointF(rect.X + midpt.X + 3, rect.Y + midpt.Y + 20)
+                );
+#endif
+        }
 
         public override Icon? GetIcon() => icon;
         public override Rectangle GetIconRectangle() => rect;
