@@ -12,7 +12,6 @@ namespace EdytorWielokatow.Utils
 {
     public static class GeometryUtils
     {
-
         public enum TypeCode { Point, Edge };
 
         public static Vertex Midpoint(Vertex a, Vertex b) =>

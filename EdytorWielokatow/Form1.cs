@@ -1,8 +1,10 @@
 using System.CodeDom;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading.Channels;
 using System.Windows.Forms.VisualStyles;
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Utils;
@@ -25,9 +27,6 @@ namespace EdytorWielokatow
         private Vertex? selectedPoint;
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
-
-        // TODO walidacja koncowa krawedz
-        // TODO walidacja przy zamianie typu
 
         public Form1()
         {
@@ -140,18 +139,17 @@ namespace EdytorWielokatow
 
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
-                    selectedPoint.IsLocked = true;
 
-                    (Edge? ePrev, Edge? eNext) = edgesList.GetAdjecentEdges(selectedPoint);
-                    if (ePrev is null || eNext is null) return;
+                    (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
 
-                    var queue = new Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)>();
-                    queue.Enqueue((false, ePrev, ePrev.PrevVertex, ePrev.NextVertex));
-                    queue.Enqueue((true, eNext, eNext.NextVertex, eNext.PrevVertex));
+                    // TODO zmien nazewnnictwo
+                    if (ValidateEdges(nextEdge!, prevEdge!))
+                    {
+                        Vertex vec = new Vertex(e.X - cursorOldPos.X,
+                            e.Y - cursorOldPos.Y);
+                        edgesList.MoveWholePolygon(vec, new List<Vertex>() { selectedPoint });
+                    }
 
-                    ValidateEdges(queue);
-
-                    edgesList.UnlockAllVertexes();
 
                     Draw();
                 }
@@ -166,21 +164,15 @@ namespace EdytorWielokatow
 
                     selectedEdge.PrevVertex.X += vec.X;
                     selectedEdge.PrevVertex.Y += vec.Y;
-                    selectedEdge.PrevVertex.IsLocked = true;
 
                     selectedEdge.NextVertex.X += vec.X;
                     selectedEdge.NextVertex.Y += vec.Y;
-                    selectedEdge.NextVertex.IsLocked = true;
 
-                    var queue = new Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)>();
-                    if (selectedEdge.Next is not null)
-                        queue.Enqueue((false, selectedEdge.Next, selectedEdge.Next.PrevVertex, selectedEdge.Next.NextVertex));
-                    if (selectedEdge.Prev is not null)
-                        queue.Enqueue((true, selectedEdge.Prev, selectedEdge.Prev.NextVertex, selectedEdge.Prev.PrevVertex));
-
-                    ValidateEdges(queue);
-
-                    edgesList.UnlockAllVertexes();
+                    if (ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
+                    {
+                        edgesList.MoveWholePolygon(vec,
+                            new List<Vertex>() { selectedEdge.PrevVertex, selectedEdge.NextVertex });
+                    }
 
                     Draw();
                 }
@@ -192,8 +184,8 @@ namespace EdytorWielokatow
                     edgesList.MoveWholePolygon(vec);
                     Draw();
                 }
+                cursorOldPos = new Vertex(e.X, e.Y);
             }
-            cursorOldPos = new Vertex(e.X, e.Y);
         }
 
         private void Canvas_MouseUp(object sender, MouseEventArgs e)
@@ -212,31 +204,84 @@ namespace EdytorWielokatow
             }
         }
 
-        private void ValidateEdges(Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)> queue)
+        private bool ValidateEdges(Edge prevEdge, Edge nextEdge)
         {
+            (Edge edge, bool isPrev) last = (nextEdge, false);
+            var roolback = new Dictionary<Vertex, Point>();
+            var queue = new Queue<(bool isPrev, Edge e)>();
+
+            prevEdge.NextVertex.IsLocked = true;
+            nextEdge.PrevVertex.IsLocked = true;
+
+            if (nextEdge.GetType() != typeof(Edge))
+            {
+                queue.Enqueue((false, nextEdge));
+                nextEdge.NextVertex.IsLocked = true;
+            }
+            if (prevEdge.GetType() != typeof(Edge))
+            {
+                queue.Enqueue((true, prevEdge));
+                prevEdge.PrevVertex.IsLocked = true;
+            }
+
             while (queue.Count > 0)
             {
                 var item = queue.Dequeue();
-                item.changing.CopyData(item.e.ChangeVertexPos(item.changed, item.changing));
-                item.changing.IsLocked = true;
+
+                var changed = item.isPrev ? item.e.NextVertex : item.e.PrevVertex;
+                var changing = item.isPrev ? item.e.PrevVertex : item.e.NextVertex;
+
+                roolback[changing] = new Point(changing.X, changing.Y);
+                item.e.ChangeVertexPos(changed, changing);
+
+                // TODO usunac
+                using (Graphics g = Graphics.FromImage(drawArea))
+                {
+                    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
+                            item.e.PrevVertex.X, item.e.PrevVertex.Y,
+                            item.e.NextVertex.X, item.e.NextVertex.Y);
+
+                    g.FillEllipse(Brushes.Magenta,
+                             roolback[changing].X - RADIUS, roolback[changing].Y - RADIUS,
+                            2 * RADIUS, 2 * RADIUS);
+                }
+                Canvas.Refresh();
 
                 if (item.isPrev)
                 {
-                    if (!(item.e.Prev!.PrevVertex.IsLocked)
-                        && item.e.Prev!.GetType() != typeof(Edge))
+                    if (!item.e.Prev!.PrevVertex.IsLocked &&
+                        item.e.Prev!.GetType() != typeof(Edge))
                     {
-                        queue.Enqueue((true, item.e.Prev, item.e.Prev.NextVertex, item.e.Prev.PrevVertex));
+                        queue.Enqueue((true, item.e.Prev));
+                        item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
                     }
                 }
                 else
                 {
-                    if (!(item.e.Next!.NextVertex.IsLocked)
-                        && item.e.Next!.GetType() != typeof(Edge))
+                    if (!item.e.Next!.NextVertex.IsLocked &&
+                        item.e.Next!.GetType() != typeof(Edge))
                     {
-                        queue.Enqueue((false, item.e.Next, item.e.Next.PrevVertex, item.e.Next.NextVertex));
+                        queue.Enqueue((false, item.e.Next));
+                        item.e.Next.NextVertex.IsLocked = true;
                     }
                 }
+                last = (item.e, item.isPrev);
             }
+
+            if ((last.isPrev && !last.edge.Prev!.IsValid()) ||
+                (!last.isPrev && !last.edge.Next!.IsValid()))
+            {
+                // Rolling back changes
+                foreach (var key in roolback.Keys)
+                    key.CopyData(roolback[key]);
+                
+                return true;
+            }
+
+
+            edgesList.UnlockAllVertexes();
+
+            return false;
         }
 
         private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
@@ -303,50 +348,69 @@ namespace EdytorWielokatow
         {
             if (selectedEdge is null ||
                 selectedEdge.Prev!.GetType() == typeof(VerticalEdge) ||
-                selectedEdge.Next!.GetType() == typeof(VerticalEdge)) return;
+                selectedEdge.Next!.GetType() == typeof(VerticalEdge))
+            {
+                ShowEdgeTypeError();
+                selectedEdge = null;
+                return;
+            }
 
-            edgesList.ReplaceEdge(selectedEdge, new VerticalEdge(selectedEdge));
+            var newEdge = new VerticalEdge(selectedEdge);
+
+            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+                ShowEdgeTypeError();
+            else
+            {
+                edgesList.ReplaceEdge(selectedEdge, newEdge);
+                Draw();
+            }
 
             selectedEdge = null;
-            Draw();
         }
 
         private void poziomaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (selectedEdge is null ||
                 selectedEdge.Prev!.GetType() == typeof(HorizontalEdge) ||
-                selectedEdge.Next!.GetType() == typeof(HorizontalEdge)) return;
+                selectedEdge.Next!.GetType() == typeof(HorizontalEdge))
+            {
+                ShowEdgeTypeError();
+                selectedEdge = null;
+                return;
+            }
 
-            edgesList.ReplaceEdge(selectedEdge, new HorizontalEdge(selectedEdge));
+            var newEdge = new HorizontalEdge(selectedEdge);
+
+            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+                ShowEdgeTypeError();
+            else
+            {
+                edgesList.ReplaceEdge(selectedEdge, newEdge);
+                Draw();
+            }
 
             selectedEdge = null;
-            Draw();
         }
 
         private void stalaDlugoscToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (selectedEdge is null) return;
 
-            double L = GeometryUtils.DistB2P(selectedEdge.PrevVertex, selectedEdge.NextVertex);
+            int L = (int)GeometryUtils.DistB2P(selectedEdge.PrevVertex, selectedEdge.NextVertex);
 
             L = new FixedLengthDialog().Show(L);
 
             var newEdge = new FixedLengthEdge(selectedEdge, L);
-            edgesList.ReplaceEdge(selectedEdge, newEdge);
 
-            // TODO poprawic to
-            var queue = new Queue<(bool isPrev, Edge e, Vertex changed, Vertex changing)>();
-            if (newEdge.Next is not null)
-                queue.Enqueue((false, newEdge.Next, newEdge.Next.PrevVertex, newEdge.Next.NextVertex));
-            if (newEdge.Prev is not null)
-                queue.Enqueue((true, newEdge.Prev, newEdge.Prev.NextVertex, newEdge.Prev.PrevVertex));
-
-            ValidateEdges(queue);
-
-            edgesList.UnlockAllVertexes();
+            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+                ShowEdgeTypeError();
+            else
+            {
+                edgesList.ReplaceEdge(selectedEdge, newEdge);
+                Draw();
+            }
 
             selectedEdge = null;
-            Draw();
         }
 
         private void usunOgraniczeniaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -388,6 +452,13 @@ namespace EdytorWielokatow
                         e == edgesList.Tail ?
                         Brushes.Red :
                         Brushes.Blue;
+
+
+                    var midpt1 = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
+                    g.DrawString(
+                            $"{e.GetHashCode()}",
+                            SystemFonts.DefaultFont, Brushes.Black, new PointF(midpt1.X - 20, midpt1.Y - 20)
+                            );
 #else
                         Brush b = Brushes.Blue; 
 #endif
@@ -410,6 +481,31 @@ namespace EdytorWielokatow
                         var rect = e.GetIconRectangle();
                         rect.Offset(new Point(midpt.X, midpt.Y));
                         g.DrawIcon(icon, rect);
+
+#if DEBUG
+                        if (e.GetType() == typeof(FixedLengthEdge))
+                        {
+                            int d = ((FixedLengthEdge)e).Length - (int)GeometryUtils.DistB2P(e.PrevVertex, e.NextVertex);
+                            g.DrawString($"{d}", SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20));
+
+                        }
+
+                        if (e.GetType() == typeof(VerticalEdge))
+                        {
+                            g.DrawString(
+                                $"{e.PrevVertex.X - e.NextVertex.X}",
+                                SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20)
+                                );
+                        }
+
+                        if (e.GetType() == typeof(HorizontalEdge))
+                        {
+                            g.DrawString(
+                                $"{e.PrevVertex.Y - e.NextVertex.Y}",
+                                SystemFonts.DefaultFont, Brushes.Black, new PointF(rect.X + 3, rect.Y + 20)
+                                );
+                        }
+#endif
                     }
 
                     return false;
@@ -428,6 +524,10 @@ namespace EdytorWielokatow
         private bool IsVertexOutsideCanvas(Vertex v) =>
              (v.X < 0 || v.X > Canvas.Width ||
               v.Y < 0 || v.Y > Canvas.Height);
+
+        private void ShowEdgeTypeError()
+            => MessageBox.Show("Nie mo¿na zmieniæ typu krawêdzi!!!", "B³¹d",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
 
         private void ResetPoly()
         {

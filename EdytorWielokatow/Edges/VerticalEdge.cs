@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
 
 namespace EdytorWielokatow.Edges
 {
     public class VerticalEdge : Edge
     {
+        public const double EPS = 1;
 
         public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\Vertical.png").GetHicon());
@@ -24,10 +26,13 @@ namespace EdytorWielokatow.Edges
             : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next)
         { }
 
-        public override Vertex ChangeVertexPos(Vertex changed, Vertex changing)
+        public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
-            return new Vertex(changed.X, changing.Y, changing.IsLocked);
+            changing.X = changed.X;
         }
+        public override bool IsValid(Vertex v1, Vertex v2) =>
+            Math.Abs(v1.X - v2.X) <= EPS;
+
         public override Icon? GetIcon() => icon;
         public override Rectangle GetIconRectangle() => rect;
     }

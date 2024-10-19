@@ -10,34 +10,38 @@ namespace EdytorWielokatow.Edges
 {
     public class FixedLengthEdge : Edge
     {
-        public static new Icon? icon = 
+        public const double EPS = 2;
+
+        public static new Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
 
-        double Length { get; }
+        public int Length { get; }
 
-        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, double length, Edge? prev = null, Edge? next = null)
+        public FixedLengthEdge(Vertex prevVert, Vertex nextVert, int length, Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
             Length = length;
-            NextVertex.CopyData(ChangeVertexPos(PrevVertex, NextVertex));
+            ChangeVertexPos(PrevVertex, NextVertex);
         }
 
-        public FixedLengthEdge(Edge e, double length)
+        public FixedLengthEdge(Edge e, int length)
             : this(e.PrevVertex, e.NextVertex, length, e.Prev, e.Next)
         { }
 
-        public override Vertex ChangeVertexPos(Vertex changed, Vertex changing)
+        public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
             var vec = new Vertex(changed.X - changing.X,
                         changed.Y - changing.Y);
             var vecL = GeometryUtils.DistB2P(changing, changed);
             double scalar = 1 - Length / vecL;
 
-            return new Vertex(changing.X + (int)(vec.X * scalar),
-                 changing.Y + (int)(vec.Y * scalar),
-                 changing.IsLocked);
+            changing.X += (int)(vec.X * scalar);
+            changing.Y += (int)(vec.Y * scalar);
         }
+
+        public override bool IsValid(Vertex v1, Vertex v2) =>
+            Math.Abs(GeometryUtils.DistB2P(v1, v2) - Length) < EPS;
 
         public override Icon? GetIcon() => icon;
         public override Rectangle GetIconRectangle() => rect;

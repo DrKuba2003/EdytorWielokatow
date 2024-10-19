@@ -36,6 +36,12 @@ namespace EdytorWielokatow.Vertexes
             Y = v.Y;
             IsLocked = v.IsLocked;
         }
+        public void CopyData(Point v)
+        {
+            X = v.X;
+            Y = v.Y;
+            IsLocked = false;
+        }
 
 
     }

@@ -34,10 +34,12 @@ namespace EdytorWielokatow.Edges
             Next = e.Next;
         }
 
-        public virtual Vertex ChangeVertexPos(Vertex changed, Vertex changing)
-        {
-            return new Vertex(changing);
-        }
+        public virtual void ChangeVertexPos(Vertex changed, Vertex changing) { }
+
+        public virtual bool IsValid(Vertex v1, Vertex v2) => true;
+
+        public bool IsValid()
+            => IsValid(PrevVertex, NextVertex);
 
         public virtual Icon? GetIcon() => icon;
         public virtual Rectangle GetIconRectangle() => rect;

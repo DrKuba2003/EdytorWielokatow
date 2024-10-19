@@ -117,12 +117,18 @@ namespace EdytorWielokatow.Edges
             return (ePrev, eNext);
         }
 
-        public void MoveWholePolygon(Vertex vec)
+        // TODO moze exceptions to za duzo, nieoptymalne
+        public void MoveWholePolygon(Vertex vec, List<Vertex>? exceptions= null)
         {
             TraverseAllList((Edge e) =>
             {
-                e.NextVertex.X = e.NextVertex.X + vec.X;
-                e.NextVertex.Y = e.NextVertex.Y + vec.Y;
+                if (exceptions is null ||
+                    !exceptions.Contains(e.NextVertex))
+                {
+                    e.NextVertex.X += vec.X;
+                    e.NextVertex.Y += vec.Y;
+                }
+
                 return false;
             });
         }

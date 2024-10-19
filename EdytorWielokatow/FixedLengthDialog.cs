@@ -17,13 +17,13 @@ namespace EdytorWielokatow
             InitializeComponent();
         }
 
-        public double Show(double length)
+        public int Show(double length)
         {
-            lengthTxb.Text = length.ToString();
+            lengthTxb.Text = ((int)length).ToString();
             
             ShowDialog();
 
-            return Double.Parse(lengthTxb.Text);
+            return int.Parse(lengthTxb.Text);
         }
 
         private void lengthTxb_KeyPress(object sender, KeyPressEventArgs e)
