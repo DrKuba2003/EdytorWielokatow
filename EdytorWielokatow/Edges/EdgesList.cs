@@ -102,6 +102,14 @@ namespace EdytorWielokatow.Edges
             oldEdge.Prev = null;
         }
 
+        public void ReplaceVertex(Vertex oldVertex, Vertex newVertex)
+        {
+            (Edge? ePrev, Edge? eNext) = GetAdjecentEdges(oldVertex);
+
+            ePrev!.NextVertex = newVertex;
+            eNext!.PrevVertex = newVertex;
+        }
+
         public (Edge? e1, Edge? e2) GetAdjecentEdges(Vertex v)
         {
             Edge? ePrev = null, eNext = null;

@@ -16,7 +16,7 @@ namespace EdytorWielokatow
     {
         private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, AdmiringPoly };
 
-        private const int RADIUS = 8;
+        private const int VERTEX_BUFFER = 8;
         private const int EDGE_BUFFER = 1;
 
         private AppStates appState;
@@ -58,7 +58,7 @@ namespace EdytorWielokatow
                     {
                         // checking if newVert is startingVert and triangle minimum
                         bool isClosingPoly = edgesList.Count >= 2 &&
-                            GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, RADIUS);
+                            GeometryUtils.CheckIf2PClose(startingPt!, ptClicked, VERTEX_BUFFER);
 
                         if (isClosingPoly)
                             ptClicked = startingPt!;
@@ -301,7 +301,7 @@ namespace EdytorWielokatow
                 foreach (var pt in e.GetVertexesExceptPrev())
                 {
                     double ptDist = GeometryUtils.DistB2P(ptClicked, pt);
-                    if (ptDist < RADIUS && ptDist < minPtDist)
+                    if (ptDist < VERTEX_BUFFER && ptDist < minPtDist)
                     {
                         minPtDist = ptDist;
                         ptOut = pt;
@@ -456,9 +456,7 @@ namespace EdytorWielokatow
 
                 if (appState == AppStates.CreatingPoly && startingPt is not null)
                 {
-                    g.FillEllipse(Brushes.Blue,
-                        startingPt.X - RADIUS, startingPt.Y - RADIUS,
-                        2 * RADIUS, 2 * RADIUS);
+                    startingPt.Draw(g);
 
                     if (cursorOldPos is not null)
                     {
@@ -488,11 +486,10 @@ namespace EdytorWielokatow
 #else
                         Brush b = Brushes.Blue; 
 #endif
+
                     e.Draw(g, useBresenham, new Pen(b, 3));
 
-                    g.FillEllipse(Brushes.Blue,
-                                e.NextVertex.X - RADIUS, e.NextVertex.Y - RADIUS,
-                                2 * RADIUS, 2 * RADIUS);
+                    e.NextVertex.Draw(g);
 
                     return false;
                 });

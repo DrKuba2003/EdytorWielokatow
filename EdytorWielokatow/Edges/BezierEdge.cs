@@ -55,21 +55,16 @@ namespace EdytorWielokatow.Edges
                     PrevVertex.X, PrevVertex.Y,
                     PrevControlVertex.X, PrevControlVertex.Y);
 
-            g.FillEllipse(Brushes.Magenta,
-                        PrevControlVertex.X - CONTROL_RADIUS, PrevControlVertex.Y - CONTROL_RADIUS,
-                        2 * CONTROL_RADIUS, 2 * CONTROL_RADIUS);
-
             g.DrawLine(dashPen,
                     PrevControlVertex.X, PrevControlVertex.Y,
                     NextControlVertex.X, NextControlVertex.Y);
 
-            g.FillEllipse(Brushes.Magenta,
-                        NextControlVertex.X - CONTROL_RADIUS, NextControlVertex.Y - CONTROL_RADIUS,
-                        2 * CONTROL_RADIUS, 2 * CONTROL_RADIUS);
-
             g.DrawLine(dashPen,
                     NextControlVertex.X, NextControlVertex.Y,
                     NextVertex.X, NextVertex.Y);
+
+            PrevControlVertex.Draw(g, Brushes.Magenta, CONTROL_RADIUS);
+            NextControlVertex.Draw(g, Brushes.Magenta, CONTROL_RADIUS);
 
             GeometryUtils.Bezier(g, PrevVertex, PrevControlVertex, NextControlVertex, NextVertex, dashPen.Brush);
         }
