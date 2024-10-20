@@ -84,7 +84,7 @@ namespace EdytorWielokatow.Utils
             Vertex A2 = 3 * (V2 - 2 * V1 + V0);
             Vertex A3 = V3 - 3 * V2 + 3 * V1 - V0;
 
-            double dist = DistB2P(V0, V3);
+            double dist = DistB2P(V0, V1) + DistB2P(V1, V2) + DistB2P(V2, V3);
             double d = 1 / (2 * dist);
             double d2 = Math.Pow(d, 2);
             double d3 = Math.Pow(d, 3);
