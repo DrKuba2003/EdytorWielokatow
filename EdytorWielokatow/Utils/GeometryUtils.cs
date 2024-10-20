@@ -20,7 +20,7 @@ namespace EdytorWielokatow.Utils
 
         public static double DistBPE(Vertex pt, Edge edge)
         {
-            return Math.Abs(DistB2P(pt, edge.PrevVertex) + DistB2P(pt, edge.NextVertex) 
+            return Math.Abs(DistB2P(pt, edge.PrevVertex) + DistB2P(pt, edge.NextVertex)
                 - DistB2P(edge.PrevVertex, edge.NextVertex));
         }
 
@@ -55,11 +55,11 @@ namespace EdytorWielokatow.Utils
             for (int i = 0; i <= longest; i++)
             {
                 // for the line width
-                g.FillRectangle(brush, x-1, y, 1, 1);
-                g.FillRectangle(brush, x, y-1, 1, 1);
+                g.FillRectangle(brush, x - 1, y, 1, 1);
+                g.FillRectangle(brush, x, y - 1, 1, 1);
                 g.FillRectangle(brush, x, y, 1, 1);
-                g.FillRectangle(brush, x+1, y, 1, 1);
-                g.FillRectangle(brush, x, y+1, 1, 1);
+                g.FillRectangle(brush, x + 1, y, 1, 1);
+                g.FillRectangle(brush, x, y + 1, 1, 1);
 
                 numerator += shortest;
                 if (!(numerator < longest))
@@ -74,6 +74,35 @@ namespace EdytorWielokatow.Utils
                     y += dy2;
                 }
             }
+        }
+
+        public static void Bezier(Graphics g, Vertex V0, Vertex V1, Vertex V2, Vertex V3, Brush brush)
+        {
+            Vertex A0 = V0;
+            Vertex A1 = 3 * (V1 - V0);
+            Vertex A2 = 3 * (V2 - 2 * V1 + V0);
+            Vertex A3 = V3 - 3 * V2 + 3 * V1 - V0;
+
+            double dist = DistB2P(V0, V3);
+            double d = 1 / (2 * dist);
+            double d2 = Math.Pow(d, 2);
+            double d3 = Math.Pow(d, 3);
+
+            Vertex P0 = A0;
+            Vertex P1 = d3 * A3 + d2 * A2 + d * A1;
+            Vertex P2 = 6 * d3 * A3 + 2 * d2 * A2;
+            Vertex P3 = 6 * d3 * A3;
+
+            double t = 0;
+            while (t < 1)
+            {
+                g.FillRectangle(brush, P0.X, P0.Y, 1, 1);
+                P0 = P0 + P1;
+                P1 = P1 + P2;
+                P2 = P2 + P3;
+                t += d;
+            }
+
         }
     }
 }

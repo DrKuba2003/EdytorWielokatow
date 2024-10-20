@@ -30,6 +30,14 @@ namespace EdytorWielokatow.Vertexes
         public static Vertex operator +(Vertex v1, Vertex v2) =>
             new Vertex(v1.X + v2.X, v1.Y + v2.Y);
 
+        public static Vertex operator -(Vertex v1, Vertex v2) =>
+           new Vertex(v1.X - v2.X, v1.Y - v2.Y);
+
+        public static Vertex operator *(int scalar, Vertex v1) =>
+            new Vertex(v1.X * scalar, v1.Y * scalar);
+        public static Vertex operator *(double scalar, Vertex v1) =>
+            new Vertex(v1.X * (int)scalar, v1.Y * (int)scalar);
+
         public void CopyData(Vertex v)
         {
             X = v.X;

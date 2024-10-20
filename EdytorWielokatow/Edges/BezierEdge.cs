@@ -40,7 +40,7 @@ namespace EdytorWielokatow.Edges
         public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
             float[] dashValues = { 2, 2 };
-            Pen dashPen = new Pen(p is null ? Brushes.Blue : p.Brush, 3);
+            Pen dashPen = new Pen(p is null ? Brushes.Blue : p.Brush, 2);
             dashPen.DashPattern = dashValues;
             base.Draw(g, false, dashPen);
 
