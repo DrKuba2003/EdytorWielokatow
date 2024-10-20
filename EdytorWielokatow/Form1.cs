@@ -256,8 +256,10 @@ namespace EdytorWielokatow
                         item.e.Prev!.GetType() != typeof(Edge))
                     {
                         queue.Enqueue((true, item.e.Prev));
-                        item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
+                        if (item.e.Prev is not BezierEdge)
+                            item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
                     }
+
                 }
                 else
                 {
@@ -265,7 +267,8 @@ namespace EdytorWielokatow
                         item.e.Next!.GetType() != typeof(Edge))
                     {
                         queue.Enqueue((false, item.e.Next));
-                        item.e.Next.NextVertex.IsLocked = true;
+                        if (item.e.Next is not BezierEdge)
+                            item.e.Next.NextVertex.IsLocked = true;
                     }
                 }
                 last = (item.e, item.isPrev);
