@@ -37,6 +37,13 @@ namespace EdytorWielokatow.Edges
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;
 
+        public override IEnumerable<Vertex> GetVertexesExceptPrev()
+        {
+            yield return PrevControlVertex;
+            yield return NextControlVertex;
+            yield return NextVertex;
+        }
+
         public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
             float[] dashValues = { 2, 2 };

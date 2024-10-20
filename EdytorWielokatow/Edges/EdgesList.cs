@@ -41,14 +41,14 @@ namespace EdytorWielokatow.Edges
             (Edge? ePrev, Edge? eNext) = GetAdjecentEdges(v);
             if (ePrev is null || eNext is null) return true;
 
-            Edge newEdge = new Edge(eNext.PrevVertex, ePrev.NextVertex,
-                eNext.Prev, ePrev.Next);
-            eNext.Prev!.Next = newEdge;
-            ePrev.Next!.Prev = newEdge;
+            Edge newEdge = new Edge(ePrev.PrevVertex, eNext.NextVertex,
+                ePrev.Prev, eNext.Next);
+            ePrev.Prev!.Next = newEdge;
+            eNext.Next!.Prev = newEdge;
 
             // Change of head and tail if needed
-            bool deletingHead = eNext == Head || ePrev == Head;
-            bool deletingTail = eNext == Tail || ePrev == Tail;
+            bool deletingHead = ePrev == Head || eNext == Head;
+            bool deletingTail = ePrev == Tail || eNext == Tail;
             if (deletingHead)
                 Head = newEdge;
 
@@ -108,9 +108,9 @@ namespace EdytorWielokatow.Edges
             TraverseAllList((Edge e) =>
             {
                 if (e.PrevVertex == v)
-                    ePrev = e;
-                else if (e.NextVertex == v)
                     eNext = e;
+                else if (e.NextVertex == v)
+                    ePrev = e;
 
                 return ePrev is not null && eNext is not null;
             });

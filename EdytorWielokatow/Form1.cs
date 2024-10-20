@@ -141,14 +141,17 @@ namespace EdytorWielokatow
                     selectedPoint.Y = e.Y;
 
                     (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
-
-                    // TODO zmien nazewnnictwo
-                    if (ValidateEdges(nextEdge!, prevEdge!))
+                    if (prevEdge is not null && nextEdge is not null)
                     {
-                        Vertex vec = new Vertex(e.X - cursorOldPos.X,
-                            e.Y - cursorOldPos.Y);
-                        edgesList.MoveWholePolygon(vec, new List<Vertex>() { selectedPoint });
+                        if (ValidateEdges(prevEdge!, nextEdge!))
+                        {
+                            Vertex vec = new Vertex(e.X - cursorOldPos.X,
+                                e.Y - cursorOldPos.Y);
+                            edgesList.MoveWholePolygon(vec, new List<Vertex>() { selectedPoint });
+                        }
                     }
+
+                    
 
 
                     Draw();
@@ -295,11 +298,14 @@ namespace EdytorWielokatow
 
             edgesList.TraverseAllList((Edge e) =>
             {
-                double ptDist = GeometryUtils.DistB2P(ptClicked, e.NextVertex);
-                if (ptDist < RADIUS && ptDist < minPtDist)
+                foreach (var pt in e.GetVertexesExceptPrev())
                 {
-                    minPtDist = ptDist;
-                    ptOut = e.NextVertex;
+                    double ptDist = GeometryUtils.DistB2P(ptClicked, pt);
+                    if (ptDist < RADIUS && ptDist < minPtDist)
+                    {
+                        minPtDist = ptDist;
+                        ptOut = pt;
+                    }
                 }
 
                 if (ptOut is null)

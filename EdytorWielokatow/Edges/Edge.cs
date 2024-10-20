@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using EdytorWielokatow.Utils;
@@ -41,6 +42,11 @@ namespace EdytorWielokatow.Edges
 
         public bool IsValid()
             => IsValid(PrevVertex, NextVertex);
+
+        public virtual IEnumerable<Vertex> GetVertexesExceptPrev()
+        {
+            yield return NextVertex;
+        }
 
         public virtual void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
