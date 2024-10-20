@@ -433,8 +433,6 @@ namespace EdytorWielokatow
             else
             {
                 edgesList.ReplaceEdge(selectedEdge, newEdge);
-                edgesList.ReplaceVertex(newEdge.PrevVertex, new BezierVertex(newEdge.PrevVertex));
-                edgesList.ReplaceVertex(newEdge.NextVertex, new BezierVertex(newEdge.NextVertex));
                 Draw();
             }
 
@@ -454,16 +452,36 @@ namespace EdytorWielokatow
         {
             if (selectedPoint is null) return;
 
+            if (selectedPoint is BezierVertex)
+            {
+                BezierVertex v = (BezierVertex)selectedPoint;
+                v.ContinuityClass = ContinuityClasses.C0;
+                Draw();
+            }
         }
 
         private void g0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (selectedPoint is null) return;
 
+            if (selectedPoint is BezierVertex)
+            {
+                BezierVertex v = (BezierVertex)selectedPoint;
+                v.ContinuityClass = ContinuityClasses.G0;
+                Draw();
+            }
         }
 
-        private void g1ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void c1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (selectedPoint is null) return;
 
+            if (selectedPoint is BezierVertex)
+            {
+                BezierVertex v = (BezierVertex)selectedPoint;
+                v.ContinuityClass = ContinuityClasses.C1;
+                Draw();
+            }
         }
 
         private void Draw(bool useBresenham = false)

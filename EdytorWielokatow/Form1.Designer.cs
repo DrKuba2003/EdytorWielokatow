@@ -32,6 +32,9 @@
             Canvas = new PictureBox();
             vertexContextMenu = new ContextMenuStrip(components);
             usunToolStripMenuItem = new ToolStripMenuItem();
+            c0ToolStripMenuItem = new ToolStripMenuItem();
+            g0ToolStripMenuItem = new ToolStripMenuItem();
+            c1ToolStripMenuItem = new ToolStripMenuItem();
             edgeContextMenu = new ContextMenuStrip(components);
             podpodzielToolStripMenuItem = new ToolStripMenuItem();
             pionowaToolStripMenuItem = new ToolStripMenuItem();
@@ -39,9 +42,6 @@
             stalaDlugoscToolStripMenuItem = new ToolStripMenuItem();
             bezToolStripMenuItem = new ToolStripMenuItem();
             usunOgraniczeniaToolStripMenuItem = new ToolStripMenuItem();
-            c0ToolStripMenuItem = new ToolStripMenuItem();
-            g0ToolStripMenuItem = new ToolStripMenuItem();
-            g1ToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
             vertexContextMenu.SuspendLayout();
             edgeContextMenu.SuspendLayout();
@@ -63,7 +63,7 @@
             // vertexContextMenu
             // 
             vertexContextMenu.ImageScalingSize = new Size(20, 20);
-            vertexContextMenu.Items.AddRange(new ToolStripItem[] { usunToolStripMenuItem, c0ToolStripMenuItem, g0ToolStripMenuItem, g1ToolStripMenuItem });
+            vertexContextMenu.Items.AddRange(new ToolStripItem[] { usunToolStripMenuItem, c0ToolStripMenuItem, g0ToolStripMenuItem, c1ToolStripMenuItem });
             vertexContextMenu.Name = "contextMenuStrip1";
             vertexContextMenu.Size = new Size(211, 128);
             // 
@@ -73,6 +73,27 @@
             usunToolStripMenuItem.Size = new Size(210, 24);
             usunToolStripMenuItem.Text = "Usuń";
             usunToolStripMenuItem.Click += usunToolStripMenuItem_Click;
+            // 
+            // c0ToolStripMenuItem
+            // 
+            c0ToolStripMenuItem.Name = "c0ToolStripMenuItem";
+            c0ToolStripMenuItem.Size = new Size(210, 24);
+            c0ToolStripMenuItem.Text = "C0";
+            c0ToolStripMenuItem.Click += c0ToolStripMenuItem_Click;
+            // 
+            // g0ToolStripMenuItem
+            // 
+            g0ToolStripMenuItem.Name = "g0ToolStripMenuItem";
+            g0ToolStripMenuItem.Size = new Size(210, 24);
+            g0ToolStripMenuItem.Text = "G0";
+            g0ToolStripMenuItem.Click += g0ToolStripMenuItem_Click;
+            // 
+            // c1ToolStripMenuItem
+            // 
+            c1ToolStripMenuItem.Name = "c1ToolStripMenuItem";
+            c1ToolStripMenuItem.Size = new Size(210, 24);
+            c1ToolStripMenuItem.Text = "C1";
+            c1ToolStripMenuItem.Click += c1ToolStripMenuItem_Click;
             // 
             // edgeContextMenu
             // 
@@ -123,27 +144,6 @@
             usunOgraniczeniaToolStripMenuItem.Text = "Usuń ograniczenia";
             usunOgraniczeniaToolStripMenuItem.Click += usunOgraniczeniaToolStripMenuItem_Click;
             // 
-            // c0ToolStripMenuItem
-            // 
-            c0ToolStripMenuItem.Name = "c0ToolStripMenuItem";
-            c0ToolStripMenuItem.Size = new Size(210, 24);
-            c0ToolStripMenuItem.Text = "C0";
-            c0ToolStripMenuItem.Click += c0ToolStripMenuItem_Click;
-            // 
-            // g0ToolStripMenuItem
-            // 
-            g0ToolStripMenuItem.Name = "g0ToolStripMenuItem";
-            g0ToolStripMenuItem.Size = new Size(210, 24);
-            g0ToolStripMenuItem.Text = "G0";
-            g0ToolStripMenuItem.Click += g0ToolStripMenuItem_Click;
-            // 
-            // g1ToolStripMenuItem
-            // 
-            g1ToolStripMenuItem.Name = "g1ToolStripMenuItem";
-            g1ToolStripMenuItem.Size = new Size(210, 24);
-            g1ToolStripMenuItem.Text = "G1";
-            g1ToolStripMenuItem.Click += g1ToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -176,6 +176,6 @@
         private ToolStripMenuItem usunOgraniczeniaToolStripMenuItem;
         private ToolStripMenuItem c0ToolStripMenuItem;
         private ToolStripMenuItem g0ToolStripMenuItem;
-        private ToolStripMenuItem g1ToolStripMenuItem;
+        private ToolStripMenuItem c1ToolStripMenuItem;
     }
 }

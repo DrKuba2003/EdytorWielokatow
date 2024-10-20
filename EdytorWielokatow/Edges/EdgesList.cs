@@ -60,6 +60,15 @@ namespace EdytorWielokatow.Edges
                     Tail = newEdge.Prev;
             }
 
+
+            var newPrevVertex = new Vertex(newEdge.PrevVertex);
+            newEdge.Prev!.NextVertex = newPrevVertex;
+            newEdge.PrevVertex = newPrevVertex;
+
+            var newNextVertex = new Vertex(newEdge.NextVertex);
+            newEdge.Next!.PrevVertex = newNextVertex;
+            newEdge.NextVertex = newNextVertex;
+
             Count--;
             return false;
         }
@@ -81,6 +90,14 @@ namespace EdytorWielokatow.Edges
             if (e == Tail)
                 Tail = nextEdge;
 
+            var newPrevVertex = new Vertex(e.PrevVertex);
+            prevEdge.Prev.NextVertex = newPrevVertex;
+            prevEdge.PrevVertex = newPrevVertex;
+
+            var newNextVertex = new Vertex(e.NextVertex);
+            nextEdge.Next.PrevVertex = newNextVertex;
+            nextEdge.NextVertex = newNextVertex;
+
             Count++;
         }
 
@@ -97,6 +114,21 @@ namespace EdytorWielokatow.Edges
 
             if (oldEdge == Tail)
                 Tail = newEdge;
+
+            if (newEdge is BezierEdge)
+            {
+                if (oldEdge.Prev is not BezierEdge)
+                    ReplaceVertex(newEdge.PrevVertex, new BezierVertex(newEdge.PrevVertex));
+                if (oldEdge.Next is not BezierEdge)
+                    ReplaceVertex(newEdge.NextVertex, new BezierVertex(newEdge.NextVertex));
+            }
+            else if (oldEdge is BezierEdge)
+            {
+                if (oldEdge.Prev is not BezierEdge)
+                    ReplaceVertex(newEdge.PrevVertex, new Vertex(newEdge.PrevVertex));
+                if (oldEdge.Next is not BezierEdge)
+                    ReplaceVertex(newEdge.NextVertex, new Vertex(newEdge.NextVertex));
+            }
 
             oldEdge.Next = null;
             oldEdge.Prev = null;
