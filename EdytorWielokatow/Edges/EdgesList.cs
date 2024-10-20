@@ -165,16 +165,10 @@ namespace EdytorWielokatow.Edges
                 if (exceptions is null ||
                     !exceptions.Contains(e.NextVertex))
                 {
-                    e.NextVertex.X += vec.X;
-                    e.NextVertex.Y += vec.Y;
-
-                    if (e is BezierEdge)
+                    foreach (var v in e.GetVertexesExceptPrev())
                     {
-                        BezierEdge be = (BezierEdge)e;
-                        be.PrevControlVertex.X += vec.X;
-                        be.PrevControlVertex.Y += vec.Y;
-                        be.NextControlVertex.X += vec.X;
-                        be.NextControlVertex.Y += vec.Y;
+                        v.X += vec.X;
+                        v.Y += vec.Y;
                     }
                 }
 

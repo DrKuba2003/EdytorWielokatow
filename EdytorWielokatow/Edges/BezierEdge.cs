@@ -32,7 +32,8 @@ namespace EdytorWielokatow.Edges
 
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
-            base.ChangeVertexPos(changed, changing);
+            // changing jest ignorowany tutaj
+
         }
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;
