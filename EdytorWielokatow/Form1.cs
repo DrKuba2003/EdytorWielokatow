@@ -151,7 +151,7 @@ namespace EdytorWielokatow
                         }
                     }
 
-                    
+
 
 
                     Draw();
@@ -433,6 +433,8 @@ namespace EdytorWielokatow
             else
             {
                 edgesList.ReplaceEdge(selectedEdge, newEdge);
+                edgesList.ReplaceVertex(newEdge.PrevVertex, new BezierVertex(newEdge.PrevVertex));
+                edgesList.ReplaceVertex(newEdge.NextVertex, new BezierVertex(newEdge.NextVertex));
                 Draw();
             }
 
@@ -446,6 +448,22 @@ namespace EdytorWielokatow
             edgesList.ReplaceEdge(selectedEdge, new Edge(selectedEdge));
 
             Draw();
+        }
+
+        private void c0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint is null) return;
+
+        }
+
+        private void g0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void g1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void Draw(bool useBresenham = false)
@@ -518,6 +536,5 @@ namespace EdytorWielokatow
             startingPt = null;
             appState = AppStates.CreatingPoly;
         }
-
     }
 }

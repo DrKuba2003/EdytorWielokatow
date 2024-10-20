@@ -126,6 +126,7 @@ namespace EdytorWielokatow.Edges
         }
 
         // TODO moze exceptions to za duzo, nieoptymalne
+        // TODO move bezier control vertexes
         public void MoveWholePolygon(Vertex vec, List<Vertex>? exceptions= null)
         {
             TraverseAllList((Edge e) =>

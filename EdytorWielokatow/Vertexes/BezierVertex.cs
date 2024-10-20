@@ -17,7 +17,7 @@ namespace EdytorWielokatow.Vertexes
             Icon.FromHandle(new Bitmap("Resources\\G0.png").GetHicon());
         public static new Icon? iconC1 =
             Icon.FromHandle(new Bitmap("Resources\\C1.png").GetHicon());
-        public static readonly Rectangle rect = new Rectangle(-10, 20, 10, 10);
+        public static readonly Rectangle rect = new Rectangle(-10, 10, 20, 20);
 
         public ContinuityClasses ContinuityClass { get; set; }
 
