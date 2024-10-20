@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.AxHost;
@@ -76,9 +77,9 @@ namespace EdytorWielokatow.Utils
             }
         }
 
+        // TODO zamienic sposob na grube linie
         public static void Bezier(Graphics g, Vertex V0, Vertex V1, Vertex V2, Vertex V3, Brush brush)
         {
-            Vertex A0 = V0;
             Vertex A1 = 3 * (V1 - V0);
             Vertex A2 = 3 * (V2 - 2 * V1 + V0);
             Vertex A3 = V3 - 3 * V2 + 3 * V1 - V0;
@@ -88,21 +89,26 @@ namespace EdytorWielokatow.Utils
             double d2 = Math.Pow(d, 2);
             double d3 = Math.Pow(d, 3);
 
-            Vertex P0 = A0;
-            Vertex P1 = d3 * A3 + d2 * A2 + d * A1;
-            Vertex P2 = 6 * d3 * A3 + 2 * d2 * A2;
-            Vertex P3 = 6 * d3 * A3;
+            (double X, double Y) P0 = (V0.X, V0.Y);
+            (double X, double Y) P1 = Utils.AddDoubleTuples(d3 * A3, d2 * A2, d * A1);
+            (double X, double Y) P2 = Utils.AddDoubleTuples(6 * d3 * A3, 2 * d2 * A2);
+            (double X, double Y) P3 = 6 * d3 * A3;
 
             double t = 0;
             while (t < 1)
             {
-                g.FillRectangle(brush, P0.X, P0.Y, 1, 1);
-                P0 = P0 + P1;
-                P1 = P1 + P2;
-                P2 = P2 + P3;
+                g.FillRectangle(brush, (int)P0.X - 1, (int)P0.Y, 1, 1);
+                g.FillRectangle(brush, (int)P0.X, (int)P0.Y - 1, 1, 1);
+                g.FillRectangle(brush, (int)P0.X, (int)P0.Y, 1, 1);
+                g.FillRectangle(brush, (int)P0.X + 1, (int)P0.Y, 1, 1);
+                g.FillRectangle(brush, (int)P0.X, (int)P0.Y + 1, 1, 1);
+
+                P0 = Utils.AddDoubleTuples(P0, P1);
+                P1 = Utils.AddDoubleTuples(P1, P2);
+                P2 = Utils.AddDoubleTuples(P2, P3);
                 t += d;
             }
-
         }
     }
+    
 }

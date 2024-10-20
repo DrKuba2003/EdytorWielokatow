@@ -35,8 +35,8 @@ namespace EdytorWielokatow.Vertexes
 
         public static Vertex operator *(int scalar, Vertex v1) =>
             new Vertex(v1.X * scalar, v1.Y * scalar);
-        public static Vertex operator *(double scalar, Vertex v1) =>
-            new Vertex(v1.X * (int)scalar, v1.Y * (int)scalar);
+        public static (double, double) operator *(double scalar, Vertex v1) =>
+            (v1.X * scalar, v1.Y * scalar);
 
         public void CopyData(Vertex v)
         {

@@ -63,6 +63,8 @@ namespace EdytorWielokatow.Edges
             g.DrawLine(dashPen,
                     NextControlVertex.X, NextControlVertex.Y,
                     NextVertex.X, NextVertex.Y);
+
+            GeometryUtils.Bezier(g, PrevVertex, PrevControlVertex, NextControlVertex, NextVertex, dashPen.Brush);
         }
 
         public override Icon? GetIcon() => icon;
