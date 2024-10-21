@@ -16,14 +16,14 @@ namespace EdytorWielokatow.Edges
             Icon.FromHandle(new Bitmap("Resources\\Bezier.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
 
-        public Vertex PrevControlVertex { get; set; }
-        public Vertex NextControlVertex { get; set; }
+        public ControlVertex PrevControlVertex { get; set; }
+        public ControlVertex NextControlVertex { get; set; }
         public BezierEdge(Vertex prevVert, Vertex nextVert, Vertex prevControlVert, Vertex nextControlVert,
             Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
-            PrevControlVertex = prevControlVert;
-            NextControlVertex = nextControlVert;
+            PrevControlVertex = new ControlVertex(prevControlVert, this);
+            NextControlVertex = new ControlVertex(nextControlVert, this);
         }
 
         public BezierEdge(Edge e, Vertex prevControlVert, Vertex nextControlVert)
@@ -60,6 +60,8 @@ namespace EdytorWielokatow.Edges
                     break;
                 case ContinuityClasses.G1:
                     var vecL = GeometryUtils.VectorLength(vec);
+                    if (vecL < 0.1)
+                        return;
                     var L = GeometryUtils.DistB2P(correspondingEdgeVertex, controlVertex);
                     double scalar = L / vecL;
 
@@ -69,13 +71,18 @@ namespace EdytorWielokatow.Edges
             }
         }
 
+        public void ControlChangeVertexPos(Vertex controlVertex)
+        {
+
+        }
+
         public override bool IsValid(Vertex v1, Vertex v2) => true;
 
-        public override IEnumerable<(Vertex v, bool isControl)> GetVertexesExceptPrev()
+        public override IEnumerable<Vertex> GetVertexesExceptPrev()
         {
-            yield return (PrevControlVertex, true);
-            yield return (NextControlVertex,  true);
-            yield return (NextVertex, false);
+            yield return PrevControlVertex;
+            yield return NextControlVertex;
+            yield return NextVertex;
         }
 
         public override Vertex GetNeighVertex(Vertex v)

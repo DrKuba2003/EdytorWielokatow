@@ -188,10 +188,10 @@ namespace EdytorWielokatow.Edges
                 if (exceptions is null ||
                     !exceptions.Contains(e.NextVertex))
                 {
-                    foreach (var item in e.GetVertexesExceptPrev())
+                    foreach (var v in e.GetVertexesExceptPrev())
                     {
-                        item.v.X += vec.X;
-                        item.v.Y += vec.Y;
+                        v.X += vec.X;
+                        v.Y += vec.Y;
                     }
                 }
 

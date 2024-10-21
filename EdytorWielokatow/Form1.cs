@@ -25,7 +25,6 @@ namespace EdytorWielokatow
         private EdgesList edgesList;
         private Vertex? startingPt;
         private Vertex? selectedPoint;
-        private bool selectedPtIsControl = false;
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
@@ -84,14 +83,15 @@ namespace EdytorWielokatow
                 }
                 else if (appState == AppStates.AdmiringPoly)
                 {
-                    (selectedPoint, selectedEdge, selectedPtIsControl) = GetClickedObject(ptClicked);
+                    (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                     if (selectedPoint is not null)
                     {
                         appState = AppStates.DraggingPoint;
                     }
                     else if (selectedEdge is not null)
                     {
-                        appState = AppStates.DraggingEdge;
+                        if (selectedEdge is not BezierEdge)
+                            appState = AppStates.DraggingEdge;
                     }
                     else
                     {
@@ -108,8 +108,8 @@ namespace EdytorWielokatow
             else if (e.Button == MouseButtons.Right &&
                 appState == AppStates.AdmiringPoly)
             {
-                (selectedPoint, selectedEdge, var isControl) = GetClickedObject(ptClicked);
-                if (selectedPoint is not null && !isControl)
+                (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
+                if (selectedPoint is not null && selectedPoint is not ControlVertex)
                     vertexContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
                 else if (selectedEdge is not null)
                     edgeContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
@@ -134,6 +134,8 @@ namespace EdytorWielokatow
 
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
+                    if (selectedPoint is ControlVertex)
+                        ((ControlVertex) selectedPoint).Edge.ControlChangeVertexPos(selectedPoint);
 
                     (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                     if (prevEdge is not null && nextEdge is not null)
@@ -272,26 +274,24 @@ namespace EdytorWielokatow
             return false;
         }
 
-        private (Vertex? pt, Edge? e, bool isControlPt) GetClickedObject(Vertex ptClicked)
+        private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
         {
             Vertex? ptOut = null;
-            bool isControlPt = false;
             double minPtDist = double.MaxValue;
             Edge? edgeOut = null;
             double minEdgeDist = double.MaxValue;
 
-            if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut, isControlPt);
+            if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut);
 
             edgesList.TraverseAllList((Edge e) =>
             {
-                foreach (var item in e.GetVertexesExceptPrev())
+                foreach (var v in e.GetVertexesExceptPrev())
                 {
-                    double ptDist = GeometryUtils.DistB2P(ptClicked, item.v);
+                    double ptDist = GeometryUtils.DistB2P(ptClicked, v);
                     if (ptDist < VERTEX_BUFFER && ptDist < minPtDist)
                     {
                         minPtDist = ptDist;
-                        ptOut = item.v;
-                        isControlPt = item.isControl;
+                        ptOut = v;
                     }
                 }
 
@@ -311,7 +311,7 @@ namespace EdytorWielokatow
             if (ptOut is not null)
                 edgeOut = null;
 
-            return (ptOut, edgeOut, isControlPt);
+            return (ptOut, edgeOut);
         }
 
         private void usunToolStripMenuItem_Click(object sender, EventArgs e)
@@ -433,7 +433,7 @@ namespace EdytorWielokatow
 
             var midpoint = GeometryUtils.Midpoint(selectedEdge.PrevVertex, selectedEdge.NextVertex);
             var newEdge = new BezierEdge(selectedEdge,
-                 new Vertex(midpoint.X, midpoint.Y + 50),
+                 new Vertex(midpoint.X, midpoint.Y + 50), // TODO usunac stad domyslne wierzch
                  new Vertex(midpoint.X, midpoint.Y - 50));
 
             // TODO zmienic zeby wierzch byly

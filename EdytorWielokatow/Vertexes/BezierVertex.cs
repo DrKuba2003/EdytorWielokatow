@@ -8,6 +8,7 @@ namespace EdytorWielokatow.Vertexes
 {
     public enum ContinuityClasses { G0, G1, C1 };
 
+    // TODO ContinuityVertex??
     public class BezierVertex : Vertex
     {
 

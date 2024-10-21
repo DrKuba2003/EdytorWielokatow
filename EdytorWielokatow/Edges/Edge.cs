@@ -53,9 +53,9 @@ namespace EdytorWielokatow.Edges
         public bool IsValid()
             => IsValid(PrevVertex, NextVertex);
 
-        public virtual IEnumerable<(Vertex v, bool isControl)> GetVertexesExceptPrev()
+        public virtual IEnumerable<Vertex> GetVertexesExceptPrev()
         {
-            yield return (NextVertex, false);
+            yield return NextVertex;
         }
 
         public virtual Vertex GetNeighVertex(Vertex v)
