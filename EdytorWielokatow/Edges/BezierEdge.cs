@@ -3,7 +3,9 @@ using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace EdytorWielokatow.Edges
@@ -35,19 +37,19 @@ namespace EdytorWielokatow.Edges
             // changing jest tylko odblokowany w tej funkcji
 
             bool isPrev = changed == PrevVertex;
-            var correspondingEdge = isPrev ? Prev : Next;
-            if (correspondingEdge is null) return;
-            BezierVertex correspondingEdgeVertex = isPrev ?
+            var neighEdge = isPrev ? Prev : Next;
+            if (neighEdge is null) return;
+            BezierVertex sharedEdgeVertex = isPrev ?
                 (BezierVertex)PrevVertex :
                 (BezierVertex)NextVertex;
-            var continuityClass = correspondingEdgeVertex.ContinuityClass;
+            var continuityClass = sharedEdgeVertex.ContinuityClass;
             if (continuityClass != ContinuityClasses.G1 &&
                 continuityClass != ContinuityClasses.C1) return;
 
             var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
             var vec = new Vertex(
-                correspondingEdgeVertex.X - correspondingEdge.GetNeighVertex(correspondingEdgeVertex).X,
-                correspondingEdgeVertex.Y - correspondingEdge.GetNeighVertex(correspondingEdgeVertex).Y
+                sharedEdgeVertex.X - neighEdge.GetNeighVertex(sharedEdgeVertex).X,
+                sharedEdgeVertex.Y - neighEdge.GetNeighVertex(sharedEdgeVertex).Y
                 );
 
 
@@ -55,25 +57,46 @@ namespace EdytorWielokatow.Edges
             switch (continuityClass)
             {
                 case ContinuityClasses.C1:
-                    controlVertex.X = correspondingEdgeVertex.X + vec.X;
-                    controlVertex.Y = correspondingEdgeVertex.Y + vec.Y;
+                    controlVertex.X = sharedEdgeVertex.X + vec.X;
+                    controlVertex.Y = sharedEdgeVertex.Y + vec.Y;
                     break;
                 case ContinuityClasses.G1:
                     var vecL = GeometryUtils.VectorLength(vec);
                     if (vecL < 0.1)
                         return;
-                    var L = GeometryUtils.DistB2P(correspondingEdgeVertex, controlVertex);
+                    var L = GeometryUtils.DistB2P(sharedEdgeVertex, controlVertex);
                     double scalar = L / vecL;
 
-                    controlVertex.X = correspondingEdgeVertex.X + (int)Math.Round(vec.X * scalar, 0);
-                    controlVertex.Y = correspondingEdgeVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
+                    controlVertex.X = sharedEdgeVertex.X + (int)Math.Round(vec.X * scalar, 0);
+                    controlVertex.Y = sharedEdgeVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
                     break;
             }
         }
 
         public void ControlChangeVertexPos(Vertex controlVertex)
         {
+            bool isPrev = controlVertex == PrevControlVertex;
+            var vertex = isPrev ? PrevVertex : NextVertex;
+            var neighEdge = isPrev ? Prev : Next;
 
+            if (neighEdge is HorizontalEdge)
+            {
+                vertex.Y = controlVertex.Y;
+            }
+            else if (neighEdge is VerticalEdge)
+            {
+                vertex.X = controlVertex.X;
+            }
+            else if (neighEdge is FixedLengthEdge)
+            {
+                var vec = new Vertex(controlVertex.X - vertex.X,
+                            controlVertex.Y - vertex.Y);
+                var vecL = GeometryUtils.DistB2P(vertex, controlVertex);
+                double scalar = 1 - ((FixedLengthEdge)neighEdge).Length / vecL;
+
+                vertex.X += (int)(vec.X * scalar);
+                vertex.Y += (int)(vec.Y * scalar);
+            }
         }
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;
