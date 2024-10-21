@@ -41,7 +41,7 @@ namespace EdytorWielokatow.Edges
                 (BezierVertex)PrevVertex :
                 (BezierVertex)NextVertex;
             var continuityClass = correspondingEdgeVertex.ContinuityClass;
-            if (continuityClass != ContinuityClasses.G0 &&
+            if (continuityClass != ContinuityClasses.G1 &&
                 continuityClass != ContinuityClasses.C1) return;
 
             var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
@@ -58,7 +58,7 @@ namespace EdytorWielokatow.Edges
                     controlVertex.X = correspondingEdgeVertex.X + vec.X;
                     controlVertex.Y = correspondingEdgeVertex.Y + vec.Y;
                     break;
-                case ContinuityClasses.G0:
+                case ContinuityClasses.G1:
                     var vecL = GeometryUtils.VectorLength(vec);
                     var L = GeometryUtils.DistB2P(correspondingEdgeVertex, controlVertex);
                     double scalar = L / vecL;

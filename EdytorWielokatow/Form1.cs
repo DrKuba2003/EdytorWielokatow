@@ -256,7 +256,8 @@ namespace EdytorWielokatow
                         item.e is not BezierEdge)
                     {
                         queue.Enqueue((true, item.e.Prev));
-                        item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
+                        if (item.e.Prev is not BezierEdge)
+                            item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
                     }
                 }
                 else
@@ -266,7 +267,8 @@ namespace EdytorWielokatow
                         item.e is not BezierEdge)
                     {
                         queue.Enqueue((false, item.e.Next));
-                        item.e.Next.NextVertex.IsLocked = true;
+                        if (item.e.Next is not BezierEdge)
+                            item.e.Next.NextVertex.IsLocked = true;
                     }
                 }
                 last = (item.e, item.isPrev);
@@ -428,13 +430,12 @@ namespace EdytorWielokatow
                  new Vertex(midpoint.X, midpoint.Y + 50),
                  new Vertex(midpoint.X, midpoint.Y - 50));
 
-            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
-                ShowEdgeTypeError();
-            else
-            {
-                edgesList.ReplaceEdge(selectedEdge, newEdge);
-                Draw();
-            }
+            // TODO zmienic zeby wierzch byly
+
+            edgesList.ReplaceEdge(selectedEdge, newEdge);
+            ValidateEdges(newEdge, newEdge);
+            Draw();
+
 
             selectedEdge = null;
         }
@@ -448,19 +449,6 @@ namespace EdytorWielokatow
             Draw();
         }
 
-        private void c0ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (selectedPoint is null) return;
-
-            if (selectedPoint is BezierVertex)
-            {
-                BezierVertex v = (BezierVertex)selectedPoint;
-                v.ContinuityClass = ContinuityClasses.C0;
-
-                Draw();
-            }
-        }
-
         private void g0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (selectedPoint is null) return;
@@ -469,6 +457,19 @@ namespace EdytorWielokatow
             {
                 BezierVertex v = (BezierVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.G0;
+
+                Draw();
+            }
+        }
+
+        private void g1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedPoint is null) return;
+
+            if (selectedPoint is BezierVertex)
+            {
+                BezierVertex v = (BezierVertex)selectedPoint;
+                v.ContinuityClass = ContinuityClasses.G1;
 
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                 if (prevEdge is not null && nextEdge is not null)

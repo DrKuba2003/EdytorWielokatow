@@ -78,15 +78,15 @@
             // 
             c0ToolStripMenuItem.Name = "c0ToolStripMenuItem";
             c0ToolStripMenuItem.Size = new Size(210, 24);
-            c0ToolStripMenuItem.Text = "C0";
-            c0ToolStripMenuItem.Click += c0ToolStripMenuItem_Click;
+            c0ToolStripMenuItem.Text = "G0";
+            c0ToolStripMenuItem.Click += g0ToolStripMenuItem_Click;
             // 
             // g0ToolStripMenuItem
             // 
             g0ToolStripMenuItem.Name = "g0ToolStripMenuItem";
             g0ToolStripMenuItem.Size = new Size(210, 24);
-            g0ToolStripMenuItem.Text = "G0";
-            g0ToolStripMenuItem.Click += g0ToolStripMenuItem_Click;
+            g0ToolStripMenuItem.Text = "G1";
+            g0ToolStripMenuItem.Click += g1ToolStripMenuItem_Click;
             // 
             // c1ToolStripMenuItem
             // 
