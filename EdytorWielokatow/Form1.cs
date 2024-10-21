@@ -25,6 +25,7 @@ namespace EdytorWielokatow
         private EdgesList edgesList;
         private Vertex? startingPt;
         private Vertex? selectedPoint;
+        private bool selectedPtIsControl = false;
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
@@ -83,7 +84,7 @@ namespace EdytorWielokatow
                 }
                 else if (appState == AppStates.AdmiringPoly)
                 {
-                    (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
+                    (selectedPoint, selectedEdge, selectedPtIsControl) = GetClickedObject(ptClicked);
                     if (selectedPoint is not null)
                     {
                         appState = AppStates.DraggingPoint;
@@ -107,17 +108,11 @@ namespace EdytorWielokatow
             else if (e.Button == MouseButtons.Right &&
                 appState == AppStates.AdmiringPoly)
             {
-                (var ptR, var edgeR) = GetClickedObject(ptClicked);
-                if (ptR is not null)
-                {
+                (selectedPoint, selectedEdge, var isControl) = GetClickedObject(ptClicked);
+                if (selectedPoint is not null && !isControl)
                     vertexContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
-                    selectedPoint = ptR;
-                }
-                else if (edgeR is not null)
-                {
+                else if (selectedEdge is not null)
                     edgeContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
-                    selectedEdge = edgeR;
-                }
             }
         }
 
@@ -184,8 +179,8 @@ namespace EdytorWielokatow
                     edgesList.MoveWholePolygon(vec);
                     Draw();
                 }
-                cursorOldPos = new Vertex(e.X, e.Y);
             }
+            cursorOldPos = new Vertex(e.X, e.Y);
         }
 
         private void Canvas_MouseUp(object sender, MouseEventArgs e)
@@ -236,19 +231,6 @@ namespace EdytorWielokatow
                 roolback[changing] = new Point(changing.X, changing.Y);
                 item.e.ChangeVertexPos(changed, changing);
 
-                // TODO usunac
-                //using (Graphics g = Graphics.FromImage(drawArea))
-                //{
-                //    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
-                //            item.e.PrevVertex.X, item.e.PrevVertex.Y,
-                //            item.e.NextVertex.X, item.e.NextVertex.Y);
-
-                //    g.FillEllipse(Brushes.Magenta,
-                //             roolback[changing].X - VERTEX_BUFFER, roolback[changing].Y - VERTEX_BUFFER,
-                //            2 * VERTEX_BUFFER, 2 * VERTEX_BUFFER);
-                //}
-                //Canvas.Refresh();
-
                 if (item.isPrev)
                 {
                     if (!item.e.Prev!.PrevVertex.IsLocked &&
@@ -289,24 +271,26 @@ namespace EdytorWielokatow
             return false;
         }
 
-        private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
+        private (Vertex? pt, Edge? e, bool isControlPt) GetClickedObject(Vertex ptClicked)
         {
             Vertex? ptOut = null;
+            bool isControlPt = false;
             double minPtDist = double.MaxValue;
             Edge? edgeOut = null;
             double minEdgeDist = double.MaxValue;
 
-            if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut);
+            if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut, isControlPt);
 
             edgesList.TraverseAllList((Edge e) =>
             {
-                foreach (var pt in e.GetVertexesExceptPrev())
+                foreach (var item in e.GetVertexesExceptPrev())
                 {
-                    double ptDist = GeometryUtils.DistB2P(ptClicked, pt);
+                    double ptDist = GeometryUtils.DistB2P(ptClicked, item.v);
                     if (ptDist < VERTEX_BUFFER && ptDist < minPtDist)
                     {
                         minPtDist = ptDist;
-                        ptOut = pt;
+                        ptOut = item.v;
+                        isControlPt = item.isControl;
                     }
                 }
 
@@ -326,7 +310,7 @@ namespace EdytorWielokatow
             if (ptOut is not null)
                 edgeOut = null;
 
-            return (ptOut, edgeOut);
+            return (ptOut, edgeOut, isControlPt);
         }
 
         private void usunToolStripMenuItem_Click(object sender, EventArgs e)

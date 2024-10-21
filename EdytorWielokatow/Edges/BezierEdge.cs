@@ -71,11 +71,11 @@ namespace EdytorWielokatow.Edges
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;
 
-        public override IEnumerable<Vertex> GetVertexesExceptPrev()
+        public override IEnumerable<(Vertex v, bool isControl)> GetVertexesExceptPrev()
         {
-            yield return PrevControlVertex;
-            yield return NextControlVertex;
-            yield return NextVertex;
+            yield return (PrevControlVertex, true);
+            yield return (NextControlVertex,  true);
+            yield return (NextVertex, false);
         }
 
         public override Vertex GetNeighVertex(Vertex v)
