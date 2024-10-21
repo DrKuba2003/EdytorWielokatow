@@ -151,9 +151,6 @@ namespace EdytorWielokatow
                         }
                     }
 
-
-
-
                     Draw();
                 }
                 else if (appState == AppStates.DraggingEdge &&
@@ -261,7 +258,6 @@ namespace EdytorWielokatow
                         queue.Enqueue((true, item.e.Prev));
                         item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
                     }
-
                 }
                 else
                 {
@@ -285,7 +281,6 @@ namespace EdytorWielokatow
 
                 return true;
             }
-
 
             edgesList.UnlockAllVertexes();
 
@@ -461,6 +456,7 @@ namespace EdytorWielokatow
             {
                 BezierVertex v = (BezierVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.C0;
+
                 Draw();
             }
         }
@@ -473,6 +469,16 @@ namespace EdytorWielokatow
             {
                 BezierVertex v = (BezierVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.G0;
+
+                (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
+                if (prevEdge is not null && nextEdge is not null)
+                {
+                    if (ValidateEdges(prevEdge!, nextEdge!))
+                    {
+                        // TODO cos wymyslec
+                    }
+                }
+
                 Draw();
             }
         }
@@ -485,6 +491,16 @@ namespace EdytorWielokatow
             {
                 BezierVertex v = (BezierVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.C1;
+
+                (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
+                if (prevEdge is not null && nextEdge is not null)
+                {
+                    if (ValidateEdges(prevEdge!, nextEdge!))
+                    {
+                        // TODO cos wymyslec
+                    }
+                }
+
                 Draw();
             }
         }
