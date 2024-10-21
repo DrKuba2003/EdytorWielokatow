@@ -36,7 +36,17 @@ namespace EdytorWielokatow.Edges
             Next = e.Next;
         }
 
-        public virtual void ChangeVertexPos(Vertex changed, Vertex changing) { }
+        public virtual void ChangeVertexPos(Vertex changed, Vertex changing)
+        {
+            bool isPrev = changed == PrevVertex;
+            var neighEdge = isPrev ? Prev : Next;
+            if (neighEdge is null) return;
+
+            if (neighEdge is BezierEdge)
+            {
+                // TODO
+            }
+        }
 
         public virtual bool IsValid(Vertex v1, Vertex v2) => true;
 
@@ -47,6 +57,9 @@ namespace EdytorWielokatow.Edges
         {
             yield return NextVertex;
         }
+
+        public virtual Vertex GetNeighVertex(Vertex v)
+            => v == PrevVertex ? NextVertex : PrevVertex;
 
         public virtual void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {

@@ -237,17 +237,17 @@ namespace EdytorWielokatow
                 item.e.ChangeVertexPos(changed, changing);
 
                 // TODO usunac
-                using (Graphics g = Graphics.FromImage(drawArea))
-                {
-                    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
-                            item.e.PrevVertex.X, item.e.PrevVertex.Y,
-                            item.e.NextVertex.X, item.e.NextVertex.Y);
+                //using (Graphics g = Graphics.FromImage(drawArea))
+                //{
+                //    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
+                //            item.e.PrevVertex.X, item.e.PrevVertex.Y,
+                //            item.e.NextVertex.X, item.e.NextVertex.Y);
 
-                    g.FillEllipse(Brushes.Magenta,
-                             roolback[changing].X - VERTEX_BUFFER, roolback[changing].Y - VERTEX_BUFFER,
-                            2 * VERTEX_BUFFER, 2 * VERTEX_BUFFER);
-                }
-                Canvas.Refresh();
+                //    g.FillEllipse(Brushes.Magenta,
+                //             roolback[changing].X - VERTEX_BUFFER, roolback[changing].Y - VERTEX_BUFFER,
+                //            2 * VERTEX_BUFFER, 2 * VERTEX_BUFFER);
+                //}
+                //Canvas.Refresh();
 
                 if (item.isPrev)
                 {

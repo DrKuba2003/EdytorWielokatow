@@ -46,11 +46,9 @@ namespace EdytorWielokatow.Edges
 
             var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
             var vec = new Vertex(
-                correspondingEdge.PrevVertex.X - correspondingEdge.NextVertex.X,
-                correspondingEdge.PrevVertex.Y - correspondingEdge.NextVertex.Y
+                correspondingEdgeVertex.X - correspondingEdge.GetNeighVertex(correspondingEdgeVertex).X,
+                correspondingEdgeVertex.Y - correspondingEdge.GetNeighVertex(correspondingEdgeVertex).Y
                 );
-            if (isPrev)
-                vec = -1 * vec;
 
 
             changing.IsLocked = false;
@@ -79,6 +77,9 @@ namespace EdytorWielokatow.Edges
             yield return NextControlVertex;
             yield return NextVertex;
         }
+
+        public override Vertex GetNeighVertex(Vertex v)
+            => v == PrevVertex ? PrevControlVertex : NextControlVertex;
 
         public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
