@@ -363,10 +363,17 @@ namespace EdytorWielokatow
                 return;
             }
 
+            Vertex rollbackPrev = new Vertex(selectedEdge.PrevVertex);
+            Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new VerticalEdge(selectedEdge);
 
             if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            {
+                selectedEdge.PrevVertex.CopyData(rollbackPrev);
+                selectedEdge.NextVertex.CopyData(rollbackNext);
+
                 ShowEdgeTypeError();
+            }
             else
             {
                 edgesList.ReplaceEdge(selectedEdge, newEdge);
@@ -387,10 +394,17 @@ namespace EdytorWielokatow
                 return;
             }
 
+            Vertex rollbackPrev = new Vertex(selectedEdge.PrevVertex);
+            Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new HorizontalEdge(selectedEdge);
 
             if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            {
+                selectedEdge.PrevVertex.CopyData(rollbackPrev);
+                selectedEdge.NextVertex.CopyData(rollbackNext);
+
                 ShowEdgeTypeError();
+            }
             else
             {
                 edgesList.ReplaceEdge(selectedEdge, newEdge);
@@ -408,10 +422,17 @@ namespace EdytorWielokatow
 
             L = new FixedLengthDialog().Show(L);
 
+            Vertex rollbackPrev = new Vertex(selectedEdge.PrevVertex);
+            Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new FixedLengthEdge(selectedEdge, L);
 
             if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            {
+                selectedEdge.PrevVertex.CopyData(rollbackPrev);
+                selectedEdge.NextVertex.CopyData(rollbackNext);
+
                 ShowEdgeTypeError();
+            }
             else
             {
                 edgesList.ReplaceEdge(selectedEdge, newEdge);
