@@ -216,12 +216,14 @@ namespace EdytorWielokatow
             prevEdge.NextVertex.IsLocked = true;
             nextEdge.PrevVertex.IsLocked = true;
 
-            if (nextEdge.GetType() != typeof(Edge))
+            if (nextEdge.GetType() != typeof(Edge) ||
+                nextEdge.Next is BezierEdge)
             {
                 queue.Enqueue((false, nextEdge));
                 nextEdge.NextVertex.IsLocked = true;
             }
-            if (prevEdge.GetType() != typeof(Edge))
+            if (prevEdge.GetType() != typeof(Edge) ||
+                prevEdge.Prev is BezierEdge)
             {
                 queue.Enqueue((true, prevEdge));
                 prevEdge.PrevVertex.IsLocked = true;
@@ -238,37 +240,37 @@ namespace EdytorWielokatow
                 item.e.ChangeVertexPos(changed, changing);
 
                 // TODO usunac
-                //using (Graphics g = Graphics.FromImage(drawArea))
-                //{
-                //    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
-                //            item.e.PrevVertex.X, item.e.PrevVertex.Y,
-                //            item.e.NextVertex.X, item.e.NextVertex.Y);
+                using (Graphics g = Graphics.FromImage(drawArea))
+                {
+                    g.DrawLine(new Pen(Brushes.YellowGreen, 3),
+                            item.e.PrevVertex.X, item.e.PrevVertex.Y,
+                            item.e.NextVertex.X, item.e.NextVertex.Y);
 
-                //    g.FillEllipse(Brushes.Magenta,
-                //             roolback[changing].X - RADIUS, roolback[changing].Y - RADIUS,
-                //            2 * RADIUS, 2 * RADIUS);
-                //}
-                //Canvas.Refresh();
+                    g.FillEllipse(Brushes.Magenta,
+                             roolback[changing].X - VERTEX_BUFFER, roolback[changing].Y - VERTEX_BUFFER,
+                            2 * VERTEX_BUFFER, 2 * VERTEX_BUFFER);
+                }
+                Canvas.Refresh();
 
                 if (item.isPrev)
                 {
                     if (!item.e.Prev!.PrevVertex.IsLocked &&
-                        item.e.Prev!.GetType() != typeof(Edge))
+                        item.e.Prev!.GetType() != typeof(Edge) &&
+                        item.e is not BezierEdge)
                     {
                         queue.Enqueue((true, item.e.Prev));
-                        if (item.e.Prev is not BezierEdge)
-                            item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
+                        item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
                     }
 
                 }
                 else
                 {
                     if (!item.e.Next!.NextVertex.IsLocked &&
-                        item.e.Next!.GetType() != typeof(Edge))
+                        item.e.Next!.GetType() != typeof(Edge) &&
+                        item.e is not BezierEdge)
                     {
                         queue.Enqueue((false, item.e.Next));
-                        if (item.e.Next is not BezierEdge)
-                            item.e.Next.NextVertex.IsLocked = true;
+                        item.e.Next.NextVertex.IsLocked = true;
                     }
                 }
                 last = (item.e, item.isPrev);

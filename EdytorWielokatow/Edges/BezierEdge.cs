@@ -16,10 +16,10 @@ namespace EdytorWielokatow.Edges
             Icon.FromHandle(new Bitmap("Resources\\Bezier.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
 
-        public Vertex PrevControlVertex {  get; set; }
+        public Vertex PrevControlVertex { get; set; }
         public Vertex NextControlVertex { get; set; }
         public BezierEdge(Vertex prevVert, Vertex nextVert, Vertex prevControlVert, Vertex nextControlVert,
-            Edge? prev = null, Edge? next = null) 
+            Edge? prev = null, Edge? next = null)
             : base(prevVert, nextVert, prev, next)
         {
             PrevControlVertex = prevControlVert;
@@ -32,8 +32,43 @@ namespace EdytorWielokatow.Edges
 
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
-            // changing jest ignorowany tutaj
+            // changing jest tylko odblokowany w tej funkcji
 
+            bool isPrev = changed == PrevVertex;
+            var correspondingEdge = isPrev ? Prev : Next;
+            if (correspondingEdge is null) return;
+            BezierVertex correspondingEdgeVertex = isPrev ?
+                (BezierVertex)PrevVertex :
+                (BezierVertex)NextVertex;
+            var continuityClass = correspondingEdgeVertex.ContinuityClass;
+            if (continuityClass != ContinuityClasses.G0 &&
+                continuityClass != ContinuityClasses.C1) return;
+
+            var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
+            var vec = new Vertex(
+                correspondingEdge.PrevVertex.X - correspondingEdge.NextVertex.X,
+                correspondingEdge.PrevVertex.Y - correspondingEdge.NextVertex.Y
+                );
+            if (isPrev)
+                vec = -1 * vec;
+
+
+            changing.IsLocked = false;
+            switch (continuityClass)
+            {
+                case ContinuityClasses.C1:
+                    controlVertex.X = correspondingEdgeVertex.X + vec.X;
+                    controlVertex.Y = correspondingEdgeVertex.Y + vec.Y;
+                    break;
+                case ContinuityClasses.G0:
+                    var vecL = GeometryUtils.VectorLength(vec);
+                    var L = GeometryUtils.DistB2P(correspondingEdgeVertex, controlVertex);
+                    double scalar = L / vecL;
+
+                    controlVertex.X = correspondingEdgeVertex.X + (int)Math.Round(vec.X * scalar, 0);
+                    controlVertex.Y = correspondingEdgeVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
+                    break;
+            }
         }
 
         public override bool IsValid(Vertex v1, Vertex v2) => true;

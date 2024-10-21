@@ -30,6 +30,8 @@ namespace EdytorWielokatow.Utils
 
         public static double SquaredDistB2P(Vertex p1, Vertex p2) =>
             (Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+        public static double VectorLength(Vertex v) =>
+            Math.Sqrt((Math.Pow(v.X, 2) + Math.Pow(v.Y, 2)));
 
         public static bool CheckIf2PClose(Vertex p1, Vertex p2, double buffer) =>
             SquaredDistB2P(p1, p2) < Math.Pow(buffer, 2);
