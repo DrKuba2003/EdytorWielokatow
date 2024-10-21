@@ -170,7 +170,8 @@ namespace EdytorWielokatow.Edges
                     if (be.PrevControlVertex == v ||
                         be.NextControlVertex == v)
                     {
-
+                        ePrev = be.Prev;
+                        eNext = be.Next;
                     }
                 }
 
