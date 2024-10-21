@@ -104,6 +104,8 @@ namespace EdytorWielokatow.Edges
             NextControlVertex.Draw(g, Brushes.Magenta, CONTROL_RADIUS);
 
             GeometryUtils.Bezier(g, PrevVertex, PrevControlVertex, NextControlVertex, NextVertex, dashPen.Brush);
+
+            dashPen.Dispose();
         }
 
         public override Icon? GetIcon() => icon;

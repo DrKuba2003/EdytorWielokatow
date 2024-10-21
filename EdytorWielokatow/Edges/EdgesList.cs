@@ -3,6 +3,7 @@ using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -163,13 +164,23 @@ namespace EdytorWielokatow.Edges
                 else if (e.NextVertex == v)
                     ePrev = e;
 
+                if (e is BezierEdge)
+                {
+                    var be = (BezierEdge)e;
+                    if (be.PrevControlVertex == v ||
+                        be.NextControlVertex == v)
+                    {
+
+                    }
+                }
+
                 return ePrev is not null && eNext is not null;
             });
             return (ePrev, eNext);
         }
 
         // TODO moze exceptions to za duzo, nieoptymalne
-        public void MoveWholePolygon(Vertex vec, List<Vertex>? exceptions= null)
+        public void MoveWholePolygon(Vertex vec, List<Vertex>? exceptions = null)
         {
             TraverseAllList((Edge e) =>
             {

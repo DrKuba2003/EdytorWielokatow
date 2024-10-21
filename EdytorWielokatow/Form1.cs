@@ -199,6 +199,7 @@ namespace EdytorWielokatow
             }
         }
 
+        // TODO move to edgeslist
         private bool ValidateEdges(Edge prevEdge, Edge nextEdge)
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
