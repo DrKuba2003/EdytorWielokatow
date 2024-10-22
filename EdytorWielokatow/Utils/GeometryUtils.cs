@@ -80,7 +80,6 @@ namespace EdytorWielokatow.Utils
             }
         }
 
-        // TODO zamienic sposob na grube linie
         public static void Bezier(Graphics g, Vertex V0, Vertex V1, Vertex V2, Vertex V3, Brush brush)
         {
             Vertex A1 = 3 * (V1 - V0);
@@ -98,18 +97,17 @@ namespace EdytorWielokatow.Utils
             (double X, double Y) P3 = 6 * d3 * A3;
 
             double t = 0;
+            var P0old = new PointF((float)P0.X, (float)P0.Y);
             while (t < 1)
             {
-                // TODO zamienic na linie
-                g.FillRectangle(brush, (int)P0.X - 1, (int)P0.Y, 1, 1);
-                g.FillRectangle(brush, (int)P0.X, (int)P0.Y - 1, 1, 1);
-                g.FillRectangle(brush, (int)P0.X, (int)P0.Y, 1, 1);
-                g.FillRectangle(brush, (int)P0.X + 1, (int)P0.Y, 1, 1);
-                g.FillRectangle(brush, (int)P0.X, (int)P0.Y + 1, 1, 1);
-
                 P0 = Utils.AddDoubleTuples(P0, P1);
                 P1 = Utils.AddDoubleTuples(P1, P2);
                 P2 = Utils.AddDoubleTuples(P2, P3);
+
+                var P0f = new PointF((float)P0.X, (float)P0.Y);
+                g.DrawLine(new Pen(brush, 3), P0old, P0f);
+                P0old = P0f;
+
                 t += d;
             }
         }
