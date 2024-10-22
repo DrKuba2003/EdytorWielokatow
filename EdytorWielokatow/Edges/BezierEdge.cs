@@ -3,6 +3,7 @@ using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Channels;
@@ -20,17 +21,25 @@ namespace EdytorWielokatow.Edges
 
         public ControlVertex PrevControlVertex { get; set; }
         public ControlVertex NextControlVertex { get; set; }
-        public BezierEdge(Vertex prevVert, Vertex nextVert, Vertex prevControlVert, Vertex nextControlVert,
+        public BezierEdge(Vertex prevVertex, Vertex nextVertex, Vertex prevControlVertex, Vertex nextControlVertex,
             Edge? prev = null, Edge? next = null)
-            : base(prevVert, nextVert, prev, next)
+            : base(prevVertex, nextVertex, prev, next)
         {
-            PrevControlVertex = new ControlVertex(prevControlVert, this);
-            NextControlVertex = new ControlVertex(nextControlVert, this);
+            PrevControlVertex = new ControlVertex(prevControlVertex, this);
+            NextControlVertex = new ControlVertex(nextControlVertex, this);
+        }
+        public BezierEdge(Vertex prevVertex, Vertex nextVertex, Edge? prev = null, Edge? next = null)
+            : base(prevVertex, nextVertex, prev, next)
+        {
+            var midpoint = GeometryUtils.Midpoint(prevVertex, nextVertex);
+            PrevControlVertex = new ControlVertex(midpoint.X, midpoint.Y + 50, this);
+            NextControlVertex = new ControlVertex(midpoint.X, midpoint.Y - 50, this);
         }
 
         public BezierEdge(Edge e, Vertex prevControlVert, Vertex nextControlVert)
-            : this(e.PrevVertex, e.NextVertex, prevControlVert, nextControlVert, e.Prev, e.Next)
-        { }
+            : this(e.PrevVertex, e.NextVertex, prevControlVert, nextControlVert, e.Prev, e.Next) { }
+
+        public BezierEdge(Edge e): this(e.PrevVertex, e.NextVertex, e.Prev, e.Next) { }
 
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {

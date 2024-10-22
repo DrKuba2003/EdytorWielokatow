@@ -21,6 +21,77 @@ namespace EdytorWielokatow.Edges
             Count = 0;
         }
 
+        public bool ValidateEdges(Edge prevEdge, Edge nextEdge)
+        {
+            (Edge edge, bool isPrev) last = (nextEdge, false);
+            var roolback = new Dictionary<Vertex, Point>();
+            var queue = new Queue<(bool isPrev, Edge e)>();
+
+            prevEdge.NextVertex.IsLocked = true;
+            nextEdge.PrevVertex.IsLocked = true;
+
+            if (nextEdge.GetType() != typeof(Edge) ||
+                nextEdge.Next is BezierEdge)
+            {
+                queue.Enqueue((false, nextEdge));
+                nextEdge.NextVertex.IsLocked = nextEdge.Next is not BezierEdge;
+            }
+            if (prevEdge.GetType() != typeof(Edge) ||
+                prevEdge.Prev is BezierEdge)
+            {
+                queue.Enqueue((true, prevEdge));
+                prevEdge.PrevVertex.IsLocked = prevEdge.Prev is not BezierEdge;
+            }
+
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+
+                var changed = item.isPrev ? item.e.NextVertex : item.e.PrevVertex;
+                var changing = item.isPrev ? item.e.PrevVertex : item.e.NextVertex;
+
+                roolback[changing] = new Point(changing.X, changing.Y);
+                item.e.ChangeVertexPos(changed, changing);
+
+                if (item.isPrev)
+                {
+                    if (!item.e.Prev!.PrevVertex.IsLocked &&
+                        item.e.Prev!.GetType() != typeof(Edge) &&
+                        item.e is not BezierEdge)
+                    {
+                        queue.Enqueue((true, item.e.Prev));
+                        // zeby bylo oznaczone ze bedzie zmienianie tylko w przypadku jesli nie jest bezierem
+                        item.e.Prev.PrevVertex.IsLocked = item.e.Prev is not BezierEdge;
+                    }
+                }
+                else
+                {
+                    if (!item.e.Next!.NextVertex.IsLocked &&
+                        item.e.Next!.GetType() != typeof(Edge) &&
+                        item.e is not BezierEdge)
+                    {
+                        queue.Enqueue((false, item.e.Next));
+                        item.e.Next.NextVertex.IsLocked = item.e.Next is not BezierEdge;
+                    }
+                }
+                last = (item.e, item.isPrev);
+            }
+
+            if ((last.isPrev && !last.edge.Prev!.IsValid()) ||
+                (!last.isPrev && !last.edge.Next!.IsValid()))
+            {
+                // Rolling back changes
+                foreach (var key in roolback.Keys)
+                    key.CopyData(roolback[key]);
+
+                return true;
+            }
+
+            UnlockAllVertexes();
+
+            return false;
+        }
+
         public void AddEdgeAtEnd(Edge e)
         {
             if (Count == 0)

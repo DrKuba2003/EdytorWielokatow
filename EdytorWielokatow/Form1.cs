@@ -30,6 +30,7 @@ namespace EdytorWielokatow
 
         // TODO add initila polygon
         // TODO usun sprawdzenia czy out canvas i dodaj nowe menu
+        // TODO zamiana na C1 i fixedlengthedge
         public Form1()
         {
             InitializeComponent();
@@ -145,7 +146,7 @@ namespace EdytorWielokatow
                     (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                     if (prevEdge is not null && nextEdge is not null)
                     {
-                        if (ValidateEdges(prevEdge!, nextEdge!))
+                        if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
                         {
                             Vertex vec = new Vertex(e.X - cursorOldPos.X,
                                 e.Y - cursorOldPos.Y);
@@ -171,7 +172,7 @@ namespace EdytorWielokatow
                     selectedEdge.NextVertex.Y += vec.Y;
 
                     // TODO something not right with bezier
-                    if (ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
+                    if (edgesList.ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
                     {
                         edgesList.MoveWholePolygon(vec,
                             new List<Vertex>() { selectedEdge.PrevVertex, selectedEdge.NextVertex });
@@ -205,78 +206,6 @@ namespace EdytorWielokatow
                     Draw(true);
                 }
             }
-        }
-
-        // TODO move to edgeslist
-        private bool ValidateEdges(Edge prevEdge, Edge nextEdge)
-        {
-            (Edge edge, bool isPrev) last = (nextEdge, false);
-            var roolback = new Dictionary<Vertex, Point>();
-            var queue = new Queue<(bool isPrev, Edge e)>();
-
-            prevEdge.NextVertex.IsLocked = true;
-            nextEdge.PrevVertex.IsLocked = true;
-
-            if (nextEdge.GetType() != typeof(Edge) ||
-                nextEdge.Next is BezierEdge)
-            {
-                queue.Enqueue((false, nextEdge));
-                nextEdge.NextVertex.IsLocked = nextEdge.Next is not BezierEdge;
-            }
-            if (prevEdge.GetType() != typeof(Edge) ||
-                prevEdge.Prev is BezierEdge)
-            {
-                queue.Enqueue((true, prevEdge));
-                prevEdge.PrevVertex.IsLocked = prevEdge.Prev is not BezierEdge;
-            }
-
-            while (queue.Count > 0)
-            {
-                var item = queue.Dequeue();
-
-                var changed = item.isPrev ? item.e.NextVertex : item.e.PrevVertex;
-                var changing = item.isPrev ? item.e.PrevVertex : item.e.NextVertex;
-
-                roolback[changing] = new Point(changing.X, changing.Y);
-                item.e.ChangeVertexPos(changed, changing);
-
-                if (item.isPrev)
-                {
-                    if (!item.e.Prev!.PrevVertex.IsLocked &&
-                        item.e.Prev!.GetType() != typeof(Edge) &&
-                        item.e is not BezierEdge)
-                    {
-                        queue.Enqueue((true, item.e.Prev));
-                        // zeby bylo oznaczone ze bedzie zmienianie
-                        item.e.Prev.PrevVertex.IsLocked = item.e.Prev is not BezierEdge;
-                    }
-                }
-                else
-                {
-                    if (!item.e.Next!.NextVertex.IsLocked &&
-                        item.e.Next!.GetType() != typeof(Edge) &&
-                        item.e is not BezierEdge)
-                    {
-                        queue.Enqueue((false, item.e.Next));
-                        item.e.Next.NextVertex.IsLocked = item.e.Next is not BezierEdge;
-                    }
-                }
-                last = (item.e, item.isPrev);
-            }
-
-            if ((last.isPrev && !last.edge.Prev!.IsValid()) ||
-                (!last.isPrev && !last.edge.Next!.IsValid()))
-            {
-                // Rolling back changes
-                foreach (var key in roolback.Keys)
-                    key.CopyData(roolback[key]);
-
-                return true;
-            }
-
-            edgesList.UnlockAllVertexes();
-
-            return false;
         }
 
         private (Vertex? pt, Edge? e) GetClickedObject(Vertex ptClicked)
@@ -357,7 +286,7 @@ namespace EdytorWielokatow
             Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new VerticalEdge(selectedEdge);
 
-            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            if (edgesList.ValidateEdges(newEdge.Prev!, newEdge.Next!))
             {
                 selectedEdge.PrevVertex.CopyData(rollbackPrev);
                 selectedEdge.NextVertex.CopyData(rollbackNext);
@@ -388,7 +317,7 @@ namespace EdytorWielokatow
             Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new HorizontalEdge(selectedEdge);
 
-            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            if (edgesList.ValidateEdges(newEdge.Prev!, newEdge.Next!))
             {
                 selectedEdge.PrevVertex.CopyData(rollbackPrev);
                 selectedEdge.NextVertex.CopyData(rollbackNext);
@@ -410,13 +339,14 @@ namespace EdytorWielokatow
 
             int L = (int)GeometryUtils.DistB2P(selectedEdge.PrevVertex, selectedEdge.NextVertex);
 
+            // TODO sprawdzanie czy zero
             L = new FixedLengthDialog().Show(L);
 
             Vertex rollbackPrev = new Vertex(selectedEdge.PrevVertex);
             Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new FixedLengthEdge(selectedEdge, L);
 
-            if (ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            if (edgesList.ValidateEdges(newEdge.Prev!, newEdge.Next!))
             {
                 selectedEdge.PrevVertex.CopyData(rollbackPrev);
                 selectedEdge.NextVertex.CopyData(rollbackNext);
@@ -437,14 +367,10 @@ namespace EdytorWielokatow
             if (selectedEdge is null) return;
 
             var midpoint = GeometryUtils.Midpoint(selectedEdge.PrevVertex, selectedEdge.NextVertex);
-            var newEdge = new BezierEdge(selectedEdge,
-                 new Vertex(midpoint.X, midpoint.Y + 50), // TODO usunac stad domyslne wierzch
-                 new Vertex(midpoint.X, midpoint.Y - 50));
-
-            // TODO zmienic zeby wierzch byly
+            var newEdge = new BezierEdge(selectedEdge);
 
             edgesList.ReplaceEdge(selectedEdge, newEdge);
-            ValidateEdges(newEdge, newEdge);
+            edgesList.ValidateEdges(newEdge, newEdge);
             Draw();
 
 
@@ -485,7 +411,7 @@ namespace EdytorWielokatow
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                 if (prevEdge is not null && nextEdge is not null)
                 {
-                    if (ValidateEdges(prevEdge!, nextEdge!))
+                    if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
                     {
                         // TODO cos wymyslec
                     }
@@ -507,7 +433,7 @@ namespace EdytorWielokatow
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                 if (prevEdge is not null && nextEdge is not null)
                 {
-                    if (ValidateEdges(prevEdge!, nextEdge!))
+                    if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
                     {
                         // TODO cos wymyslec
                     }
@@ -580,6 +506,22 @@ namespace EdytorWielokatow
         private void ShowEdgeTypeError()
             => MessageBox.Show("Nie mo¿na zmieniæ typu krawêdzi!!!", "B³¹d",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        private void CreateStartupPolygon()
+        {
+            //var v1 = new Vertex(100, 100);
+            //var v2 = new BezierVertex(200, 100);
+            //var v3 = new BezierVertex(200, 300);
+            //var v4 = new Vertex(100, 200);
+            //var c1 = 
+
+            //var e1 = new HorizontalEdge(v1, v2);
+            //var e2 = new BezierEdge(v2, v3);
+
+            //newEdge.Next = edgesList.Head;
+            //edgesList.Head!.Prev = newEdge;
+            //appState = AppStates.AdmiringPoly;
+        }
 
         private void ResetPoly()
         {
