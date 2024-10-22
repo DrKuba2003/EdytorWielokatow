@@ -29,6 +29,7 @@ namespace EdytorWielokatow
         private Vertex? cursorOldPos;
 
         // TODO add initila polygon
+        // TODO usun sprawdzenia czy out canvas i dodaj nowe menu
         public Form1()
         {
             InitializeComponent();
@@ -137,7 +138,7 @@ namespace EdytorWielokatow
                     selectedPoint.Y = e.Y;
                     if (selectedPoint is ControlVertex)
                     {
-                        ControlVertex cv = (ControlVertex) selectedPoint;
+                        ControlVertex cv = (ControlVertex)selectedPoint;
                         cv.Edge.ControlChangeVertexPos(cv);
                     }
 
@@ -220,13 +221,13 @@ namespace EdytorWielokatow
                 nextEdge.Next is BezierEdge)
             {
                 queue.Enqueue((false, nextEdge));
-                nextEdge.NextVertex.IsLocked = true;
+                nextEdge.NextVertex.IsLocked = nextEdge.Next is not BezierEdge;
             }
             if (prevEdge.GetType() != typeof(Edge) ||
                 prevEdge.Prev is BezierEdge)
             {
                 queue.Enqueue((true, prevEdge));
-                prevEdge.PrevVertex.IsLocked = true;
+                prevEdge.PrevVertex.IsLocked = prevEdge.Prev is not BezierEdge;
             }
 
             while (queue.Count > 0)
@@ -246,8 +247,8 @@ namespace EdytorWielokatow
                         item.e is not BezierEdge)
                     {
                         queue.Enqueue((true, item.e.Prev));
-                        if (item.e.Prev is not BezierEdge)
-                            item.e.Prev.PrevVertex.IsLocked = true; // zeby bylo oznaczone ze bedzie zmienianie
+                        // zeby bylo oznaczone ze bedzie zmienianie
+                        item.e.Prev.PrevVertex.IsLocked = item.e.Prev is not BezierEdge;
                     }
                 }
                 else
@@ -257,8 +258,7 @@ namespace EdytorWielokatow
                         item.e is not BezierEdge)
                     {
                         queue.Enqueue((false, item.e.Next));
-                        if (item.e.Next is not BezierEdge)
-                            item.e.Next.NextVertex.IsLocked = true;
+                        item.e.Next.NextVertex.IsLocked = item.e.Next is not BezierEdge;
                     }
                 }
                 last = (item.e, item.isPrev);

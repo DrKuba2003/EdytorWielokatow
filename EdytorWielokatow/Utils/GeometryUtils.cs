@@ -1,4 +1,5 @@
-﻿using EdytorWielokatow.Edges;
+﻿
+using EdytorWielokatow.Edges;
 using EdytorWielokatow.Vertexes;
 using System;
 using System.Collections.Generic;
@@ -99,6 +100,7 @@ namespace EdytorWielokatow.Utils
             double t = 0;
             while (t < 1)
             {
+                // TODO zamienic na linie
                 g.FillRectangle(brush, (int)P0.X - 1, (int)P0.Y, 1, 1);
                 g.FillRectangle(brush, (int)P0.X, (int)P0.Y - 1, 1, 1);
                 g.FillRectangle(brush, (int)P0.X, (int)P0.Y, 1, 1);
