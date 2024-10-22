@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,29 +83,29 @@ namespace EdytorWielokatow.Utils
 
         public static void Bezier(Graphics g, Vertex V0, Vertex V1, Vertex V2, Vertex V3, Brush brush)
         {
-            Vertex A1 = 3 * (V1 - V0);
-            Vertex A2 = 3 * (V2 - 2 * V1 + V0);
-            Vertex A3 = V3 - 3 * V2 + 3 * V1 - V0;
+            Vector2 A1 = 3 * (V1.Vector2 - V0.Vector2);
+            Vector2 A2 = 3 * (V2.Vector2 - 2 * V1.Vector2 + V0.Vector2);
+            Vector2 A3 = V3.Vector2 - 3 * V2.Vector2 + 3 * V1.Vector2 - V0.Vector2;
 
             double dist = DistB2P(V0, V1) + DistB2P(V1, V2) + DistB2P(V2, V3);
-            double d = 1 / (2 * dist);
-            double d2 = Math.Pow(d, 2);
-            double d3 = Math.Pow(d, 3);
+            float d = (float)(1 / (2 * dist));
+            float d2 = (float)Math.Pow(d, 2);
+            float d3 = (float)Math.Pow(d, 3);
 
-            (double X, double Y) P0 = (V0.X, V0.Y);
-            (double X, double Y) P1 = Utils.AddDoubleTuples(d3 * A3, d2 * A2, d * A1);
-            (double X, double Y) P2 = Utils.AddDoubleTuples(6 * d3 * A3, 2 * d2 * A2);
-            (double X, double Y) P3 = 6 * d3 * A3;
+            Vector2 P0 = V0.Vector2;
+            Vector2 P1 = d3 * A3 + d2 * A2 + d * A1;
+            Vector2 P2 =  6 * d3 * A3 + 2 * d2 * A2;
+            Vector2 P3 = 6 * d3 * A3;
 
             double t = 0;
             var P0old = new PointF((float)P0.X, (float)P0.Y);
             while (t < 1)
             {
-                P0 = Utils.AddDoubleTuples(P0, P1);
-                P1 = Utils.AddDoubleTuples(P1, P2);
-                P2 = Utils.AddDoubleTuples(P2, P3);
+                P0 += P1;
+                P1 += P2;
+                P2 += P3;
 
-                var P0f = new PointF((float)P0.X, (float)P0.Y);
+                var P0f = new PointF(P0.X, P0.Y);
                 g.DrawLine(new Pen(brush, 3), P0old, P0f);
                 P0old = P0f;
 

@@ -21,6 +21,7 @@ namespace EdytorWielokatow.Edges
             Count = 0;
         }
 
+        // TODO przemyslec jeszcze raz
         public bool ValidateEdges(Edge prevEdge, Edge nextEdge)
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
@@ -30,18 +31,16 @@ namespace EdytorWielokatow.Edges
             prevEdge.NextVertex.IsLocked = true;
             nextEdge.PrevVertex.IsLocked = true;
 
-            if (nextEdge.GetType() != typeof(Edge) ||
-                nextEdge.Next is BezierEdge)
-            {
-                queue.Enqueue((false, nextEdge));
-                nextEdge.NextVertex.IsLocked = nextEdge.Next is not BezierEdge;
-            }
-            if (prevEdge.GetType() != typeof(Edge) ||
-                prevEdge.Prev is BezierEdge)
-            {
-                queue.Enqueue((true, prevEdge));
-                prevEdge.PrevVertex.IsLocked = prevEdge.Prev is not BezierEdge;
-            }
+            //if ((nextEdge.GetType() != typeof(Edge) && nextEdge.Prev is not BezierEdge) ||
+            //    nextEdge.Next is BezierEdge)
+            //if (prevEdge.GetType() != typeof(Edge) ||
+            //    prevEdge.Prev is BezierEdge)
+
+            queue.Enqueue((false, nextEdge));
+            nextEdge.NextVertex.IsLocked = nextEdge is not BezierEdge;
+
+            queue.Enqueue((true, prevEdge));
+            prevEdge.PrevVertex.IsLocked = prevEdge is not BezierEdge;
 
             while (queue.Count > 0)
             {

@@ -14,7 +14,7 @@ namespace EdytorWielokatow
 {
     public partial class Form1 : Form
     {
-        private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, AdmiringPoly };
+        private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, LookingAtPoly };
 
         private const int VERTEX_BUFFER = 8;
         private const int EDGE_BUFFER = 1;
@@ -29,8 +29,12 @@ namespace EdytorWielokatow
         private Vertex? cursorOldPos;
 
         // TODO add initila polygon
-        // TODO usun sprawdzenia czy out canvas i dodaj nowe menu
+        // TODO usn¹c if DEBUG
+        // TODO dac fullscreen i wlczyc minimize
         // TODO zamiana na C1 i fixedlengthedge
+        // TODO zmienic nazwe AdmiringPoly
+        // TODO C1 ciaglosc, dlugosc to 1/3
+
         public Form1()
         {
             InitializeComponent();
@@ -78,13 +82,13 @@ namespace EdytorWielokatow
                         {
                             newEdge.Next = edgesList.Head;
                             edgesList.Head!.Prev = newEdge;
-                            appState = AppStates.AdmiringPoly;
+                            appState = AppStates.LookingAtPoly;
                         }
                     }
 
                     Draw();
                 }
-                else if (appState == AppStates.AdmiringPoly)
+                else if (appState == AppStates.LookingAtPoly)
                 {
                     (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                     if (selectedPoint is not null)
@@ -109,13 +113,16 @@ namespace EdytorWielokatow
                 }
             }
             else if (e.Button == MouseButtons.Right &&
-                appState == AppStates.AdmiringPoly)
+                appState == AppStates.LookingAtPoly)
             {
                 (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                 if (selectedPoint is not null && selectedPoint is not ControlVertex)
                     vertexContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
                 else if (selectedEdge is not null)
                     edgeContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                else
+                    generalContexMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+
             }
         }
 
@@ -133,8 +140,6 @@ namespace EdytorWielokatow
                 if (appState == AppStates.DraggingPoint &&
                     selectedPoint is not null)
                 {
-                    if (IsVertexOutsideCanvas(new Vertex(e.X, e.Y))) return;
-
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
                     if (selectedPoint is ControlVertex)
@@ -161,9 +166,6 @@ namespace EdytorWielokatow
                 {
                     Vertex vec = new Vertex(e.X - cursorOldPos.X,
                         e.Y - cursorOldPos.Y);
-
-                    if (IsVertexOutsideCanvas(selectedEdge.PrevVertex + vec) ||
-                        IsVertexOutsideCanvas(selectedEdge.NextVertex + vec)) return;
 
                     selectedEdge.PrevVertex.X += vec.X;
                     selectedEdge.PrevVertex.Y += vec.Y;
@@ -202,7 +204,7 @@ namespace EdytorWielokatow
                 {
                     selectedPoint = null;
                     selectedEdge = null;
-                    appState = AppStates.AdmiringPoly;
+                    appState = AppStates.LookingAtPoly;
                     Draw(true);
                 }
             }
@@ -499,10 +501,6 @@ namespace EdytorWielokatow
             Canvas.Refresh();
         }
 
-        private bool IsVertexOutsideCanvas(Vertex v) =>
-             (v.X < 0 || v.X > Canvas.Width ||
-              v.Y < 0 || v.Y > Canvas.Height);
-
         private void ShowEdgeTypeError()
             => MessageBox.Show("Nie mo¿na zmieniæ typu krawêdzi!!!", "B³¹d",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -522,6 +520,11 @@ namespace EdytorWielokatow
             //edgesList.Head!.Prev = newEdge;
             //appState = AppStates.AdmiringPoly;
         }
+        private void usunCalyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ResetPoly();
+            Draw();
+        }
 
         private void ResetPoly()
         {
@@ -529,5 +532,6 @@ namespace EdytorWielokatow
             startingPt = null;
             appState = AppStates.CreatingPoly;
         }
+
     }
 }

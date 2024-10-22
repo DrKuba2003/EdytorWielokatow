@@ -19,6 +19,8 @@ namespace EdytorWielokatow.Vertexes
         public int Y { get; set; }
         public bool IsLocked { get; set; }
 
+        public Vector2 Vector2 { get => new Vector2(X, Y); }
+
         public Vertex(int x, int y, bool isLocked = false)
         {
             X = x;
@@ -32,17 +34,6 @@ namespace EdytorWielokatow.Vertexes
             Y = v.Y;
             IsLocked = v.IsLocked;
         }
-
-        public static Vertex operator +(Vertex v1, Vertex v2) =>
-            new Vertex(v1.X + v2.X, v1.Y + v2.Y);
-
-        public static Vertex operator -(Vertex v1, Vertex v2) =>
-           new Vertex(v1.X - v2.X, v1.Y - v2.Y);
-
-        public static Vertex operator *(int scalar, Vertex v1) =>
-            new Vertex(v1.X * scalar, v1.Y * scalar);
-        public static (double, double) operator *(double scalar, Vertex v1) =>
-            (v1.X * scalar, v1.Y * scalar);
 
         public void CopyData(Vertex v)
         {
