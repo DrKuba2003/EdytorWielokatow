@@ -28,6 +28,7 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
+        // TODO add initila polygon
         public Form1()
         {
             InitializeComponent();
@@ -135,7 +136,10 @@ namespace EdytorWielokatow
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
                     if (selectedPoint is ControlVertex)
-                        ((ControlVertex) selectedPoint).Edge.ControlChangeVertexPos(selectedPoint);
+                    {
+                        ControlVertex cv = (ControlVertex) selectedPoint;
+                        cv.Edge.ControlChangeVertexPos(cv);
+                    }
 
                     (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                     if (prevEdge is not null && nextEdge is not null)
@@ -165,6 +169,7 @@ namespace EdytorWielokatow
                     selectedEdge.NextVertex.X += vec.X;
                     selectedEdge.NextVertex.Y += vec.Y;
 
+                    // TODO something not right with bezier
                     if (ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
                     {
                         edgesList.MoveWholePolygon(vec,

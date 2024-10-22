@@ -48,7 +48,7 @@ namespace EdytorWielokatow.Edges
 
             var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
             var vec = new Vertex(
-                sharedEdgeVertex.X - neighEdge.GetNeighVertex(sharedEdgeVertex).X,
+                sharedEdgeVertex.X - neighEdge.GetNeighVertex(sharedEdgeVertex).X, // TODO cleaning
                 sharedEdgeVertex.Y - neighEdge.GetNeighVertex(sharedEdgeVertex).Y
                 );
 
@@ -73,21 +73,25 @@ namespace EdytorWielokatow.Edges
             }
         }
 
-        public void ControlChangeVertexPos(Vertex controlVertex)
+        public void ControlChangeVertexPos(ControlVertex controlVertex)
         {
             bool isPrev = controlVertex == PrevControlVertex;
-            var vertex = isPrev ? PrevVertex : NextVertex;
+            BezierVertex vertex = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
             var neighEdge = isPrev ? Prev : Next;
 
-            if (neighEdge is HorizontalEdge)
+            if (vertex.ContinuityClass != ContinuityClasses.G0)
             {
-                vertex.Y = controlVertex.Y;
+                if (neighEdge is HorizontalEdge)
+                {
+                    vertex.Y = controlVertex.Y;
+                }
+                else if (neighEdge is VerticalEdge)
+                {
+                    vertex.X = controlVertex.X;
+                }
             }
-            else if (neighEdge is VerticalEdge)
-            {
-                vertex.X = controlVertex.X;
-            }
-            else if (neighEdge is FixedLengthEdge)
+            if (vertex.ContinuityClass == ContinuityClasses.C1 &&
+                neighEdge is FixedLengthEdge)
             {
                 var vec = new Vertex(controlVertex.X - vertex.X,
                             controlVertex.Y - vertex.Y);

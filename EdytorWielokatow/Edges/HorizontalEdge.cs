@@ -28,6 +28,25 @@ namespace EdytorWielokatow.Edges
 
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
+            bool isPrev = changed == PrevVertex;
+            var neighEdge = isPrev ? Prev : Next;
+            if (neighEdge is null) return;
+
+            if (neighEdge is BezierEdge)
+            {
+                BezierVertex bv = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
+                ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
+
+                var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);
+
+                switch (bv.ContinuityClass)
+                {
+                    case ContinuityClasses.C1:
+                        changing.X = bv.X + vec.X;
+                        changing.Y = bv.Y + vec.Y;
+                        break;
+                }
+            }
             changing.Y = changed.Y;
         }
 
