@@ -28,12 +28,12 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO add initila polygon
-        // TODO usn¹c if DEBUG
-        // TODO dac fullscreen i wlczyc minimize
         // TODO zamiana na C1 i fixedlengthedge
-        // TODO zmienic nazwe AdmiringPoly
+        // TODO add initila polygon
         // TODO C1 ciaglosc, dlugosc to 1/3
+        // TODO zmienic nazwe AdmiringPoly
+        // TODO dac fullscreen i wlaczyc minimize
+        // TODO usn¹c if DEBUG
 
         public Form1()
         {

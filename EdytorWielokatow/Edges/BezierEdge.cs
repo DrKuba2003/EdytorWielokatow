@@ -48,17 +48,18 @@ namespace EdytorWielokatow.Edges
             bool isPrev = changed == PrevVertex;
             var neighEdge = isPrev ? Prev : Next;
             if (neighEdge is null) return;
-            BezierVertex sharedEdgeVertex = isPrev ?
+            BezierVertex sharedVertex = isPrev ?
                 (BezierVertex)PrevVertex :
                 (BezierVertex)NextVertex;
-            var continuityClass = sharedEdgeVertex.ContinuityClass;
+            var continuityClass = sharedVertex.ContinuityClass;
             if (continuityClass != ContinuityClasses.G1 &&
                 continuityClass != ContinuityClasses.C1) return;
 
             var controlVertex = isPrev ? PrevControlVertex : NextControlVertex;
+            var neighVertex = neighEdge.GetNeighVertex(sharedVertex);
             var vec = new Vertex(
-                sharedEdgeVertex.X - neighEdge.GetNeighVertex(sharedEdgeVertex).X, // TODO cleaning
-                sharedEdgeVertex.Y - neighEdge.GetNeighVertex(sharedEdgeVertex).Y
+                sharedVertex.X - neighVertex.X,
+                sharedVertex.Y - neighVertex.Y
                 );
 
 
@@ -66,18 +67,18 @@ namespace EdytorWielokatow.Edges
             switch (continuityClass)
             {
                 case ContinuityClasses.C1:
-                    controlVertex.X = sharedEdgeVertex.X + vec.X;
-                    controlVertex.Y = sharedEdgeVertex.Y + vec.Y;
+                    controlVertex.X = sharedVertex.X + vec.X;
+                    controlVertex.Y = sharedVertex.Y + vec.Y;
                     break;
                 case ContinuityClasses.G1:
                     var vecL = GeometryUtils.VectorLength(vec);
                     if (vecL < 0.1)
                         return;
-                    var L = GeometryUtils.DistB2P(sharedEdgeVertex, controlVertex);
+                    var L = GeometryUtils.DistB2P(sharedVertex, controlVertex);
                     double scalar = L / vecL;
 
-                    controlVertex.X = sharedEdgeVertex.X + (int)Math.Round(vec.X * scalar, 0);
-                    controlVertex.Y = sharedEdgeVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
+                    controlVertex.X = sharedVertex.X + (int)Math.Round(vec.X * scalar, 0);
+                    controlVertex.Y = sharedVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
                     break;
             }
         }
