@@ -31,7 +31,7 @@ namespace EdytorWielokatow
         // TODO zamiana na C1 i fixedlengthedge
         // TODO add initila polygon
         // TODO C1 ciaglosc, dlugosc to 1/3
-        // TODO zmienic nazwe AdmiringPoly
+
         // TODO dac fullscreen i wlaczyc minimize
         // TODO usn¹c if DEBUG
 

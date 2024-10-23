@@ -64,23 +64,21 @@ namespace EdytorWielokatow.Edges
 
 
             changing.IsLocked = false;
-            switch (continuityClass)
+            double scalar = 1;
+            if (continuityClass == ContinuityClasses.G1 ||
+                neighEdge is FixedLengthEdge)
             {
-                case ContinuityClasses.C1:
-                    controlVertex.X = sharedVertex.X + vec.X;
-                    controlVertex.Y = sharedVertex.Y + vec.Y;
-                    break;
-                case ContinuityClasses.G1:
-                    var vecL = GeometryUtils.VectorLength(vec);
-                    if (vecL < 0.1)
-                        return;
-                    var L = GeometryUtils.DistB2P(sharedVertex, controlVertex);
-                    double scalar = L / vecL;
-
-                    controlVertex.X = sharedVertex.X + (int)Math.Round(vec.X * scalar, 0);
-                    controlVertex.Y = sharedVertex.Y + (int)Math.Round(vec.Y * scalar, 0);
-                    break;
+                var vecL = GeometryUtils.VectorLength(vec);
+                if (vecL < 0.1)
+                    return;
+                var L = neighEdge is FixedLengthEdge ? 
+                    ((FixedLengthEdge)neighEdge).Length :
+                    GeometryUtils.DistB2P(sharedVertex, controlVertex);
+                scalar = L / vecL;
             }
+
+            controlVertex.X = (float)(sharedVertex.X + vec.X * scalar);
+            controlVertex.Y = (float)(sharedVertex.Y + vec.Y * scalar);
         }
 
         public void ControlChangeVertexPos(ControlVertex controlVertex)
