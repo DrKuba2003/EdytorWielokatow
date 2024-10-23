@@ -117,11 +117,11 @@ namespace EdytorWielokatow
             {
                 (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                 if (selectedPoint is not null && selectedPoint is not ControlVertex)
-                    vertexContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                    vertexContextMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
                 else if (selectedEdge is not null)
-                    edgeContextMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                    edgeContextMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
                 else
-                    generalContexMenu.Show(Canvas, ptClicked.X, ptClicked.Y);
+                    generalContexMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
 
             }
         }

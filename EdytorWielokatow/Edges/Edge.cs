@@ -62,8 +62,8 @@ namespace EdytorWielokatow.Edges
                         var L = GeometryUtils.DistB2P(PrevVertex, NextVertex);
                         double scalar = L / vecL;
 
-                        changing.X = bv.X + (int)Math.Round(vec.X * scalar, 0);
-                        changing.Y = bv.Y + (int)Math.Round(vec.Y * scalar, 0);
+                        changing.X = (float)(bv.X + vec.X * scalar);
+                        changing.Y = (float)(bv.Y + vec.Y * scalar);
                         break;
                 }
             }
@@ -85,8 +85,8 @@ namespace EdytorWielokatow.Edges
         public virtual void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
         {
             if (useBresenham)
-                GeometryUtils.Bresenhams(g, PrevVertex.X, PrevVertex.Y,
-                            NextVertex.X, NextVertex.Y, p.Brush);
+                GeometryUtils.Bresenhams(g, PrevVertex.X.Round(), PrevVertex.Y.Round(),
+                            NextVertex.X.Round(), NextVertex.Y.Round(), p.Brush);
             else
                 g.DrawLine(p is null ? new Pen(Brushes.Blue, 3) : p,
                         PrevVertex.X, PrevVertex.Y,
@@ -97,7 +97,7 @@ namespace EdytorWielokatow.Edges
             {
                 var midpt = GeometryUtils.Midpoint(PrevVertex, NextVertex);
                 var rect = GetIconRectangle();
-                rect.Offset(new Point(midpt.X, midpt.Y));
+                rect.Offset(new Point(midpt.X.Round(), midpt.Y.Round()));
                 g.DrawIcon(icon, rect);
                 icon.Dispose();
             }

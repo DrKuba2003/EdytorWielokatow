@@ -12,17 +12,17 @@ namespace EdytorWielokatow.Vertexes
     public class BezierVertex : Vertex
     {
 
-        public static new Icon? iconG0 =
+        public static Icon? iconG0 =
             Icon.FromHandle(new Bitmap("Resources\\G0.png").GetHicon());
-        public static new Icon? iconG1 =
+        public static Icon? iconG1 =
             Icon.FromHandle(new Bitmap("Resources\\G1.png").GetHicon());
-        public static new Icon? iconC1 =
+        public static Icon? iconC1 =
             Icon.FromHandle(new Bitmap("Resources\\C1.png").GetHicon());
-        public static readonly Rectangle rect = new Rectangle(-10, 10, 20, 20);
+        public static new readonly Rectangle rect = new Rectangle(-10, 10, 20, 20);
 
         public ContinuityClasses ContinuityClass { get; set; }
 
-        public BezierVertex(int x, int y,
+        public BezierVertex(float x, float y,
             ContinuityClasses continuityClass = ContinuityClasses.G1, bool isLocked = false)
             : base(x, y, isLocked)
         {

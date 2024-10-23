@@ -15,13 +15,13 @@ namespace EdytorWielokatow.Vertexes
         public static Icon? icon { get => null; }
         public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
         public bool IsLocked { get; set; }
 
         public Vector2 Vector2 { get => new Vector2(X, Y); }
 
-        public Vertex(int x, int y, bool isLocked = false)
+        public Vertex(float x, float y, bool isLocked = false)
         {
             X = x;
             Y = y;
@@ -41,7 +41,7 @@ namespace EdytorWielokatow.Vertexes
             Y = v.Y;
             IsLocked = v.IsLocked;
         }
-        public void CopyData(Point v)
+        public void CopyData(PointF v)
         {
             X = v.X;
             Y = v.Y;
@@ -57,7 +57,7 @@ namespace EdytorWielokatow.Vertexes
             if (icon is not null)
             {
                 var rect = GetIconRectangle();
-                rect.Offset(new Point(X, Y));
+                rect.Offset(new Point(X.Round(), Y.Round()));
                 g.DrawIcon(icon, rect);
                 icon.Dispose();
             }

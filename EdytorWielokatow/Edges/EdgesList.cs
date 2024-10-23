@@ -25,7 +25,7 @@ namespace EdytorWielokatow.Edges
         public bool ValidateEdges(Edge prevEdge, Edge nextEdge)
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
-            var roolback = new Dictionary<Vertex, Point>();
+            var roolback = new Dictionary<Vertex, PointF>();
             var queue = new Queue<(bool isPrev, Edge e)>();
 
             prevEdge.NextVertex.IsLocked = true;
@@ -49,7 +49,7 @@ namespace EdytorWielokatow.Edges
                 var changed = item.isPrev ? item.e.NextVertex : item.e.PrevVertex;
                 var changing = item.isPrev ? item.e.PrevVertex : item.e.NextVertex;
 
-                roolback[changing] = new Point(changing.X, changing.Y);
+                roolback[changing] = new PointF(changing.X, changing.Y);
                 item.e.ChangeVertexPos(changed, changing);
 
                 if (item.isPrev)
@@ -269,10 +269,10 @@ namespace EdytorWielokatow.Edges
             });
         }
 
-        public (int minX, int maxX, int minY, int maxY) CalculateBoundingBox()
+        public (float minX, float maxX, float minY, float maxY) CalculateBoundingBox()
         {
-            (int minX, int maxX, int minY, int maxY) boundingBox =
-                (int.MaxValue, int.MinValue, int.MaxValue, int.MinValue);
+            (float minX, float maxX, float minY, float maxY)  boundingBox =
+                (float.MaxValue, float.MinValue, float.MaxValue, float.MinValue);
 
             if (Head is not null)
                 TraverseAllList((Edge e) =>

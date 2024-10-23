@@ -35,10 +35,11 @@ namespace EdytorWielokatow.Utils
         public static double VectorLength(Vertex v) =>
             Math.Sqrt((Math.Pow(v.X, 2) + Math.Pow(v.Y, 2)));
 
-        public static bool CheckIf2PClose(Vertex p1, Vertex p2, double buffer) =>
+        public static bool CheckIf2PClose(Vertex p1, Vertex p2, int buffer) =>
             SquaredDistB2P(p1, p2) < Math.Pow(buffer, 2);
 
         // TODO przestudiowac
+        // TODO moze float?
         public static void Bresenhams(Graphics g, int x, int y, int x2, int y2, Brush brush)
         {
             int w = x2 - x;
@@ -98,7 +99,7 @@ namespace EdytorWielokatow.Utils
             Vector2 P3 = 6 * d3 * A3;
 
             double t = 0;
-            var P0old = new PointF((float)P0.X, (float)P0.Y);
+            var P0old = new PointF(P0.X, P0.Y);
             while (t < 1)
             {
                 P0 += P1;

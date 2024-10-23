@@ -11,7 +11,7 @@ namespace EdytorWielokatow.Vertexes
     {
         public BezierEdge Edge { get; set; }
 
-        public ControlVertex(int x, int y, BezierEdge edge, bool isLocked = false) 
+        public ControlVertex(float x, float y, BezierEdge edge, bool isLocked = false) 
             : base(x, y, isLocked)
         {
             Edge = edge;
