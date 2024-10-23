@@ -28,8 +28,8 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO zamiana na C1 i fixedlengthedge
         // TODO add initila polygon
+        // TODO walidacja bezier przy usuniêciu
         // TODO C1 ciaglosc, dlugosc to 1/3
 
         // TODO dac fullscreen i wlaczyc minimize

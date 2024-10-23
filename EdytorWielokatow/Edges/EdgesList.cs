@@ -21,7 +21,6 @@ namespace EdytorWielokatow.Edges
             Count = 0;
         }
 
-        // TODO przemyslec jeszcze raz
         public bool ValidateEdges(Edge prevEdge, Edge nextEdge)
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
@@ -54,9 +53,10 @@ namespace EdytorWielokatow.Edges
 
                 if (item.isPrev)
                 {
-                    if (!item.e.Prev!.PrevVertex.IsLocked &&
-                        item.e.Prev!.GetType() != typeof(Edge) &&
-                        item.e is not BezierEdge)
+                    if (item.e is not BezierEdge &&
+                        ((!item.e.Prev!.PrevVertex.IsLocked && item.e.Prev!.GetType() != typeof(Edge)) ||
+                        item.e.Prev is BezierEdge ||
+                        item.e.Prev.Prev is BezierEdge))
                     {
                         queue.Enqueue((true, item.e.Prev));
                         // zeby bylo oznaczone ze bedzie zmienianie tylko w przypadku jesli nie jest bezierem
@@ -65,9 +65,10 @@ namespace EdytorWielokatow.Edges
                 }
                 else
                 {
-                    if (!item.e.Next!.NextVertex.IsLocked &&
-                        item.e.Next!.GetType() != typeof(Edge) &&
-                        item.e is not BezierEdge)
+                    if (item.e is not BezierEdge &&
+                        ((!item.e.Next!.NextVertex.IsLocked && item.e.Next!.GetType() != typeof(Edge)) ||
+                        item.e.Next is BezierEdge ||
+                        item.e.Next.Next is BezierEdge))
                     {
                         queue.Enqueue((false, item.e.Next));
                         item.e.Next.NextVertex.IsLocked = item.e.Next is not BezierEdge;
@@ -271,7 +272,7 @@ namespace EdytorWielokatow.Edges
 
         public (float minX, float maxX, float minY, float maxY) CalculateBoundingBox()
         {
-            (float minX, float maxX, float minY, float maxY)  boundingBox =
+            (float minX, float maxX, float minY, float maxY) boundingBox =
                 (float.MaxValue, float.MinValue, float.MaxValue, float.MinValue);
 
             if (Head is not null)
