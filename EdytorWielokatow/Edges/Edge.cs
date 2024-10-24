@@ -48,19 +48,20 @@ namespace EdytorWielokatow.Edges
                 ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
 
                 var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);
+                double scalar = 2;
 
                 switch (bv.ContinuityClass)
                 {
                     case ContinuityClasses.C1:
-                        changing.X = bv.X + vec.X;
-                        changing.Y = bv.Y + vec.Y;
+                        changing.X = (float)(bv.X + vec.X * scalar);
+                        changing.Y = (float)(bv.Y + vec.Y * scalar);
                         break;
                     case ContinuityClasses.G1:
                         var vecL = GeometryUtils.VectorLength(vec);
                         if (vecL < 0.1)
                             return;
                         var L = GeometryUtils.DistB2P(PrevVertex, NextVertex);
-                        double scalar = L / vecL;
+                        scalar = L / vecL;
 
                         changing.X = (float)(bv.X + vec.X * scalar);
                         changing.Y = (float)(bv.Y + vec.Y * scalar);
