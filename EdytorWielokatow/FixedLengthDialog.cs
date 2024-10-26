@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace EdytorWielokatow
+﻿namespace EdytorWielokatow
 {
     public partial class FixedLengthDialog : Form
     {
@@ -20,7 +10,7 @@ namespace EdytorWielokatow
         public int Show(double length)
         {
             lengthTxb.Text = ((int)length).ToString();
-            
+
             ShowDialog();
 
             return int.Parse(lengthTxb.Text);

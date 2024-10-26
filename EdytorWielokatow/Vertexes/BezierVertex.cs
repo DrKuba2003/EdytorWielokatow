@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EdytorWielokatow.Vertexes
+﻿namespace EdytorWielokatow.Vertexes
 {
     public enum ContinuityClasses { G0, G1, C1 };
 

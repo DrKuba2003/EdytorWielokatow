@@ -1,13 +1,5 @@
 ﻿using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace EdytorWielokatow.Edges
 {
@@ -39,7 +31,7 @@ namespace EdytorWielokatow.Edges
         public BezierEdge(Edge e, Vertex prevControlVertex, Vertex nextControlVertex)
             : this(e.PrevVertex, e.NextVertex, prevControlVertex, nextControlVertex, e.Prev, e.Next) { }
 
-        public BezierEdge(Edge e): this(e.PrevVertex, e.NextVertex, e.Prev, e.Next) { }
+        public BezierEdge(Edge e) : this(e.PrevVertex, e.NextVertex, e.Prev, e.Next) { }
 
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
@@ -64,7 +56,7 @@ namespace EdytorWielokatow.Edges
 
 
             changing.IsLocked = false;
-            double scalar = 
+            double scalar =
                 continuityClass == ContinuityClasses.C1 &&
                 neighVertex is not ControlVertex ?
                 0.5 : 1;
@@ -75,7 +67,7 @@ namespace EdytorWielokatow.Edges
                 var vecL = GeometryUtils.VectorLength(vec);
                 if (vecL < 0.1)
                     return;
-                var L = neighEdge is FixedLengthEdge ? 
+                var L = neighEdge is FixedLengthEdge ?
                     ((FixedLengthEdge)neighEdge).Length :
                     GeometryUtils.DistB2P(sharedVertex, controlVertex);
                 scalar = L / vecL;

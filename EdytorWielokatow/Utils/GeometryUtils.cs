@@ -1,15 +1,7 @@
 ﻿
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Vertexes;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace EdytorWielokatow.Utils
 {
@@ -95,7 +87,7 @@ namespace EdytorWielokatow.Utils
 
             Vector2 P0 = V0.Vector2;
             Vector2 P1 = d3 * A3 + d2 * A2 + d * A1;
-            Vector2 P2 =  6 * d3 * A3 + 2 * d2 * A2;
+            Vector2 P2 = 6 * d3 * A3 + 2 * d2 * A2;
             Vector2 P3 = 6 * d3 * A3;
 
             double t = 0;
@@ -114,5 +106,5 @@ namespace EdytorWielokatow.Utils
             }
         }
     }
-    
+
 }

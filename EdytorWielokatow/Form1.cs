@@ -1,11 +1,3 @@
-using System.CodeDom;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Threading.Channels;
-using System.Windows.Forms.VisualStyles;
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
@@ -532,6 +524,7 @@ namespace EdytorWielokatow
 
             appState = AppStates.LookingAtPoly;
         }
+
         private void usunCalyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ResetPoly();
