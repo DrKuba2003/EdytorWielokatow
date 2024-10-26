@@ -20,8 +20,6 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO walidacja bezier przy usuniêciu
-
         // TODO usn¹c if DEBUG
 
         public Form1()

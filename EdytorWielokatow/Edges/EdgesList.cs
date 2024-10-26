@@ -132,6 +132,8 @@ namespace EdytorWielokatow.Edges
                 newEdge.PrevVertex = newPrevVertex;
                 newEdge.Prev!.NextVertex = newPrevVertex;
             }
+            else
+                newEdge.Prev.ChangeVertexPos(newEdge.PrevVertex, newEdge.Prev.PrevVertex);
 
             if (newEdge.Next is not BezierEdge)
             {
@@ -139,6 +141,8 @@ namespace EdytorWielokatow.Edges
                 newEdge.NextVertex = newNextVertex;
                 newEdge.Next!.PrevVertex = newNextVertex;
             }
+            else
+                newEdge.Next.ChangeVertexPos(newEdge.NextVertex, newEdge.Next.NextVertex);
 
             Count--;
             return false;
