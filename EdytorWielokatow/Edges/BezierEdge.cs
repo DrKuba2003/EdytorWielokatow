@@ -36,8 +36,8 @@ namespace EdytorWielokatow.Edges
             NextControlVertex = new ControlVertex(midpoint.X, midpoint.Y - 50, this);
         }
 
-        public BezierEdge(Edge e, Vertex prevControlVert, Vertex nextControlVert)
-            : this(e.PrevVertex, e.NextVertex, prevControlVert, nextControlVert, e.Prev, e.Next) { }
+        public BezierEdge(Edge e, Vertex prevControlVertex, Vertex nextControlVertex)
+            : this(e.PrevVertex, e.NextVertex, prevControlVertex, nextControlVertex, e.Prev, e.Next) { }
 
         public BezierEdge(Edge e): this(e.PrevVertex, e.NextVertex, e.Prev, e.Next) { }
 

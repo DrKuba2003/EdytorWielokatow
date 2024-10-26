@@ -28,7 +28,6 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO add initila polygon
         // TODO walidacja bezier przy usuniêciu
         // TODO C1 ciaglosc, dlugosc to 1/3
 
@@ -44,6 +43,9 @@ namespace EdytorWielokatow
 
             drawArea = new Bitmap(Canvas.Size.Width, Canvas.Size.Height);
             Canvas.Image = drawArea;
+
+            CreateStartupPolygon();
+
             Draw();
 
         }
@@ -507,18 +509,30 @@ namespace EdytorWielokatow
 
         private void CreateStartupPolygon()
         {
-            //var v1 = new Vertex(100, 100);
-            //var v2 = new BezierVertex(200, 100);
-            //var v3 = new BezierVertex(200, 300);
-            //var v4 = new Vertex(100, 200);
-            //var c1 = 
+            var v1 = new BezierVertex(450, 300);
+            var v2 = new BezierVertex(950, 300);
+            v2.ContinuityClass = ContinuityClasses.C1;
+            var v3 = new Vertex(950, 500);
+            var v4 = new Vertex(450, 500);
 
-            //var e1 = new HorizontalEdge(v1, v2);
-            //var e2 = new BezierEdge(v2, v3);
+            var c1 = new Vertex(450, 150);
+            var c2 = new Vertex(950, 200);
 
-            //newEdge.Next = edgesList.Head;
-            //edgesList.Head!.Prev = newEdge;
-            //appState = AppStates.AdmiringPoly;
+            var e1 = new BezierEdge(v1, v2, c1, c2);
+            var e2 = new Edge(v2, v3);
+            var e3 = new Edge(v3, v4);
+            var e4 = new VerticalEdge(v4, v1);
+
+
+            edgesList.AddEdgeAtEnd(e1);
+            edgesList.AddEdgeAtEnd(e2);
+            edgesList.AddEdgeAtEnd(e3);
+            edgesList.AddEdgeAtEnd(e4);
+
+            e4.Next = edgesList.Head;
+            edgesList.Head!.Prev = e4;
+
+            appState = AppStates.LookingAtPoly;
         }
         private void usunCalyToolStripMenuItem_Click(object sender, EventArgs e)
         {
