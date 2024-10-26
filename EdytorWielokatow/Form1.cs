@@ -29,9 +29,7 @@ namespace EdytorWielokatow
         private Vertex? cursorOldPos;
 
         // TODO walidacja bezier przy usuniêciu
-        // TODO C1 ciaglosc, dlugosc to 1/3
 
-        // TODO dac fullscreen i wlaczyc minimize
         // TODO usn¹c if DEBUG
 
         public Form1()
@@ -547,5 +545,9 @@ namespace EdytorWielokatow
             appState = AppStates.CreatingPoly;
         }
 
+        private void Canvas_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

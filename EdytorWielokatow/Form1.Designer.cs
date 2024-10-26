@@ -59,6 +59,7 @@
             Canvas.Size = new Size(1382, 753);
             Canvas.TabIndex = 0;
             Canvas.TabStop = false;
+            Canvas.Click += Canvas_Click;
             Canvas.MouseDown += Canvas_MouseDown;
             Canvas.MouseMove += Canvas_MouseMove;
             Canvas.MouseUp += Canvas_MouseUp;
@@ -152,12 +153,12 @@
             generalContexMenu.ImageScalingSize = new Size(20, 20);
             generalContexMenu.Items.AddRange(new ToolStripItem[] { usunCalyToolStripMenuItem });
             generalContexMenu.Name = "generalContexMenu";
-            generalContexMenu.Size = new Size(211, 56);
+            generalContexMenu.Size = new Size(141, 28);
             // 
             // usunCalyToolStripMenuItem
             // 
             usunCalyToolStripMenuItem.Name = "usunCalyToolStripMenuItem";
-            usunCalyToolStripMenuItem.Size = new Size(210, 24);
+            usunCalyToolStripMenuItem.Size = new Size(140, 24);
             usunCalyToolStripMenuItem.Text = "Usuń cały";
             usunCalyToolStripMenuItem.Click += usunCalyToolStripMenuItem_Click;
             // 
@@ -169,7 +170,7 @@
             Controls.Add(Canvas);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MaximizeBox = false;
-            MinimizeBox = false;
+            MinimumSize = new Size(1400, 800);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Edytor wielokątów";
