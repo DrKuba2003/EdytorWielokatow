@@ -397,13 +397,11 @@ namespace EdytorWielokatow
                 v.ContinuityClass = ContinuityClasses.G1;
 
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
-                if (prevEdge is not null && nextEdge is not null)
-                {
-                    if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
-                    {
-                        // TODO cos wymyslec
-                    }
-                }
+                if (nextEdge is BezierEdge)
+                    nextEdge.ChangeVertexPos(selectedPoint, nextEdge.NextVertex);
+
+                if (prevEdge is BezierEdge)
+                    prevEdge.ChangeVertexPos(selectedPoint, prevEdge.PrevVertex);
 
                 Draw();
             }
@@ -419,13 +417,11 @@ namespace EdytorWielokatow
                 v.ContinuityClass = ContinuityClasses.C1;
 
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
-                if (prevEdge is not null && nextEdge is not null)
-                {
-                    if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
-                    {
-                        // TODO cos wymyslec
-                    }
-                }
+                if (nextEdge is BezierEdge)
+                    nextEdge.ChangeVertexPos(selectedPoint, nextEdge.NextVertex);
+
+                if (prevEdge is BezierEdge)
+                    prevEdge.ChangeVertexPos(selectedPoint, prevEdge.PrevVertex);
 
                 Draw();
             }
