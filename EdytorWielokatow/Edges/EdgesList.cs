@@ -87,7 +87,7 @@ namespace EdytorWielokatow.Edges
             {
                 Head = e;
             }
-            else if (Tail is not null) // if not necessary
+            else if (Tail is not null)
             {
                 Tail.Next = e;
                 e.Prev = Tail;

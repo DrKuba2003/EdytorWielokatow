@@ -5,13 +5,13 @@
     public class ContinuityVertex : Vertex
     {
 
-        public static Icon? iconG0 =
+        public static readonly Icon? iconG0 =
             Icon.FromHandle(new Bitmap("Resources\\G0.png").GetHicon());
-        public static Icon? iconG1 =
+        public static readonly Icon? iconG1 =
             Icon.FromHandle(new Bitmap("Resources\\G1.png").GetHicon());
-        public static Icon? iconC1 =
+        public static readonly Icon? iconC1 =
             Icon.FromHandle(new Bitmap("Resources\\C1.png").GetHicon());
-        public static new readonly Rectangle rect = new Rectangle(-10, 10, 20, 20);
+        public static new readonly Rectangle rect = new Rectangle(-8, 10, 20, 20);
 
         public ContinuityClasses ContinuityClass { get; set; }
 

@@ -6,7 +6,6 @@ namespace EdytorWielokatow.Vertexes
     public class Vertex
     {
         private const int RADIUS = 8;
-        public static Icon? icon { get => null; }
         public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
 
         public float X { get; set; }
@@ -57,7 +56,7 @@ namespace EdytorWielokatow.Vertexes
             }
         }
 
-        public virtual Icon? GetIcon() => icon;
+        public virtual Icon? GetIcon() => null;
         public virtual Rectangle GetIconRectangle() => rect;
 
 

@@ -5,7 +5,6 @@ namespace EdytorWielokatow.Edges
 {
     public class Edge
     {
-        public static Icon? icon { get => null; }
         public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
 
         public Edge? Prev { get; set; }
@@ -44,23 +43,17 @@ namespace EdytorWielokatow.Edges
                 var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);
                 double scalar = 2;
 
-                switch (bv.ContinuityClass)
+                if (bv.ContinuityClass == ContinuityClasses.G1)
                 {
-                    case ContinuityClasses.C1:
-                        changing.X = (float)(bv.X + vec.X * scalar);
-                        changing.Y = (float)(bv.Y + vec.Y * scalar);
-                        break;
-                    case ContinuityClasses.G1:
-                        var vecL = GeometryUtils.VectorLength(vec);
-                        if (vecL < 0.1)
-                            return;
-                        var L = GeometryUtils.DistB2P(PrevVertex, NextVertex);
-                        scalar = L / vecL;
-
-                        changing.X = (float)(bv.X + vec.X * scalar);
-                        changing.Y = (float)(bv.Y + vec.Y * scalar);
-                        break;
+                    var vecL = GeometryUtils.VectorLength(vec);
+                    if (vecL < 0.1)
+                        return;
+                    var L = GeometryUtils.DistB2P(PrevVertex, NextVertex);
+                    scalar = L / vecL;
                 }
+
+                changing.X = (float)(bv.X + vec.X * scalar);
+                changing.Y = (float)(bv.Y + vec.Y * scalar);
             }
         }
 
@@ -99,7 +92,7 @@ namespace EdytorWielokatow.Edges
 
         }
 
-        public virtual Icon? GetIcon() => icon;
+        public virtual Icon? GetIcon() => null;
         public virtual Rectangle GetIconRectangle() => rect;
     }
 }
