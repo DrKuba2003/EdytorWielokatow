@@ -32,13 +32,25 @@ namespace EdytorWielokatow.Edges
 
             if (neighEdge is BezierEdge)
             {
-                base.ChangeVertexPos(changed, changing);
+                BezierVertex bv = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
+                ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
+
+                var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);
+                var vecL = GeometryUtils.VectorLength(vec);
+                if (vecL < 0.1)
+                    return;
+                double scalar = Length / vecL;
+
+                changing.X = (float)(bv.X + vec.X * scalar);
+                changing.Y = (float)(bv.Y + vec.Y * scalar);
             }
             else
             {
                 var vec = new Vertex(changed.X - changing.X,
                             changed.Y - changing.Y);
-                var vecL = GeometryUtils.DistB2P(changing, changed);
+                var vecL = GeometryUtils.VectorLength(vec);
+                if (vecL < 0.1)
+                    return;
                 double scalar = 1 - Length / vecL;
 
                 changing.X += (int)(vec.X * scalar);

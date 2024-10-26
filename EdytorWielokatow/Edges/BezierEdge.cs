@@ -61,15 +61,12 @@ namespace EdytorWielokatow.Edges
                 neighVertex is not ControlVertex ?
                 0.5 : 1;
 
-            if (continuityClass == ContinuityClasses.G1 ||
-                neighEdge is FixedLengthEdge)
+            if (continuityClass == ContinuityClasses.G1)
             {
                 var vecL = GeometryUtils.VectorLength(vec);
                 if (vecL < 0.1)
                     return;
-                var L = neighEdge is FixedLengthEdge ?
-                    ((FixedLengthEdge)neighEdge).Length :
-                    GeometryUtils.DistB2P(sharedVertex, controlVertex);
+                var L = GeometryUtils.DistB2P(sharedVertex, controlVertex);
                 scalar = L / vecL;
             }
 
@@ -79,7 +76,6 @@ namespace EdytorWielokatow.Edges
 
         public void ControlChangeVertexPos(ControlVertex controlVertex)
         {
-            // TODO fixedlengthedge !!!!!!!!
             bool isPrev = controlVertex == PrevControlVertex;
             BezierVertex vertex = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
             var neighEdge = isPrev ? Prev : Next;
@@ -95,16 +91,17 @@ namespace EdytorWielokatow.Edges
                     vertex.X = controlVertex.X;
                 }
             }
+
             if (vertex.ContinuityClass == ContinuityClasses.C1 &&
                 neighEdge is FixedLengthEdge)
             {
                 var vec = new Vertex(controlVertex.X - vertex.X,
                             controlVertex.Y - vertex.Y);
                 var vecL = GeometryUtils.DistB2P(vertex, controlVertex);
-                double scalar = 1 - ((FixedLengthEdge)neighEdge).Length / vecL;
+                double scalar = 1 - ((FixedLengthEdge)neighEdge).Length / vecL / 2;
 
-                vertex.X += (float)(vec.X * scalar / 2);
-                vertex.Y += (float)(vec.Y * scalar / 2);
+                vertex.X += (float)(vec.X * scalar);
+                vertex.Y += (float)(vec.Y * scalar);
             }
         }
 
