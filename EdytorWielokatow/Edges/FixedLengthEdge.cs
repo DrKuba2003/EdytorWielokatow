@@ -7,7 +7,7 @@ namespace EdytorWielokatow.Edges
     {
         public const double EPS = 1;
 
-        public static new Icon? icon =
+        public static readonly Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\FixedLength.png").GetHicon());
         public static new readonly Rectangle rect = new Rectangle(-10, -10, 20, 20);
 

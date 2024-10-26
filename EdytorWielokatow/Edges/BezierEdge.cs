@@ -7,7 +7,7 @@ namespace EdytorWielokatow.Edges
     {
         public const int CONTROL_RADIUS = 5;
 
-        public static new Icon? icon =
+        public static readonly Icon? icon =
             Icon.FromHandle(new Bitmap("Resources\\Bezier.png").GetHicon());
         public static new Rectangle rect = new Rectangle(-10, -10, 20, 20);
 
@@ -63,6 +63,17 @@ namespace EdytorWielokatow.Edges
 
             if (continuityClass == ContinuityClasses.G1)
             {
+                if (neighEdge is HorizontalEdge)
+                {
+                    controlVertex.Y = sharedVertex.Y;
+                    return;
+                }
+                else if (neighEdge is VerticalEdge)
+                {
+                    controlVertex.X = sharedVertex.X;
+                    return;
+                }
+
                 var vecL = GeometryUtils.VectorLength(vec);
                 if (vecL < 0.1)
                     return;
