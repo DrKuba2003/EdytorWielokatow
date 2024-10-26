@@ -24,11 +24,6 @@ namespace EdytorWielokatow.Edges
             prevEdge.NextVertex.IsLocked = true;
             nextEdge.PrevVertex.IsLocked = true;
 
-            //if ((nextEdge.GetType() != typeof(Edge) && nextEdge.Prev is not BezierEdge) ||
-            //    nextEdge.Next is BezierEdge)
-            //if (prevEdge.GetType() != typeof(Edge) ||
-            //    prevEdge.Prev is BezierEdge)
-
             queue.Enqueue((false, nextEdge));
             nextEdge.NextVertex.IsLocked = nextEdge is not BezierEdge;
 
@@ -171,6 +166,8 @@ namespace EdytorWielokatow.Edges
                 prevEdge.Prev.NextVertex = newPrevVertex;
                 prevEdge.PrevVertex = newPrevVertex;
             }
+            else
+                prevEdge.Prev.ChangeVertexPos(prevEdge.PrevVertex, prevEdge.Prev.PrevVertex);
 
             if (nextEdge.Next is not BezierEdge)
             {
@@ -178,6 +175,8 @@ namespace EdytorWielokatow.Edges
                 nextEdge.Next.PrevVertex = newNextVertex;
                 nextEdge.NextVertex = newNextVertex;
             }
+            else
+                nextEdge.Next.ChangeVertexPos(nextEdge.NextVertex, nextEdge.Next.NextVertex);
 
             Count++;
         }
