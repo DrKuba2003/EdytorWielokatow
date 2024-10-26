@@ -38,7 +38,7 @@ namespace EdytorWielokatow.Edges
 
             if (neighEdge is BezierEdge)
             {
-                BezierVertex bv = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
+                ContinuityVertex bv = (ContinuityVertex)(isPrev ? PrevVertex : NextVertex);
                 ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
 
                 var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);

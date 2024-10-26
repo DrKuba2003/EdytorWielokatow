@@ -40,9 +40,9 @@ namespace EdytorWielokatow.Edges
             bool isPrev = changed == PrevVertex;
             var neighEdge = isPrev ? Prev : Next;
             if (neighEdge is null) return;
-            BezierVertex sharedVertex = isPrev ?
-                (BezierVertex)PrevVertex :
-                (BezierVertex)NextVertex;
+            ContinuityVertex sharedVertex = isPrev ?
+                (ContinuityVertex)PrevVertex :
+                (ContinuityVertex)NextVertex;
             var continuityClass = sharedVertex.ContinuityClass;
             if (continuityClass != ContinuityClasses.G1 &&
                 continuityClass != ContinuityClasses.C1) return;
@@ -77,7 +77,7 @@ namespace EdytorWielokatow.Edges
         public void ControlChangeVertexPos(ControlVertex controlVertex)
         {
             bool isPrev = controlVertex == PrevControlVertex;
-            BezierVertex vertex = (BezierVertex)(isPrev ? PrevVertex : NextVertex);
+            ContinuityVertex vertex = (ContinuityVertex)(isPrev ? PrevVertex : NextVertex);
             var neighEdge = isPrev ? Prev : Next;
 
             if (vertex.ContinuityClass != ContinuityClasses.G0)

@@ -199,9 +199,9 @@ namespace EdytorWielokatow.Edges
             if (newEdge is BezierEdge)
             {
                 if (oldEdge.Prev is not BezierEdge)
-                    ReplaceVertex(newEdge.PrevVertex, new BezierVertex(newEdge.PrevVertex));
+                    ReplaceVertex(newEdge.PrevVertex, new ContinuityVertex(newEdge.PrevVertex));
                 if (oldEdge.Next is not BezierEdge)
-                    ReplaceVertex(newEdge.NextVertex, new BezierVertex(newEdge.NextVertex));
+                    ReplaceVertex(newEdge.NextVertex, new ContinuityVertex(newEdge.NextVertex));
             }
             else if (oldEdge is BezierEdge)
             {

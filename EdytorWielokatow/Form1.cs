@@ -378,9 +378,9 @@ namespace EdytorWielokatow
         {
             if (selectedPoint is null) return;
 
-            if (selectedPoint is BezierVertex)
+            if (selectedPoint is ContinuityVertex)
             {
-                BezierVertex v = (BezierVertex)selectedPoint;
+                ContinuityVertex v = (ContinuityVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.G0;
 
                 Draw();
@@ -391,9 +391,9 @@ namespace EdytorWielokatow
         {
             if (selectedPoint is null) return;
 
-            if (selectedPoint is BezierVertex)
+            if (selectedPoint is ContinuityVertex)
             {
-                BezierVertex v = (BezierVertex)selectedPoint;
+                ContinuityVertex v = (ContinuityVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.G1;
 
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
@@ -413,9 +413,9 @@ namespace EdytorWielokatow
         {
             if (selectedPoint is null) return;
 
-            if (selectedPoint is BezierVertex)
+            if (selectedPoint is ContinuityVertex)
             {
-                BezierVertex v = (BezierVertex)selectedPoint;
+                ContinuityVertex v = (ContinuityVertex)selectedPoint;
                 v.ContinuityClass = ContinuityClasses.C1;
 
                 (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
@@ -475,8 +475,8 @@ namespace EdytorWielokatow
 
         private void CreateStartupPolygon()
         {
-            var v1 = new BezierVertex(450, 300);
-            var v2 = new BezierVertex(950, 300);
+            var v1 = new ContinuityVertex(450, 300);
+            var v2 = new ContinuityVertex(950, 300);
             v2.ContinuityClass = ContinuityClasses.C1;
             var v3 = new Vertex(950, 500);
             var v4 = new Vertex(450, 500);

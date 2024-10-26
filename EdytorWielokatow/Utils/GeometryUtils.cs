@@ -31,7 +31,6 @@ namespace EdytorWielokatow.Utils
             SquaredDistB2P(p1, p2) < Math.Pow(buffer, 2);
 
         // TODO przestudiowac
-        // TODO moze float?
         public static void Bresenhams(Graphics g, int x, int y, int x2, int y2, Brush brush)
         {
             int w = x2 - x;

@@ -2,8 +2,7 @@
 {
     public enum ContinuityClasses { G0, G1, C1 };
 
-    // TODO ContinuityVertex??
-    public class BezierVertex : Vertex
+    public class ContinuityVertex : Vertex
     {
 
         public static Icon? iconG0 =
@@ -16,14 +15,14 @@
 
         public ContinuityClasses ContinuityClass { get; set; }
 
-        public BezierVertex(float x, float y,
+        public ContinuityVertex(float x, float y,
             ContinuityClasses continuityClass = ContinuityClasses.G1, bool isLocked = false)
             : base(x, y, isLocked)
         {
             ContinuityClass = continuityClass;
         }
 
-        public BezierVertex(Vertex v, ContinuityClasses continuityClass = ContinuityClasses.G1)
+        public ContinuityVertex(Vertex v, ContinuityClasses continuityClass = ContinuityClasses.G1)
             : this(v.X, v.Y, continuityClass, v.IsLocked)
         {
         }
