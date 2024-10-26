@@ -161,7 +161,6 @@ namespace EdytorWielokatow
                     selectedEdge.NextVertex.X += vec.X;
                     selectedEdge.NextVertex.Y += vec.Y;
 
-                    // TODO something not right with bezier
                     if (edgesList.ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
                     {
                         edgesList.MoveWholePolygon(vec,
@@ -329,14 +328,13 @@ namespace EdytorWielokatow
 
             int L = (int)GeometryUtils.DistB2P(selectedEdge.PrevVertex, selectedEdge.NextVertex);
 
-            // TODO sprawdzanie czy zero
             L = new FixedLengthDialog().Show(L);
 
             Vertex rollbackPrev = new Vertex(selectedEdge.PrevVertex);
             Vertex rollbackNext = new Vertex(selectedEdge.NextVertex);
             var newEdge = new FixedLengthEdge(selectedEdge, L);
 
-            if (edgesList.ValidateEdges(newEdge.Prev!, newEdge.Next!))
+            if (edgesList.ValidateEdges(newEdge.Prev!, newEdge.Next!) || L == 0 || L > 10000)
             {
                 selectedEdge.PrevVertex.CopyData(rollbackPrev);
                 selectedEdge.NextVertex.CopyData(rollbackNext);
