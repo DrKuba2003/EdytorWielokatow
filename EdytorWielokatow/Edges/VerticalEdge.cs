@@ -44,21 +44,9 @@ namespace EdytorWielokatow.Edges
             }
             changing.X = changed.X;
         }
+
         public override bool IsValid(Vertex v1, Vertex v2) =>
             Math.Abs(v1.X - v2.X) <= EPS;
-
-        public override void Draw(Graphics g, bool useBresenham = false, Pen? p = null)
-        {
-            base.Draw(g, useBresenham, p);
-#if DEBUG
-            var midpt = GeometryUtils.Midpoint(PrevVertex, NextVertex);
-            g.DrawString(
-                $"{PrevVertex.X - NextVertex.X}",
-                SystemFonts.DefaultFont, Brushes.Black,
-                new PointF(rect.X + midpt.X + 3, rect.Y + midpt.Y + 20)
-                );
-#endif
-        }
 
         public override Icon? GetIcon() => icon;
         public override Rectangle GetIconRectangle() => rect;

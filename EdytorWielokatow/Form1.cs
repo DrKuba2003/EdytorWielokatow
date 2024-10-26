@@ -20,8 +20,6 @@ namespace EdytorWielokatow
         private Edge? selectedEdge;
         private Vertex? cursorOldPos;
 
-        // TODO usn¹c if DEBUG
-
         public Form1()
         {
             InitializeComponent();
@@ -457,22 +455,7 @@ namespace EdytorWielokatow
 
                 edgesList.TraverseAllList((Edge e) =>
                 {
-#if DEBUG
-                    Brush b = e == edgesList.Head ?
-                        Brushes.Green :
-                        e == edgesList.Tail ?
-                        Brushes.Red :
-                        Brushes.Blue;
-
-
-                    var midpt1 = GeometryUtils.Midpoint(e.PrevVertex, e.NextVertex);
-                    g.DrawString(
-                            $"{e.GetHashCode()}",
-                            SystemFonts.DefaultFont, Brushes.Black, new PointF(midpt1.X - 20, midpt1.Y - 20)
-                            );
-#else
-                        Brush b = Brushes.Blue; 
-#endif
+                     Brush b = Brushes.Blue;
 
                     e.Draw(g, useBresenham, new Pen(b, 3));
 
@@ -481,12 +464,9 @@ namespace EdytorWielokatow
                     return false;
                 });
 
-#if DEBUG
-                g.DrawString($"Edge cout: {edgesList.Count.ToString()}",
-                    SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 10));
                 g.DrawString($"App stat: {appState.ToString()}",
-                    SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 25));
-#endif
+                    SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 10));
+
             }
             Canvas.Refresh();
         }
