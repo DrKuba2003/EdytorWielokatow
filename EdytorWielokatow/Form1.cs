@@ -85,8 +85,7 @@ namespace EdytorWielokatow
                     }
                     else if (selectedEdge is not null)
                     {
-                        if (selectedEdge is not BezierEdge)
-                            appState = AppStates.DraggingEdge;
+                        appState = AppStates.DraggingEdge;
                     }
                     else
                     {
@@ -158,8 +157,11 @@ namespace EdytorWielokatow
                     selectedEdge.PrevVertex.X += vec.X;
                     selectedEdge.PrevVertex.Y += vec.Y;
 
-                    selectedEdge.NextVertex.X += vec.X;
-                    selectedEdge.NextVertex.Y += vec.Y;
+                    foreach (var v in selectedEdge.GetVertexesExceptPrev())
+                    {
+                        v.X += vec.X;
+                        v.Y += vec.Y;
+                    }    
 
                     if (edgesList.ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
                     {
