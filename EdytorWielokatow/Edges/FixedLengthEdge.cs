@@ -32,6 +32,7 @@ namespace EdytorWielokatow.Edges
 
             if (neighEdge is BezierEdge)
             {
+                // Krawedzie: cv <-> bv <-> changing
                 ContinuityVertex bv = (ContinuityVertex)(isPrev ? PrevVertex : NextVertex);
                 ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
 

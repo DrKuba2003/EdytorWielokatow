@@ -36,6 +36,7 @@ namespace EdytorWielokatow.Edges
         public override void ChangeVertexPos(Vertex changed, Vertex changing)
         {
             // changing jest tylko odblokowany w tej funkcji
+            // Krawedzie: neighVertex <neighEdge> sharedVertex <(this)> controlVertex
 
             bool isPrev = changed == PrevVertex;
             var neighEdge = isPrev ? Prev : Next;
@@ -63,6 +64,7 @@ namespace EdytorWielokatow.Edges
 
             if (continuityClass == ContinuityClasses.G1)
             {
+                // odwracanie wektora controlVertex - sharedVertex zeby byla spelniona ciaglosc
                 if (neighEdge is HorizontalEdge)
                 {
                     controlVertex.Y = sharedVertex.Y;
