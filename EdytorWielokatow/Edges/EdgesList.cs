@@ -86,17 +86,17 @@ namespace EdytorWielokatow.Edges
 
         public bool DeleteVertex(Vertex v)
         {
-            (Edge? ePrev, Edge? eNext) = GetAdjecentEdges(v);
-            if (ePrev is null || eNext is null) return true;
+            (Edge? prevEdge, Edge? nextEdge) = GetAdjecentEdges(v);
+            if (prevEdge is null || nextEdge is null) return true;
 
-            Edge newEdge = new Edge(ePrev.PrevVertex, eNext.NextVertex,
-                ePrev.Prev, eNext.Next);
-            ePrev.Prev!.Next = newEdge;
-            eNext.Next!.Prev = newEdge;
+            Edge newEdge = new Edge(prevEdge.PrevVertex, nextEdge.NextVertex,
+                prevEdge.Prev, nextEdge.Next);
+            prevEdge.Prev!.Next = newEdge;
+            nextEdge.Next!.Prev = newEdge;
 
             // Change of head and tail if needed
-            bool deletingHead = ePrev == Head || eNext == Head;
-            bool deletingTail = ePrev == Tail || eNext == Tail;
+            bool deletingHead = prevEdge == Head || nextEdge == Head;
+            bool deletingTail = prevEdge == Tail || nextEdge == Tail;
             if (deletingHead)
                 Head = newEdge;
 
@@ -203,21 +203,21 @@ namespace EdytorWielokatow.Edges
 
         public void ReplaceVertex(Vertex oldVertex, Vertex newVertex)
         {
-            (Edge? ePrev, Edge? eNext) = GetAdjecentEdges(oldVertex);
+            (Edge? prevEdge, Edge? nextEdge) = GetAdjecentEdges(oldVertex);
 
-            ePrev!.NextVertex = newVertex;
-            eNext!.PrevVertex = newVertex;
+            prevEdge!.NextVertex = newVertex;
+            nextEdge!.PrevVertex = newVertex;
         }
 
         public (Edge? e1, Edge? e2) GetAdjecentEdges(Vertex v)
         {
-            Edge? ePrev = null, eNext = null;
+            Edge? prevEdge = null, nextEdge = null;
             TraverseAllList((Edge e) =>
             {
                 if (e.PrevVertex == v)
-                    eNext = e;
+                    nextEdge = e;
                 else if (e.NextVertex == v)
-                    ePrev = e;
+                    prevEdge = e;
 
                 if (e is BezierEdge)
                 {
@@ -225,14 +225,14 @@ namespace EdytorWielokatow.Edges
                     if (be.PrevControlVertex == v ||
                         be.NextControlVertex == v)
                     {
-                        ePrev = be.Prev;
-                        eNext = be.Next;
+                        prevEdge = be.Prev;
+                        nextEdge = be.Next;
                     }
                 }
 
-                return ePrev is not null && eNext is not null;
+                return prevEdge is not null && nextEdge is not null;
             });
-            return (ePrev, eNext);
+            return (prevEdge, nextEdge);
         }
 
         public void MoveWholePolygon(Vertex vec, List<Vertex>? exceptions = null)
@@ -276,9 +276,9 @@ namespace EdytorWielokatow.Edges
 
         public void UnlockAllVertexes()
         {
-            TraverseAllList((Edge edge) =>
+            TraverseAllList((Edge e) =>
             {
-                edge.NextVertex.IsLocked = false;
+                e.NextVertex.IsLocked = false;
                 return false;
             });
         }

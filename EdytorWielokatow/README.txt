@@ -11,3 +11,4 @@ Opis struktury danych:
 	
 Opis algorytmu "relacji":
 	Jest wywoływana funkcja ChangeVertexPos na zmiane na następnej krawędzi (Next) i poprzedniej krawędzi (Prev), od przesuwanego wierzchołka lub dwóch w przypadku przesuwania krawędzi. Dodawane są kolejne krawędzie na zmiane z każdej strony, dopóki nie będzie zwykłej krawędzi (nie sąsiadującej z bezierem), lub następny wierzchołek nie będzie zablokowany (IsLocked). Na końcu ostatnia krawędź jest sprawdzana czy jest poprawna, po wyliczeniu jej wierzchołków z obu stron. Jeśli nie jest wszystkie zmiany są cofane.
+

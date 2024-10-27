@@ -69,6 +69,7 @@ namespace EdytorWielokatow.Edges
 
         public Vertex GetEdgeVertex(bool prev)
             => prev ? PrevVertex : NextVertex;
+
         public Edge GetNeighEdge(bool prev)
             => prev ? Prev : Next;
 
