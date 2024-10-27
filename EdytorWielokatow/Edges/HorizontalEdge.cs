@@ -29,16 +29,24 @@ namespace EdytorWielokatow.Edges
 
             if (neighEdge is BezierEdge)
             {
-                ContinuityVertex bv = (ContinuityVertex)(isPrev ? PrevVertex : NextVertex);
-                ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(bv);
+                // Krawedzie: cv <-> v1 <-> v2
+                ContinuityVertex v1 = (ContinuityVertex)(isPrev ? PrevVertex : NextVertex);
+                Vertex v2 = isPrev ? NextVertex : PrevVertex;
+                ControlVertex cv = (ControlVertex)neighEdge.GetNeighVertex(v1);
 
-                var vec = new Vertex(bv.X - cv.X, bv.Y - cv.Y);
-
-                switch (bv.ContinuityClass)
+                switch (v1.ContinuityClass)
                 {
                     case ContinuityClasses.C1:
-                        changing.X = bv.X + vec.X;
-                        changing.Y = bv.Y + vec.Y;
+                        var vec = new Vertex(v1.X - cv.X, v1.Y - cv.Y);
+                        changing.X = v1.X + vec.X * 2;
+                        changing.Y = v1.Y + vec.Y * 2;
+                        break;
+                    case ContinuityClasses.G1:
+                        // jesli wektory nie sa w tym samym kierunku
+                        if ((v1.X - cv.X) * (v2.X - v1.X) < 0)
+                        {
+                            v2.X = v1.X + (v1.X - v2.X);
+                        }
                         break;
                 }
             }

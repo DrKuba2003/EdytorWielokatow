@@ -66,11 +66,19 @@ namespace EdytorWielokatow.Edges
                 if (neighEdge is HorizontalEdge)
                 {
                     controlVertex.Y = sharedVertex.Y;
+
+                    if ((sharedVertex.X - controlVertex.X) * (neighVertex.X - sharedVertex.X) < 0)
+                        controlVertex.X = sharedVertex.X + (sharedVertex.X - controlVertex.X);
+
                     return;
                 }
                 else if (neighEdge is VerticalEdge)
                 {
                     controlVertex.X = sharedVertex.X;
+
+                    if ((sharedVertex.Y - controlVertex.Y) * (neighVertex.Y - sharedVertex.Y) < 0)
+                        controlVertex.Y = sharedVertex.Y + (sharedVertex.Y - controlVertex.Y);
+                    
                     return;
                 }
 
