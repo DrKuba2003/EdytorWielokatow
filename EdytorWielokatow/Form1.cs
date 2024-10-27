@@ -6,7 +6,7 @@ namespace EdytorWielokatow
 {
     public partial class Form1 : Form
     {
-        private enum AppStates { CreatingPoly, DraggingPoint, DraggingEdge, DraggingPoly, LookingAtPoly };
+        private enum AppStates { CreatingPolygon, DraggingPoint, DraggingEdge, DraggingPolygon, LookingAtPolygon };
 
         private const int VERTEX_BUFFER = 8;
         private const int EDGE_BUFFER = 1;
@@ -24,7 +24,7 @@ namespace EdytorWielokatow
         {
             InitializeComponent();
 
-            appState = AppStates.CreatingPoly;
+            appState = AppStates.CreatingPolygon;
             edgesList = new EdgesList();
 
             drawArea = new Bitmap(Canvas.Size.Width, Canvas.Size.Height);
@@ -41,7 +41,7 @@ namespace EdytorWielokatow
             var ptClicked = new Vertex(e.X, e.Y);
             if (e.Button == MouseButtons.Left)
             {
-                if (appState == AppStates.CreatingPoly)
+                if (appState == AppStates.CreatingPolygon)
                 {
                     Edge? newEdge = null;
 
@@ -70,13 +70,13 @@ namespace EdytorWielokatow
                         {
                             newEdge.Next = edgesList.Head;
                             edgesList.Head!.Prev = newEdge;
-                            appState = AppStates.LookingAtPoly;
+                            appState = AppStates.LookingAtPolygon;
                         }
                     }
 
                     Draw();
                 }
-                else if (appState == AppStates.LookingAtPoly)
+                else if (appState == AppStates.LookingAtPolygon)
                 {
                     (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                     if (selectedPoint is not null)
@@ -95,13 +95,13 @@ namespace EdytorWielokatow
                             ptClicked.X <= bb.maxX &&
                             ptClicked.Y >= bb.minY &&
                             ptClicked.Y <= bb.maxY)
-                            appState = AppStates.DraggingPoly;
+                            appState = AppStates.DraggingPolygon;
                     }
                     cursorOldPos = new Vertex(e.X, e.Y);
                 }
             }
             else if (e.Button == MouseButtons.Right &&
-                appState == AppStates.LookingAtPoly)
+                appState == AppStates.LookingAtPolygon)
             {
                 (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
                 if (selectedPoint is not null && selectedPoint is not ControlVertex)
@@ -116,7 +116,7 @@ namespace EdytorWielokatow
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (appState == AppStates.CreatingPoly &&
+            if (appState == AppStates.CreatingPolygon &&
                 startingPt is not null)
             {
                 cursorOldPos = new Vertex(e.X, e.Y);
@@ -169,7 +169,7 @@ namespace EdytorWielokatow
 
                     Draw();
                 }
-                else if (appState == AppStates.DraggingPoly)
+                else if (appState == AppStates.DraggingPolygon)
                 {
                     Vertex vec = new Vertex(e.X - cursorOldPos.X,
                         e.Y - cursorOldPos.Y);
@@ -187,11 +187,11 @@ namespace EdytorWielokatow
             {
                 if (appState == AppStates.DraggingPoint ||
                     appState == AppStates.DraggingEdge ||
-                    appState == AppStates.DraggingPoly)
+                    appState == AppStates.DraggingPolygon)
                 {
                     selectedPoint = null;
                     selectedEdge = null;
-                    appState = AppStates.LookingAtPoly;
+                    appState = AppStates.LookingAtPolygon;
                     Draw(true);
                 }
             }
@@ -204,7 +204,7 @@ namespace EdytorWielokatow
             Edge? edgeOut = null;
             double minEdgeDist = double.MaxValue;
 
-            if (appState == AppStates.CreatingPoly) return (ptOut, edgeOut);
+            if (appState == AppStates.CreatingPolygon) return (ptOut, edgeOut);
 
             edgesList.TraverseAllList((Edge e) =>
             {
@@ -433,7 +433,7 @@ namespace EdytorWielokatow
             {
                 g.Clear(Color.White);
 
-                if (appState == AppStates.CreatingPoly && startingPt is not null)
+                if (appState == AppStates.CreatingPolygon && startingPt is not null)
                 {
                     startingPt.Draw(g);
 
@@ -458,7 +458,7 @@ namespace EdytorWielokatow
                     return false;
                 });
 
-                g.DrawString($"App stat: {appState.ToString()}",
+                g.DrawString($"Stan aplikacji: {appState.ToString()}",
                     SystemFonts.DefaultFont, Brushes.Black, new PointF(10, 10));
 
             }
@@ -494,7 +494,7 @@ namespace EdytorWielokatow
             e4.Next = edgesList.Head;
             edgesList.Head!.Prev = e4;
 
-            appState = AppStates.LookingAtPoly;
+            appState = AppStates.LookingAtPolygon;
         }
 
         private void usunCalyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -507,7 +507,7 @@ namespace EdytorWielokatow
         {
             edgesList.DeleteAll();
             startingPt = null;
-            appState = AppStates.CreatingPoly;
+            appState = AppStates.CreatingPolygon;
         }
 
         private void Canvas_Click(object sender, EventArgs e)
