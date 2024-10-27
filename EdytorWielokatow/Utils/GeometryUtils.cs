@@ -51,7 +51,7 @@ namespace EdytorWielokatow.Utils
             int numerator = longest >> 1;
             for (int i = 0; i <= longest; i++)
             {
-                // for the line width
+                // for the line width drawing with +
                 g.FillRectangle(brush, x - 1, y, 1, 1);
                 g.FillRectangle(brush, x, y - 1, 1, 1);
                 g.FillRectangle(brush, x, y, 1, 1);

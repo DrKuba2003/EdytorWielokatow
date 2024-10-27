@@ -67,6 +67,11 @@ namespace EdytorWielokatow.Edges
             yield return NextVertex;
         }
 
+        public Vertex GetEdgeVertex(bool prev)
+            => prev ? PrevVertex : NextVertex;
+        public Edge GetNeighEdge(bool prev)
+            => prev ? Prev : Next;
+
         public virtual Vertex GetNeighVertex(Vertex v)
             => v == PrevVertex ? NextVertex : PrevVertex;
 

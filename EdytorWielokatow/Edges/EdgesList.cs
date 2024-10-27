@@ -19,51 +19,38 @@ namespace EdytorWielokatow.Edges
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
             var roolback = new Dictionary<Vertex, PointF>();
-            var queue = new Queue<(bool isPrev, Edge e)>();
+            var queue = new Queue<(Edge e, bool isPrev)>();
 
             prevEdge.NextVertex.IsLocked = true;
             nextEdge.PrevVertex.IsLocked = true;
 
-            queue.Enqueue((false, nextEdge));
+            queue.Enqueue((nextEdge, false));
             nextEdge.NextVertex.IsLocked = nextEdge is not BezierEdge;
 
-            queue.Enqueue((true, prevEdge));
+            queue.Enqueue((prevEdge, true));
             prevEdge.PrevVertex.IsLocked = prevEdge is not BezierEdge;
 
             while (queue.Count > 0)
             {
-                var item = queue.Dequeue();
+                (Edge e, bool isPrev) = queue.Dequeue();
 
-                var changed = item.isPrev ? item.e.NextVertex : item.e.PrevVertex;
-                var changing = item.isPrev ? item.e.PrevVertex : item.e.NextVertex;
+                var changed = isPrev ? e.NextVertex : e.PrevVertex;
+                var changing = isPrev ? e.PrevVertex : e.NextVertex;
 
                 roolback[changing] = new PointF(changing.X, changing.Y);
-                item.e.ChangeVertexPos(changed, changing);
+                e.ChangeVertexPos(changed, changing);
 
-                if (item.isPrev)
+                if (e is not BezierEdge &&
+                        ((!e.GetNeighEdge(isPrev).GetEdgeVertex(isPrev).IsLocked && e.GetNeighEdge(isPrev).GetType() != typeof(Edge)) ||
+                        e.GetNeighEdge(isPrev) is BezierEdge ||
+                        e.GetNeighEdge(isPrev).GetNeighEdge(isPrev) is BezierEdge))
                 {
-                    if (item.e is not BezierEdge &&
-                        ((!item.e.Prev!.PrevVertex.IsLocked && item.e.Prev!.GetType() != typeof(Edge)) ||
-                        item.e.Prev is BezierEdge ||
-                        item.e.Prev.Prev is BezierEdge))
-                    {
-                        queue.Enqueue((true, item.e.Prev));
-                        // zeby bylo oznaczone ze bedzie zmienianie tylko w przypadku jesli nie jest bezierem
-                        item.e.Prev.PrevVertex.IsLocked = item.e.Prev is not BezierEdge;
-                    }
+                    queue.Enqueue((e.GetNeighEdge(isPrev), isPrev));
+                    // zeby bylo oznaczone ze bedzie zmienianie tylko w przypadku jesli nie jest bezierem
+                    e.GetNeighEdge(isPrev).GetEdgeVertex(isPrev).IsLocked = e.GetNeighEdge(isPrev) is not BezierEdge;
                 }
-                else
-                {
-                    if (item.e is not BezierEdge &&
-                        ((!item.e.Next!.NextVertex.IsLocked && item.e.Next!.GetType() != typeof(Edge)) ||
-                        item.e.Next is BezierEdge ||
-                        item.e.Next.Next is BezierEdge))
-                    {
-                        queue.Enqueue((false, item.e.Next));
-                        item.e.Next.NextVertex.IsLocked = item.e.Next is not BezierEdge;
-                    }
-                }
-                last = (item.e, item.isPrev);
+
+                last = (e, isPrev);
             }
 
             if ((last.isPrev && !last.edge.Prev!.IsValid()) ||
