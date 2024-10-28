@@ -5,6 +5,7 @@ namespace EdytorWielokatow.Edges
 {
     public class BezierEdge : Edge
     {
+        public new const string ClassName = "BEZIER";
         public const int CONTROL_RADIUS = 5;
 
         public static readonly Icon? icon =

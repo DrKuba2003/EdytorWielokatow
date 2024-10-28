@@ -44,6 +44,8 @@
             usunOgraniczeniaToolStripMenuItem = new ToolStripMenuItem();
             generalContexMenu = new ContextMenuStrip(components);
             usunCalyToolStripMenuItem = new ToolStripMenuItem();
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            loadToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
             vertexContextMenu.SuspendLayout();
             edgeContextMenu.SuspendLayout();
@@ -151,9 +153,9 @@
             // generalContexMenu
             // 
             generalContexMenu.ImageScalingSize = new Size(20, 20);
-            generalContexMenu.Items.AddRange(new ToolStripItem[] { usunCalyToolStripMenuItem });
+            generalContexMenu.Items.AddRange(new ToolStripItem[] { usunCalyToolStripMenuItem, saveToolStripMenuItem, loadToolStripMenuItem });
             generalContexMenu.Name = "generalContexMenu";
-            generalContexMenu.Size = new Size(141, 28);
+            generalContexMenu.Size = new Size(141, 76);
             // 
             // usunCalyToolStripMenuItem
             // 
@@ -161,6 +163,20 @@
             usunCalyToolStripMenuItem.Size = new Size(140, 24);
             usunCalyToolStripMenuItem.Text = "Usuń cały";
             usunCalyToolStripMenuItem.Click += usunCalyToolStripMenuItem_Click;
+            // 
+            // saveToolStripMenuItem
+            // 
+            saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            saveToolStripMenuItem.Size = new Size(140, 24);
+            saveToolStripMenuItem.Text = "Save";
+            saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
+            // 
+            // loadToolStripMenuItem
+            // 
+            loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            loadToolStripMenuItem.Size = new Size(140, 24);
+            loadToolStripMenuItem.Text = "Load";
+            loadToolStripMenuItem.Click += loadToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -198,5 +214,7 @@
         private ToolStripMenuItem c1ToolStripMenuItem;
         private ContextMenuStrip generalContexMenu;
         private ToolStripMenuItem usunCalyToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem loadToolStripMenuItem;
     }
 }

@@ -1,10 +1,12 @@
 ﻿using EdytorWielokatow.Utils;
 using System.Numerics;
+using System.Text.Json.Serialization;
 
 namespace EdytorWielokatow.Vertexes
 {
-    public class Vertex
+    public class Vertex : SerializableClass
     {
+        public new const string ClassName = "VERTEX";
         private const int RADIUS = 8;
         public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
 
@@ -12,13 +14,15 @@ namespace EdytorWielokatow.Vertexes
         public float Y { get; set; }
         public bool IsLocked { get; set; }
 
+        [JsonIgnore]
         public Vector2 Vector2 { get => new Vector2(X, Y); }
 
-        public Vertex(float x, float y, bool isLocked = false)
+        [JsonConstructor]
+        public Vertex(float X, float Y, bool IsLocked = false)
         {
-            X = x;
-            Y = y;
-            IsLocked = isLocked;
+            this.X = X;
+            this.Y = Y;
+            this.IsLocked = IsLocked;
         }
 
         public Vertex(Vertex v)

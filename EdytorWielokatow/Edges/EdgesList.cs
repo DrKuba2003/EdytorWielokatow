@@ -1,10 +1,14 @@
 ﻿using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
+using System.CodeDom;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EdytorWielokatow.Edges
 {
     public class EdgesList
     {
+        const string SAVE_PATH = "Saves\\save.json";
 
         public Edge? Head { get; set; }
         public Edge? Tail { get; set; }
@@ -303,6 +307,61 @@ namespace EdytorWielokatow.Edges
             Head = null;
             Tail = null;
             Count = 0;
+        }
+
+        public void Save()
+        {
+            var serializables = new List<SerializableClass>();
+            TraverseAllList((Edge e) =>
+            {
+                serializables.Add(e);
+                foreach (var v in e.GetVertexesExceptPrev())
+                    serializables.Add(v);
+
+                return false;
+            });
+
+
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(serializables, options);
+
+            var file = new FileInfo(SAVE_PATH);
+            if (file.Directory == null)
+            {
+                Console.WriteLine("Error while saving to file");
+                return;
+            };
+            file.Directory.Create(); // If the directory already exists, this method does nothing.
+            File.WriteAllText(file.FullName, json);
+        }
+
+        public void Load()
+        {
+            string json = File.ReadAllText(SAVE_PATH);
+
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                WriteIndented = true
+            };
+            var serializables = JsonSerializer.Deserialize<List<SerializableClass>>(json, options)!;
+
+            Count = 0; Head = null; Tail = null;
+            foreach (var serializable in serializables)
+            {
+                if (serializable is Edge)
+                {
+                    Count++;
+                    if (Head == null)
+                        Head = (Edge)serializable;
+                    else if (Tail == null)
+                        Tail = (Edge)serializable;
+                }
+            }
         }
     }
 }

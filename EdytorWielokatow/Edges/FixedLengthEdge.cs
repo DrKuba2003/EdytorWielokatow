@@ -5,6 +5,7 @@ namespace EdytorWielokatow.Edges
 {
     public class FixedLengthEdge : Edge
     {
+        public new const string ClassName = "FIXEDLENGTH";
         public const double EPS = 1;
 
         public static readonly Icon? icon =

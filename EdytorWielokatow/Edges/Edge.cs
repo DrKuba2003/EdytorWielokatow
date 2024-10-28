@@ -1,24 +1,27 @@
 ﻿using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
+using System.Text.Json.Serialization;
 
 namespace EdytorWielokatow.Edges
 {
-    public class Edge
+    public class Edge : SerializableClass
     {
+        public new const string ClassName = "EDGE";
         public static readonly Rectangle rect = new Rectangle(0, 0, 0, 0);
-
-        public Edge? Prev { get; set; }
-        public Edge? Next { get; set; }
 
         public Vertex PrevVertex { get; set; }
         public Vertex NextVertex { get; set; }
 
-        public Edge(Vertex prevVert, Vertex nextVert, Edge? prev = null, Edge? next = null)
+        public Edge? Prev { get; set; }
+        public Edge? Next { get; set; }
+
+        [JsonConstructor]
+        public Edge(Vertex PrevVertex, Vertex NextVertex, Edge? Prev = null, Edge? Next = null)
         {
-            PrevVertex = prevVert;
-            NextVertex = nextVert;
-            Prev = prev;
-            Next = next;
+            this.PrevVertex = PrevVertex;
+            this.NextVertex = NextVertex;
+            this.Prev = Prev;
+            this.Next = Next;
         }
 
         public Edge(Edge e)

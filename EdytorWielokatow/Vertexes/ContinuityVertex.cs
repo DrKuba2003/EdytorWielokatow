@@ -4,6 +4,7 @@
 
     public class ContinuityVertex : Vertex
     {
+        public new const string ClassName = "CONTINUITYVERTEX";
 
         public static readonly Icon? iconG0 =
             Icon.FromHandle(new Bitmap("Resources\\G0.png").GetHicon());

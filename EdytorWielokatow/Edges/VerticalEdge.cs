@@ -5,6 +5,7 @@ namespace EdytorWielokatow.Edges
 {
     public class VerticalEdge : Edge
     {
+        public new const string ClassName = "VERTICAL";
         public const int EPS = 0;
 
         public static readonly Icon? icon =

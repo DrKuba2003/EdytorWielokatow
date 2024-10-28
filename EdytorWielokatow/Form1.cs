@@ -101,17 +101,16 @@ namespace EdytorWielokatow
                     cursorOldPos = new Vertex(e.X, e.Y);
                 }
             }
-            else if (e.Button == MouseButtons.Right &&
-                appState == AppStates.LookingAtPolygon)
+            else if (e.Button == MouseButtons.Right )
             {
                 (selectedPoint, selectedEdge) = GetClickedObject(ptClicked);
-                if (selectedPoint is not null && selectedPoint is not ControlVertex)
+                if (selectedPoint is not null && selectedPoint is not ControlVertex &&
+                appState == AppStates.LookingAtPolygon)
                     vertexContextMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
-                else if (selectedEdge is not null)
+                else if (selectedEdge is not null && appState == AppStates.LookingAtPolygon)
                     edgeContextMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
                 else
                     generalContexMenu.Show(Canvas, ptClicked.X.Round(), ptClicked.Y.Round());
-
             }
         }
 
@@ -526,6 +525,17 @@ namespace EdytorWielokatow
         private void Canvas_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            edgesList.Save();
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            edgesList.Load();
+            Draw();
         }
     }
 }
