@@ -46,6 +46,7 @@
             usunCalyToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
             loadToolStripMenuItem = new ToolStripMenuItem();
+            autoRelacje = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)Canvas).BeginInit();
             vertexContextMenu.SuspendLayout();
             edgeContextMenu.SuspendLayout();
@@ -178,11 +179,22 @@
             loadToolStripMenuItem.Text = "Load";
             loadToolStripMenuItem.Click += loadToolStripMenuItem_Click;
             // 
+            // autoRelacje
+            // 
+            autoRelacje.AutoSize = true;
+            autoRelacje.Location = new Point(12, 38);
+            autoRelacje.Name = "autoRelacje";
+            autoRelacje.Size = new Size(174, 24);
+            autoRelacje.TabIndex = 3;
+            autoRelacje.Text = "Automatyczne relacje";
+            autoRelacje.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1382, 753);
+            Controls.Add(autoRelacje);
             Controls.Add(Canvas);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MaximizeBox = false;
@@ -195,6 +207,7 @@
             edgeContextMenu.ResumeLayout(false);
             generalContexMenu.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -216,5 +229,6 @@
         private ToolStripMenuItem usunCalyToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem loadToolStripMenuItem;
+        private CheckBox autoRelacje;
     }
 }
