@@ -30,7 +30,6 @@ namespace EdytorWielokatow.Utils
         public static bool CheckIf2PClose(Vertex p1, Vertex p2, int buffer) =>
             SquaredDistB2P(p1, p2) < Math.Pow(buffer, 2);
 
-        // TODO przestudiowac
         public static void Bresenhams(Graphics g, int x, int y, int x2, int y2, Brush brush)
         {
             int w = x2 - x;
@@ -51,13 +50,18 @@ namespace EdytorWielokatow.Utils
             int numerator = longest >> 1;
             for (int i = 0; i <= longest; i++)
             {
-                // for the line width drawing with +
-                g.FillRectangle(brush, x - 1, y, 1, 1);
-                g.FillRectangle(brush, x, y - 1, 1, 1);
                 g.FillRectangle(brush, x, y, 1, 1);
-                g.FillRectangle(brush, x + 1, y, 1, 1);
-                g.FillRectangle(brush, x, y + 1, 1, 1);
-
+                if (longest == Math.Abs(w))
+                {
+                    g.FillRectangle(brush, x, y - 1, 1, 1);
+                    g.FillRectangle(brush, x, y + 1, 1, 1);
+                }
+                else
+                {
+                    g.FillRectangle(brush, x - 1, y, 1, 1);
+                    g.FillRectangle(brush, x + 1, y, 1, 1);
+                }
+ 
                 numerator += shortest;
                 if (!(numerator < longest))
                 {
