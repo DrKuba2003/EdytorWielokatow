@@ -15,10 +15,12 @@ namespace EdytorWielokatow.Edges
             Count = 0;
         }
 
-        public bool ValidateEdges(Edge prevEdge, Edge nextEdge)
+        public bool ValidateEdges(Edge prevEdge, Edge nextEdge,
+            Dictionary<Vertex, PointF>? rollback = null)
         {
             (Edge edge, bool isPrev) last = (nextEdge, false);
-            var roolback = new Dictionary<Vertex, PointF>();
+            if (rollback is null)
+                rollback = new Dictionary<Vertex, PointF>();
             var queue = new Queue<(Edge e, bool isPrev)>();
 
             prevEdge.NextVertex.IsLocked = true;
@@ -37,7 +39,7 @@ namespace EdytorWielokatow.Edges
                 var changed = isPrev ? e.NextVertex : e.PrevVertex;
                 var changing = isPrev ? e.PrevVertex : e.NextVertex;
 
-                roolback[changing] = new PointF(changing.X, changing.Y);
+                rollback[changing] = new PointF(changing.X, changing.Y);
                 e.ChangeVertexPos(changed, changing);
 
                 if (e is not BezierEdge &&
@@ -57,8 +59,8 @@ namespace EdytorWielokatow.Edges
                 (!last.isPrev && !last.edge.Next!.IsValid()))
             {
                 // Rolling back changes
-                foreach (var key in roolback.Keys)
-                    key.CopyData(roolback[key]);
+                foreach (var key in rollback.Keys)
+                    key.CopyData(rollback[key]);
 
                 return true;
             }

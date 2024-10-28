@@ -1,6 +1,8 @@
 using EdytorWielokatow.Edges;
 using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EdytorWielokatow
 {
@@ -129,16 +131,25 @@ namespace EdytorWielokatow
                 {
                     selectedPoint.X = e.X;
                     selectedPoint.Y = e.Y;
+
+                    var rollback = new Dictionary<Vertex, PointF>();
                     if (selectedPoint is ControlVertex)
                     {
                         ControlVertex cv = (ControlVertex)selectedPoint;
+                        if (cv.Edge.PrevControlVertex == cv)
+                            rollback[cv.Edge.PrevVertex] = new PointF(cv.Edge.PrevVertex.X,
+                                cv.Edge.PrevVertex.Y);
+                        else
+                            rollback[cv.Edge.NextVertex] = new PointF(cv.Edge.NextVertex.X,
+                                cv.Edge.NextVertex.Y);
+
                         cv.Edge.ControlChangeVertexPos(cv);
                     }
 
                     (Edge? prevEdge, Edge? nextEdge) = edgesList.GetAdjecentEdges(selectedPoint);
                     if (prevEdge is not null && nextEdge is not null)
                     {
-                        if (edgesList.ValidateEdges(prevEdge!, nextEdge!))
+                        if (edgesList.ValidateEdges(prevEdge!, nextEdge!, rollback))
                         {
                             Vertex vec = new Vertex(e.X - cursorOldPos.X,
                                 e.Y - cursorOldPos.Y);
@@ -161,7 +172,7 @@ namespace EdytorWielokatow
                     {
                         v.X += vec.X;
                         v.Y += vec.Y;
-                    }    
+                    }
 
                     if (edgesList.ValidateEdges(selectedEdge.Prev!, selectedEdge.Next!))
                     {
@@ -451,7 +462,7 @@ namespace EdytorWielokatow
 
                 edgesList.TraverseAllList((Edge e) =>
                 {
-                     Brush b = Brushes.Blue;
+                    Brush b = Brushes.Blue;
 
                     e.Draw(g, useBresenham, new Pen(b, 3));
 
