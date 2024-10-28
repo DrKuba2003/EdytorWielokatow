@@ -3,6 +3,7 @@ using EdytorWielokatow.Utils;
 using EdytorWielokatow.Vertexes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace EdytorWielokatow
 {
@@ -65,6 +66,18 @@ namespace EdytorWielokatow
                             edgesList.Tail!.NextVertex;
 
                         newEdge = new Edge(lastVert, ptClicked);
+                        float dx = Math.Abs(lastVert.X - ptClicked.X);
+                        float dy = Math.Abs(lastVert.Y - ptClicked.Y);
+
+                        if (dx < 5 && dy > 5)
+                        {
+                            newEdge = new VerticalEdge(newEdge);
+                        }
+                        else if (dy < 5 && dx > 5)
+                        {
+                            newEdge = new HorizontalEdge(newEdge);
+                        }
+
                         edgesList.AddEdgeAtEnd(newEdge);
 
                         // Powiazanie poczatka z koncem
@@ -455,7 +468,23 @@ namespace EdytorWielokatow
                         g.DrawLine(new Pen(Brushes.Blue, 2),
                                 vStart.X, vStart.Y,
                                 cursorOldPos.X, cursorOldPos.Y);
-                        cursorOldPos = null;
+
+                        float dx = Math.Abs(vStart.X - cursorOldPos.X);
+                        float dy = Math.Abs(vStart.Y - cursorOldPos.Y);
+                        var midpt = GeometryUtils.Midpoint(vStart, cursorOldPos);
+                        if (dx < 5 && dy > 5)
+                        {
+                            Rectangle rect = VerticalEdge.rect;
+                            rect.Offset(new Point(midpt.X.Round(), midpt.Y.Round()));
+                            g.DrawIcon(VerticalEdge.icon, rect);
+
+                        }
+                        else if (dy < 5 && dx > 5)
+                        {
+                            Rectangle rect = HorizontalEdge.rect;
+                            rect.Offset(new Point(midpt.X.Round(), midpt.Y.Round()));
+                            g.DrawIcon(HorizontalEdge.icon, rect);
+                        }
                     }
                 }
 
