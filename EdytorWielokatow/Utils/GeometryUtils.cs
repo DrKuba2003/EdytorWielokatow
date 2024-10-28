@@ -82,16 +82,15 @@ namespace EdytorWielokatow.Utils
                     g.FillRectangle(brush, x0 - 1, y0, 1, 1);
                     g.FillRectangle(brush, x0 + 1, y0, 1, 1);
                 }
+                if (x0 == x1 && y0 == y1) break;
 
                 e2 = 2 * err;
                 if (e2 >= dy)
                 {                                       /* e_xy+e_x > 0 */
-                    if (x0 == x1) break;
                     err += dy; x0 += sx;
                 }
                 if (e2 <= dx)
                 {                                       /* e_xy+e_y < 0 */
-                    if (y0 == y1) break;
                     err += dx; y0 += sy;
                 }
             }
